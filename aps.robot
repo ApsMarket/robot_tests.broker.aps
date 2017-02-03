@@ -33,7 +33,7 @@ Resource          Locators.robot
     Return From Keyword If    '${ARGUMENTS[0]}' != 'aps_Owner'
     ${tender_data}=    Get From Dictionary    ${ARGUMENTS[1]}    data
     #
-    WaitClickXPATH    ${locator.buttonAdd}
+    WaitClickId    ${locator.buttonAdd}
     WaitClickXPATH    ${locator.buttonTenderAdd}
     TenderInfo    ${tender_data}
     \    #
@@ -56,15 +56,15 @@ Resource          Locators.robot
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_UAid}
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_UAid}
-    WaitClickID    ButtonTenderEdit
+    WaitClickID    BtnReviewTenderEdit
     Execute Javascript    window.scroll(1500,1500)
     WaitClickID    addFile
-    Select From List By Label    category_of    Документи закупівлі
-    Select From List By Label    file_of    закупівлі
-    WaitInputID    TenderFileUpload    ${filepath}
+    Select From List By Label    TypesFilesDropDown    Кваліфікаційні критерії
+    Select From List By Label    TypesPurchasesDocumentDropDown    закупівлі
+    WaitInputID    FileUpload    ${filepath}
     WaitClickID    lnkDownload
-    Wait Until Element Is Enabled    addFile
-    WaitClickID    id=btnPublishTop
+    Wait Until Element Is Enabled    UploadFile
+    WaitClickID    id=TenderPublishTop
 
 Завантажити документ в лот
     [Arguments]    ${username}    ${filepath}    ${TENDER_UAID}    ${lot_id}

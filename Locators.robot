@@ -9,7 +9,7 @@ ${locatot.cabinetEnter}    id=login_ribbon
 ${locator.emailField}    id=LoginBox
 ${locator.passwordField}    id=LoginPasswordBox
 ${locator.loginButton}    id=ButtonLogin
-${locator.buttonTenderAdd}    //a[@href="/Tenders/Add"]    # додати допорогову закупівлю
+${locator.buttonTenderAdd}    //a[@href='/Tenders/Add/1']    # додати допорогову закупівлю
 ${locator.tenderTitle}    edtTenderTitle
 ${locator.tenderDetail}    edtTenderDetail
 ${locator.tenderBudget}    edtTenderBudget
@@ -18,7 +18,7 @@ ${locator.tenderComStart}    id=date_enquiry_start
 ${locator.tenderComEnd}    id=date_enquiry_end
 ${locator.tenderStart}    id=date_tender_start
 ${locator.tenderEnd}    id=date_tender_end
-${locator.tenderAdd}    btnAdd
+${locator.tenderAdd}    CreateTender
 ${locator.topSearch}    id=topsearch
 ${locator.searchButton}    id=btnSearch
 ${locator.findTender}    xpath=//p[@class='cut_title']
@@ -62,7 +62,7 @@ ${lot.titleEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-defaul
 ${lot.hrefEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/a    # ссылка для раскрытия блока лота на странице редактирования
 ${lot.btnEditEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/div/div/div/div/button[@class="btn btn-dark_blue btn-sm"]    # кнопка редактирования лота
 ${lot.btnDelEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/div/div/div/div/button[@class="btn btn-yellow btn-sm"]    # кнопка удаления лота
-${locator.buttonAdd}    //a[@href="tenderadd"]    # розкрити меню \ з варіантами створення
+${locator.buttonAdd}    ButtonTenderAdd    # розкрити меню \ з варіантами створення
 ${locator.lots.title}    /div[1]/div[2]/p/b
 ${locator.lots.description}    /../../../div/div/div/div/small
 ${locator.lots.value.amount}    /div[2]/div/p/small/mark[1]/span[1]

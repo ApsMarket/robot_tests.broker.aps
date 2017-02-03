@@ -41,5 +41,5 @@ def capitalize_first_letter(string):
 
 
 def adapt_procuringEntity(tender_data):
-    tender_data['data']['procuringEntity']['name'] = u"QA"
+    tender_data['data']['procuringEntity']['name'] = u"Закуп"
     return tender_data
