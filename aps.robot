@@ -1,18 +1,18 @@
 *** Settings ***
-Library         op_robot_tests.tests_files.service_keywords
-Library         String
-Library         Collections
-Library         Selenium2Library
-Library         DebugLibrary
-Resource        keywords.robot
-Resource        resource.robot
-Suite Setup     Test Suite Setup
-Suite Teardown  Test Suite Teardown
+Library           op_robot_tests.tests_files.service_keywords
+Library           String
+Library           Collections
+Library           Selenium2Library
+Library           DebugLibrary
+Resource          keywords.robot
+Resource          resource.robot
 
 *** Keywords ***
 Підготувати клієнт для користувача
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
+    ${user}=    Get From Dictionary    ${USERS.users}    ${username}
+    Open Browser    ${user.homepage}    ${user.browser}
 
 Адаптувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
