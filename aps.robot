@@ -27,7 +27,17 @@ aps.Адаптувати дані для оголошення тендера
 Створити тендер
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    [Return]    UAID створеного тендера
+    Wait Until Element Is Visible    ${loc.ButtonTenderAdd}    5
+    Click Element    ${loc.ButtonTenderAdd}
+    Wait Until Element Is Visible    ${loc.TenderAdd}    5
+    Click Element    ${loc.TenderAdd}
+    Wait Until Element Is Visible    ${locator.tenderTitle}    10
+    Click Element    ${locator.tenderTitle}
+    Input Text    ${locator.tenderTitle}    Название тестовой закупки
+    Input Text    ${locator.tenderDetail}    Детали тестовой закупки
+    Input Text    ${locator.tenderBudget}    50000
+    Input Text    ${loc.percent_of_step}    2
+    [Return]    ${UAID}
 
 Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
