@@ -5,7 +5,7 @@ Resource          old_aps.robot
 ${item_index}     0
 ${locator.tenderID}    id=titleTenderUcode
 ${locatorDeals}    tab_view_bids
-${locatot.cabinetEnter}    id=login_ribbon
+${locator.cabinetEnter}    id=login_ribbon
 ${locator.emailField}    id=LoginBox
 ${locator.passwordField}    id=LoginPasswordBox
 ${locator.loginButton}    id=ButtonLogin

@@ -6,6 +6,7 @@ Library           Selenium2Library
 Library           DebugLibrary
 Resource          keywords.robot
 Resource          resource.robot
+Resource          Locators.robot
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -13,11 +14,15 @@ Resource          resource.robot
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}
+    Set Window Position    @{user.position}
+    Log To Console    ${user.position}
+    Set Window Size    @{user.size}
+    Run Keyword If    '${role}'!='aps_Viewer'    Login    ${user}
 
-Адаптувати дані для оголошення тендера
+aps.Адаптувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
-    [Return]    Адаптовані дані для оголошення тендера або початкові дані без змін, якщо адаптація не потрібна
+    [Return]    ${y}
 
 Створити тендер
     [Arguments]    ${username}    ${tender_data}
@@ -85,3 +90,12 @@ Resource          resource.robot
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Отримує посилання на участь в аукціоні тендера tender_uaid в якості учасника
     [Return]    URL сторінки аукціону
+
+Login
+    [Arguments]    ${user}
+    Wait Until Element Is Visible    ${locator.cabinetEnter}    10
+    Click Element    ${locator.cabinetEnter}
+    Wait Until Element Is Visible    ${locator.emailField}    10
+    Input Text    ${locator.emailField}    ${user.login}
+    Input Text    ${locator.passwordField}    ${user.password}
+    Click Element    ${locator.loginButton}
