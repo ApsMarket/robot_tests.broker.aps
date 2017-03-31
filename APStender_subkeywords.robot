@@ -4,7 +4,6 @@ Library           String
 Library           DateTime
 Library           Collections
 Library           Screenshot
-Resource          aps.robot
 Library           aps_service.py
 
 *** Keywords ***
@@ -16,17 +15,16 @@ Library           aps_service.py
     WaitClickID    AddPoss
     Wait Until Page Contains Element    id=AddItemButton    10
     \    #
-    ${editItemDetails}=    Get From Dictionary    ${item}    description
-    WaitInputID    itemDescription    ${editItemDetails}
+    ${itemDescription}=    Get From Dictionary    ${item}    description
+    WaitInputID    itemDescription    ${itemDescription}
     Run Keyword And Ignore Error    Select From List By Label    id=lot_combo    ${lot_title}
     ${unit}=    Get From Dictionary    ${item}    unit
     ${tov}=    Get From Dictionary    ${unit}    code
     ${editItemQuantity}=    Get From Dictionary    ${item}    quantity
     WaitInputID    editItemQuantity    ${editItemQuantity}
-    ${tov}=    Replace String    ${tov}    KGM    кілог
-    WaitClickXPATH    //button[@title='Оберіть одиницю виміру...']
-    WaitInputID    input_MeasureItem    ${tov}
-    Press Key    id=input_MeasureItem    \\\13
+    WaitClickXPATH    .//*[@id='window_itemadd']/div[2]/div/div[2]/div[2]/div/div[2]/div/button
+    WaitInputXPATH    .//*[@id='window_itemadd']/div[2]/div/div[2]/div[2]/div/div[2]/div/button    ${tov}
+    Press Key    id=window_itemadd    \\\13
     #choise CPV
     ${cpv_id}=    Get From Dictionary    ${item.classification}    id
     ${dkpp_id}=    Get From Dictionary    ${item.additionalClassifications[0]}    id
@@ -37,10 +35,8 @@ Library           aps_service.py
     #choise DKPP
     Wait Until Element Is Enabled    id=button_add_dkpp
     WaitClickID    button_add_dkpp
-    #WaitInputID    dkpp_search    ${dkpp_id}
-    WaitInputId    dkpp_search    999
-    Click Element    xpath=//a[@id='000_NONE_anchor']
-    #Press Key    id=dkpp_search    \\\13
+    WaitInputID    dkpp_search    ${dkpp_id}
+    Press Key    id=dkpp_search    \\\13
     WaitClickID    populate_dkpp
     WaitClickCSS    div.checkbox > label
     ${countryName}=    Get From Dictionary    ${item.deliveryAddress}    countryName_en
@@ -54,15 +50,14 @@ Library           aps_service.py
     WaitInputID    longitude    ${text}
     WaitInputID    elevation    111
     WaitClickID    div_combo_selectCountry
-    Wait Until Element Is Visible    input_CountryItem
-    ${countryName}=    Replace String    ${countryName}    Ukraine    Укр
-    WaitInputID    input_CountryItem    ${countryName}
-    Press Key    input_CountryItem    \\\13
+    Wait Until Element Is Visible    input_combo_selectCountry
+    WaitInputID    input_combo_selectCountry    ${countryName}
+    Press Key    input_combo_selectCountry    \\\13
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    WaitClickXPATH    //button[@title='Оберіть регіон...']
-    Wait Until Element Is Visible    id=input_RegionsItem
-    WaitInputID    input_RegionsItem    ${region}
-    Press Key    id=input_RegionsItem    \\\13
+    WaitClickXPATH    //button[@class="btn dropdown-toggle btn-default"][@title="Оберіть регіон"]
+    Wait Until Element Is Visible    id=input_combo_selectRegion
+    WaitInputID    input_combo_selectRegion    ${region}
+    Press Key    id=input_combo_selectRegion    \\\13
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
     WaitInputID    addr_locality    ${locality}
     \    #
@@ -83,9 +78,6 @@ Library           aps_service.py
     WaitInputID    post_code    ${postalCode}
     ${streetAddress}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     WaitInputID    addr_street    ${streetAddress}
-    ${date}=    Get Current Date
-    ${dateStart}=    aps_service.Convert Date To String    ${date}
-    WaitInputID    date_delivery_start    ${dateStart}
     WaitInputID    date_delivery_end    ${deliveryDate}
     Press Key    id=date_delivery_end    \\\13
     \    #
@@ -126,12 +118,9 @@ Library           aps_service.py
 
 Опублікувати тендер
     Sleep    3
-    WaitClickID    sumbitHeader
+    WaitClickID    btnPublishTop
     Element Should Not Be Visible    id=divAlert    message='Error public'
-    WaitClickID    TenderPublishTop
-    sleep    5
-    WaitClickID    optionsRadiosNotEcp
-    WaitClickXpath    //button[@class='btn btn-success ecp_success']
+    WaitClickID    btnView
     ${starttime}=    Get Current Date
     ${tender_id}=    Get Text    id=titleTenderUcode
     [Return]    ${tender_id}
