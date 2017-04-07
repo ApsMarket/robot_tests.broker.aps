@@ -44,24 +44,30 @@ aps.Створити тендер
     Log To Console    ${trtte}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
-    Log To Console    До добавления позиции
     Добавить позицию    ${item}
-    Log To Console    после добавления позиции
     Execute Javascript    window.scroll(1000, 1000)
     Click Element    ${loc.sumbit}
+    Execute Javascript    window.scroll(-1000,-1000)
+    ${UAID}=    Опубликовать закупку
     [Return]    ${UAID}
 
-Внести зміни в тендер
+aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Wait Until Element Is Enabled    ${loc_TenderPublishTop}
+    Click Element    ${loc_TenderPublishTop}
 
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
 
-Пошук тендера по ідентифікатору
+aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
+    Input Text    ${loc.search_text}    ${tender_uaid}
+    Wait Until Element Is Enabled    ${loc.search_btn}
+    Click Element    ${loc.search_btn}
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -167,39 +173,42 @@ Login
     ${add_classif}=    Get From Dictionary    ${item}    additionalClassifications
     ${itemDescript}=    Get From List    ${add_classif}    0
     ${itemDescript}=    Get From Dictionary    ${itemDescript}    description
-    Input Text    ${loc.editItemQuantity}    ${itemDescript}
+    Input Text    ${loc.itemDescription}    ${itemDescript}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Input Text    \    ${editItemQuant}
-    ${unit}=    Get From Dictionary    ${item}    unit
-    ${code}=    Get From Dictionary    ${unit}    code
-    Log To Console    1111111111
-    Click Element    xpath=.//*[@id='window_itemadd']/div[2]/div/div[2]/div[2]/div/div[2]/div/button
+    Input Text    ${loc.editItemQuantity}    ${editItemQuant}
+    #Выбор ед измерения
     Wait Until Element Is Enabled    ${loc.input_MeasureItem}
     Select From List By Value    ${loc.MeasureItem}    KGM
+    #Выбор ДК
     Click Button    ${loc.button_add_cpv}
     Wait Until Element Is Visible    ${loc.cpv_search}
     Input Text    ${loc.cpv_search}    2200
     Click Button    ${loc.populate_cpv}
+    #Выбор др ДК
     Wait Until Element Is Visible    xpath=.//*[@id='button_add_dkpp']
     Click Button    xpath=.//*[@id='button_add_dkpp']
     Wait Until Element Is Visible    ${loc.dkpp_search}
     Input Text    ${loc.dkpp_search}    0000
     Click Element    xpath=.//*[@id='000_NONE_anchor']
     Click Button    ${loc.populate_dkpp}
-    Wait Until Element Is Enabled    ${loc.date_delivery_start}
-    Log To Console    1111111
+    #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    Log To Console    222222
     ${date_time}=    dt    ${delivery_Date}
-    Log To Console    33333333
-    Capture Page Screenshot
-    Comment    Click Element    ${loc.date_delivery_end}
-    Comment    Wait Until Element Is Visible    ${loc.AddItemButton}
-    Click Button    xpath=.//*[@id='AddItemButton']
+    Input Text    ${loc_date_delivery_end}    ${date_time}
+    #Клик Enter
+    Press Key    ${loc_date_delivery_end}    \\\13
+    #Клик кнопку "Зберегти"
+    Click Element    ${loc.AddItemButton}
 
 date_Time
     [Arguments]    ${date}
     ${DT}=    Convert Date    ${date}    date_format=
     Return From Keyword    '${DT.day}'+'.'+'${DT.month}'+'.'+'${DT.year}'+' '+'${DT.hour}'+':'+'${DT.minute}'
     [Return]    ${aps_date}
+
+Опубликовать закупку
+    Click Element    ${loc_TenderPublishTop}
+    Wait Until Element Is Enabled    ${loc_PublishConfirm}
+    Click Element    xpath=.//*[@id='optionsRadiosNotEcp']/..
+    Click Button    xpath=.//*[@class='btn btn-success ecp_true hidden']

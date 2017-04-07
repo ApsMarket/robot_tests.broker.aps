@@ -1,5 +1,4 @@
 *** Settings ***
-Resource          old_aps.robot
 
 *** Variables ***
 ${item_index}     0
@@ -110,3 +109,10 @@ ${loc.MeasureItem}    id=MeasureItem
 ${loc.TenderBudget}    id=edtTenderBudget
 ${loc.MinStep}    id=edtMinStep
 ${loc.PDVIncluded}    id=chkPDVIncluded
+${loc_date_delivery_end}    id=date_delivery_end
+${loc.search_text}    id=search_text
+${loc.search_btn}    id=search_btn
+${loc_TenderPublishTop}    id=TenderPublishTop
+${loc_PublishConfirm}    id=PublishConfirm
+${loc_ECP}        id=optionsRadiosEcp
+${loc_btn_PublishConfirm}    id=PublishConfirm
