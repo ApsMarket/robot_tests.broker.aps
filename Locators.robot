@@ -2,117 +2,41 @@
 
 *** Variables ***
 ${item_index}     0
-${locator.tenderID}    id=titleTenderUcode
-${locatorDeals}    tab_view_bids
-${locator.cabinetEnter}    id=login_ribbon
-${locator.emailField}    id=LoginBox
-${locator.passwordField}    id=LoginPasswordBox
-${locator.loginButton}    id=ButtonLogin
-${locator.buttonTenderAdd}    //a[@href="/Tenders/Add/1"]    # додати допорогову закупівлю
-${locator.tenderTitle}    id=edtTenderTitle
-${locator.tenderDetail}    id=edtTenderDetail
-${locator.tenderBudget}    id=edtTenderBudget
-${locator.tenderStep}    edtMinStep
-${locator.tenderComStart}    id=date_enquiry_start
-${locator.tenderComEnd}    id=date_enquiry_end
-${locator.tenderStart}    id=date_tender_start
-${locator.tenderEnd}    id=date_tender_end
-${locator.tenderAdd}    CreateTender
-${locator.topSearch}    id=topsearch
-${locator.searchButton}    id=btnSearch
-${locator.findTender}    xpath=//p[@class='cut_title']
-${locator.informationTable}    xpath=//li[@id='tab1']
-${locator.title}    id=edtTenderTitle
-${locator.descriptions}    id=edtTenderDetail
-${locator.value.amount}    id=edtTenderBudget
-${locator.tenderId}    id=titleTenderUcode
-${locator.procuringEntity.name}    id=author_legal_name
-${locator.enquiryPeriod.startDate}    id=date_enquiry_start
-${locator.enquiryPeriod.endDate}    id=date_enquiry_end
-${locator.tenderPeriod.startDate}    id=date_tender_start
-${locator.tenderPeriod.endDate}    id=date_tender_end
-${locator.value.valueAddedTaxIncluded}    id=lblPDV
-${locator.minimalStep.amount}    id=edtMinStep
-${locator.items[0].deliveryDate.endDate}    id=deliv_date_end1
-${locator.items[0].deliveryLocation.latitude}    id=qdelivlatitude1
-${locator.items[0].deliveryLocation.longitude}    id=qdelivlongitude1
-${locator.items[0].deliveryAddress.postalCode}    id=qdelivaddrpost_code1
-${locator.items[0].deliveryAddress.countryName}    id=_qdelivaddrcountry1
-${locator.items[0].deliveryAddress.locality}    id=qdeliv_addr_locality1
-${locator.items[0].deliveryAddress.streetAddress}    id=qdeliv_addrstreet1
-${locator.items[0].classification.scheme}    id=scheme2015_1
-${locator.items[0].classification.id}    id=cpv_code_1
-${locator.items[0].classification.description}    id=cpv_name1
-${locator.items[0].additionalClassifications[0].scheme}    id=scheme2010_1
-${locator.items[0].additionalClassifications[0].id}    id=dkpp_code_1
-${locator.items[0].additionalClassifications[0].description}    id=dkpp_name1
-${locator.items[0].description}    xpath=//div[@class="col-md-8 col-sm-8 col-xs-7"]
-${locator.questions[0].title}    id=questionTitlespan1
-${locator.questions[0].description}    id=label_question_description
-${locator.questions[0].date}    xpath=//div[@class="col-md-2 text-right"][@style="font-size: 11px; color: black;"]
-${locator.items.deliveryDate.endDate}    /div/div/div[4]/div[2]/p/span    #deliv_date_end
-${locator.value.currency}    id=lblTenderCurrency2
-${locator.items[0].deliveryAddress.region}    id=_qdeliv_addr_region1
-${locator.items[0].unit.code}    id=measure_prozorro_code1
-${locator.items[0].unit.name}    id=measure_name1
-${locator.items[0].quantity}    id=quantity1
-${locator.questions[0].answer}    id=answer
-${lot.titleEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/a/div/h4/div/div[@class="col-md-9"]/p/b    # заголовок лота на странице редктирования
-${lot.hrefEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/a    # ссылка для раскрытия блока лота на странице редактирования
-${lot.btnEditEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/div/div/div/div/button[@class="btn btn-dark_blue btn-sm"]    # кнопка редактирования лота
-${lot.btnDelEdt}    //*[@id="divLotsItemsDynamic"]/div[@class="panel panel-default"]/div/div/div/div/button[@class="btn btn-yellow btn-sm"]    # кнопка удаления лота
-${locator.buttonAdd}    //a[@href="tenderadd"]    # розкрити меню \ з варіантами створення
-${locator.lots.title}    /div[1]/div[2]/p/b
-${locator.lots.description}    /../../../div/div/div/div/small
-${locator.lots.value.amount}    /div[2]/div/p/small/mark[1]/span[1]
-${locator.lots.minimalStep.amount}    /div[2]/div/p/small/mark[1]/span[2]/b
-${locator.lots.value.valueAddedTaxIncluded}    /div[2]/div/p/small/mark[1]/span[2]/b
-##########################################################
-${locator.items.Description}    /a/div/h4/div/div[2]
-${locator.items.deliveryAddress.countryName}    /tr[5]/td[2]
-${locator.items.deliveryLocation.latitude}    //div/div/div[3]/div[2]/p/span[1]
-${locator.items.deliveryLocation.longitude}    //div/div/div[3]/div[2]/p/span[2]
-${locator.items.deliveryAddress.postalCode}    /div/div/div[3]/div[2]/p/span[4]
-${locator.items.deliveryAddress.locality}    /div/div/div[3]/div[2]/p/span[5]
-${locator.items.deliveryAddress.streetAddress}    /div/div/div[3]/div[2]/p/span[6]
-${locator.items.deliveryAddress.region}    /tr[5]/td[2]
-${locator.items.deliveryDate.endDate}    /div/div/div[4]/div[2]/p/span
-${locator.items.classification.scheme}    /div/div/div[1]/div[1]/p
-${locator.items.classification.id}    /div/div/div[1]/div[2]/p/span[1]
-${locator.items.classification.description}    /div/div/div[1]/div[2]/p/span[2]
-${locator.items.additionalClassifications[0].scheme}    /div/div/div[2]/div[1]/p
-${locator.items.additionalClassifications[0].id}    /div/div/div[2]/div[2]/p/span[1]
-${locator.items.additionalClassifications[0].description}    /div/div/div[2]/div[2]/p/span[2]
-${locator.items.quantity}    /a/div/h4/div/div[3]/p/span[1]
-${locator.items.unit.code}    /a/div/h4/div/div[3]/p/span[4]
-${locator.items.unit.name}    /a/div/h4/div/div[3]/p/span[2]
-${loc.ButtonTenderAdd}    id=ButtonTenderAdd
-${loc.TenderAdd}    id=menuContainer
-${loc.percent_of_step}    id=percent_of_step
-${CreateTender}    id=CreateTender
-${loc.AddPoss}    id=AddPoss
-${loc.itemDescription}    id=itemDescription
-${loc.editItemQuantity}    id=editItemQuantity
-${loc.drop_down_itemadd}    .//*[@id='window_itemadd']/div[2]/div/div[2]/div[2]/div/div[2]/div/button
-${loc.input_MeasureItem}    id=input_MeasureItem
-${loc.button_add_cpv}    id=button_add_cpv
-${loc.cpv_search}    id=cpv_search
-${loc.populate_cpv}    id=populate_cpv
-${loc.button_add_dkpp}    id=button_add_dkpp
-${loc.dkpp_search}    id=dkpp_search
-${loc.populate_dkpp}    id=populate_dkpp
-${loc.date_delivery_start}    id=date_delivery_start
-${loc.NONE_anchor}    id=000_NONE_anchor
-${loc.AddItemButton}    id=AddItemButton
-${loc.sumbit}     id=sumbit
-${loc.MeasureItem}    id=MeasureItem
-${loc.TenderBudget}    id=edtTenderBudget
-${loc.MinStep}    id=edtMinStep
-${loc.PDVIncluded}    id=chkPDVIncluded
-${loc_date_delivery_end}    id=date_delivery_end
-${loc.search_text}    id=search_text
-${loc.search_btn}    id=search_btn
-${loc_TenderPublishTop}    id=TenderPublishTop
-${loc_PublishConfirm}    id=PublishConfirm
-${loc_ECP}        id=optionsRadiosEcp
-${loc_btn_PublishConfirm}    id=PublishConfirm
+${locator_create_dop_zak}    xpath=.//*[@id='header']/nav/div[4]/ul/li[1]/ul/li[1]['Допорогова закупівля']
+${locator_enter}    xpath=.//*[@id='butLoginPartial']
+${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[4]/ul/li[4]/a
+${locator_emailField}    id=Email    # id=Email
+${locator_passwordField}    id=Password    # id=Password
+${locator_loginButton}    id=submitLogin
+${locator_buttonTenderAdd}    xpath=.//a[@href="/Purchase/Create"]    # додати допорогову закупівлю
+${locator_tenderTitle}    id=title
+${locator_button_create}    id=btn_create_purchase
+${locator_budget}    id=budget
+${locator_min_step}    id=min_step
+${locator_pdv}    xpath=.//*[@id='is_vat']/div[1]/div[2]/div
+${locator_discussionDate_start}    id=period_enquiry_start
+${locator_discussionDate_end}    id=period_enquiry_end
+${locator_bidDate_start}    id=period_tender_start
+${locator_bidDate_end}    id=period_tender_end
+${locator_button_next_step}    id=next_step
+${locator_add_item_button}    xpath=.//*[@id='wrapper']/div/div/div/div[3]/div[1]/div/button
+${locator_item_description}    xpath=.//*[@id='description']
+${locator_Quantity}    id=Quantity
+${locator_code}    id=UnitCode
+${locator_button_add_cpv}    xpath=.//*[@id='updateOrCreateForm']/div[5]/div/div[1]/div/span/button
+${locator_cpv_search}    id=search-classifier-text
+${locator_add_classifier}    id=add-classifier
+${locator_button_add_dkpp}    xpath=.//*[@id='updateOrCreateForm']/div[5]/div/div[2]/div/span/button
+${locator_dkpp_search}    id=search-classifier-text
+${locator_add_classfier}    id=add-classifier
+${locator_date_delivery_end}    id=DeliveryEnd
+${locator_button_create_item}    xpath=.//*[@id='updateOrCreateFeature']/div/div[9]/div/button[1]
+${locator_check_location}    xpath=.//*[@id='IsMultilot']/div[1]/div[2]/div
+${locator_country_id}    id=CountryId
+${locator_SelectRegion}    id=repeatSelectRegion
+${locator_postal_code}    id=ZipCode
+${locator_locality}    id=Locality
+${locator_street}    id=Street
+${locator_search}    id=Search
+${locator_search-btn}    id=search-btn
+${locator_currency}    xpath=.//*[@id='wrapper']/div[2]/div/div/div/div/div/div/div/form/div[6]/div/select

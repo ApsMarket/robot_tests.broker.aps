@@ -8,5 +8,5 @@ def dt(var_date):
     var_date=var_date[:poss]
     
     conv_dt = datetime.strptime(var_date, '%Y-%m-%dT%H:%M:%S.%f')
-    date_str = conv_dt.strftime('%d.%m.%Y %H:%M')
+    date_str = conv_dt.strftime('%Y-%m-%d %H:%M')
     return date_str
