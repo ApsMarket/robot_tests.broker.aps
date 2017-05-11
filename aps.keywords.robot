@@ -40,7 +40,8 @@ Resource          Angular.robot
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Comment    Execute Javascript    window.scroll(800, 800)
-    Wait Until Element Is Visible    ${locator_tenderTitle}
+    Comment    Wait Until Element Is Visible    ${locator_tenderTitle}
+    sleep    3
     Добавить позицию    ${item}
     Execute Javascript    window.scroll(1000, 1000)
     Click Element    ${loc.sumbit}
@@ -71,9 +72,12 @@ date_Time
     [Arguments]    ${item}
     #Клик доб позицию
     Click Element    ${locator_items}
+    sleep    3
+    Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
-    Wait Until Page Contains    ${locator_item_description}
-    Wait Until Element Is Visible    ${locator_item_description}    10
+    Comment    Wait Until Page Contains    ${locator_item_description}
+    Wait Until Element Is Enabled    ${locator_item_description}
+    sleep    3
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    additionalClassifications
     ${itemDescript}=    Get From List    ${add_classif}    0
@@ -91,13 +95,21 @@ date_Time
     Wait Until Element Is Visible    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Input Text    ${locator_cpv_search}    ${cpv}
+    sleep    5
+    Wait Until Element Is Enabled    xpath=.//*[@id='tree']
+    Click Element    xpath=.//*[@id='tree']
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
+    sleep    3
     Wait Until Element Is Visible    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
-    ${dkpp}=    Get From Dictionary    ${item.additionalClassifications}    id
+    Clear Element Text    ${locator_dkpp_search}
+    ${dkpp_p}=    Get From Dictionary    ${item}    additionalClassifications
+    ${dkpp}=    Get From List    ${dkpp_p}    0
+    ${dkpp}=    Get From Dictionary    ${dkpp}    id
     Input Text    ${locator_dkpp_search}    ${dkpp}
+    sleep    7
     Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate

@@ -25,7 +25,7 @@ ${locator_Quantity}    id=procurementSubject_quantity00
 ${locator_code}    xpath=.//*[@id='procurementSubject']/div/div/div/div/div[2]/div[2]/div[3]/div/div[2]/div/div/select
 ${locator_button_add_cpv}    id=cls_click_00
 ${locator_cpv_search}    id=search-classifier-text
-${locator_button_add_dkpp}    xpath=.//*[@id='procurementSubject']/div/div/div/div/div[2]/div[2]/div[4]/div/div[2]/div/span/button
+${locator_button_add_dkpp}    xpath=.//*[@id='procurementSubject']/div/div/div[1]/div/div[2]/div[2]/div[4]/div/div[2]/div/span/button
 ${locator_dkpp_search}    id=search-classifier-text
 ${locator_add_classfier}    id=add-classifier
 ${locator_date_delivery_end}    id=delivery_end_
@@ -42,3 +42,4 @@ ${locator_currency}    xpath=.//select[@ng-model="purchase.currency"]
 ${locator_items}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/ul/li[2]/a
 ${locator_deliveryLocation_latitude}    id=latutide_00
 ${locator_deliveryLocation_longitude}    id=longitude_00
+${locator_check_dk}    xpath=.//*[@id='tree']
