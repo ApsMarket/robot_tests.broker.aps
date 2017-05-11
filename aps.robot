@@ -36,7 +36,7 @@ aps.Адаптувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${g}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Log To Console    ${SUITE_NAME}
+    -    ${SUITE_NAME}
     Comment    Wait Until Element Is Visible    ${locator_button_create}    5
     Comment    Click Element    ${locator_button_create}
     Run Keyword If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}

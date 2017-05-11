@@ -31,7 +31,7 @@ ${locator_add_classfier}    id=add-classifier
 ${locator_date_delivery_end}    id=delivery_end_
 ${locator_button_create_item}    id=update_00
 ${locator_check_location}    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
-${locator_country_id}    xpath=.//*[@id='procurementSubject']/div/div/div/div/div[2]/div[2]/div[7]/div[1]/div/div[1]/select
+${locator_country_id}    xpath=.//*[@id='procurementSubject']/div/div/div[1]/div/div[2]/div[2]/div[7]/div[1]/div/div[1]/select
 ${locator_SelectRegion}    xpath=.//*[@id='procurementSubject']/div/div/div/div/div[2]/div[2]/div[7]/div[1]/div/div[2]/select
 ${locator_postal_code}    id=zip_code_00
 ${locator_locality}    id=locality_00

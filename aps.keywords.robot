@@ -83,13 +83,16 @@ date_Time
     ${itemDescript}=    Get From List    ${add_classif}    0
     ${itemDescript}=    Get From Dictionary    ${itemDescript}    description
     Input Text    ${locator_item_description}    ${itemDescript}
+    Define angular +id_mod    procurementSubject    procurementSubject_description00    ${itemDescript}    description
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Input Text    ${locator_Quantity}    ${editItemQuant}
+    Define angular +id_mod    procurementSubject    procurementSubject_quantity00    ${editItemQuant}    quantity
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
     Select From List By Value    ${locator_code}    ${code}
+    Comment    Define angular    procurementSubject    procurementSubject    ${code}
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Visible    ${locator_cpv_search}
@@ -115,24 +118,35 @@ date_Time
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
     Input Text    ${locator_date_delivery_end}    ${date_time}
+    Define angular date end -.End    procurementSubject    delivery_end_    ${date_time}    deliveryEnd
     #Клик Enter
     Press Key    ${locator_date_delivery_end}    \\\13
-    Execute Javascript    window.scroll(-1000, -1000)
+    Execute Javascript    window.scroll(1000, 1000)
+    sleep    5
     Click Element    ${locator_check_location}
-    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
+    sleep    5
+    ${country_t}=    Get From Dictionary    ${item}    deliveryAddress
+    ${country}=    Get From List    ${country_t}    0
+    ${country}=    Get From Dictionary    ${country}    countryName
     Input Text    ${locator_country_id}    ${country}
+    Comment    Define angular    procurementSubject
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Input Text    ${locator_SelectRegion}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Input Text    ${locator_postal_code}    ${post_code}
+    Define angular +name+id_mod    procurementSubject    zip_code_00    ${post_code}    zipCode    address
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
     Input Text    ${locator_locality}    ${locality}
+    Define angular +name+id_mod    procurementSubject    locality_00    ${locality}    locality    address
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Input Text    ${locator_street}    ${street}
+    Define angular +name+id_mod    procurementSubject    street_00    ${street}    street    address
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     Input Text    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
+    Define angular +name+id_mod    procurementSubject    latutide_00    ${deliveryLocation_latitude}    latutide    address
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
+    Define angular +name+id_mod    procurementSubject    longitude_00    ${deliveryLocation_longitude}    longitude    address
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
 
