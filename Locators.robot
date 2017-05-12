@@ -43,3 +43,4 @@ ${locator_items}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/ul/li[2
 ${locator_deliveryLocation_latitude}    id=latutide_00
 ${locator_deliveryLocation_longitude}    id=longitude_00
 ${locator_check_dk}    xpath=.//*[@id='tree']
+${next_step}      id=next_step

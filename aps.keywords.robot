@@ -43,9 +43,7 @@ Resource          Angular.robot
     Comment    Wait Until Element Is Visible    ${locator_tenderTitle}
     sleep    3
     Добавить позицию    ${item}
-    Execute Javascript    window.scroll(1000, 1000)
-    Click Element    ${loc.sumbit}
-    Execute Javascript    window.scroll(-1000,-1000)
+    Click Element    ${next_step}
     ${UAID}=    Опубликовать закупку
 
 Поиск тендера по идентификатору
@@ -100,7 +98,6 @@ date_Time
     Input Text    ${locator_cpv_search}    ${cpv}
     sleep    5
     Wait Until Element Is Enabled    xpath=.//*[@id='tree']
-    Click Element    xpath=.//*[@id='tree']
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
     sleep    3
@@ -108,9 +105,10 @@ date_Time
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
-    ${dkpp_p}=    Get From Dictionary    ${item}    additionalClassifications
-    ${dkpp}=    Get From List    ${dkpp_p}    0
-    ${dkpp}=    Get From Dictionary    ${dkpp}    id
+    ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
+    ${dkpp_w}=    Get From List    ${dkpp_q}    0
+    ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
+    Log To Console    ${dkpp}
     Input Text    ${locator_dkpp_search}    ${dkpp}
     sleep    7
     Click Button    ${locator_add_classfier}
@@ -121,17 +119,18 @@ date_Time
     Define angular date end -.End    procurementSubject    delivery_end_    ${date_time}    deliveryEnd
     #Клик Enter
     Press Key    ${locator_date_delivery_end}    \\\13
-    Execute Javascript    window.scroll(1000, 1000)
     sleep    5
     Click Element    ${locator_check_location}
-    sleep    5
-    ${country_t}=    Get From Dictionary    ${item}    deliveryAddress
-    ${country}=    Get From List    ${country_t}    0
-    ${country}=    Get From Dictionary    ${country}    countryName
-    Input Text    ${locator_country_id}    ${country}
-    Comment    Define angular    procurementSubject
-    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Input Text    ${locator_SelectRegion}    ${region}
+    Execute Javascript    window.scroll(1000, 1000)
+    sleep    15
+    #Выбор страны
+    Comment    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
+    Comment    Select From List By Label    ${locator_country_id}    ${country}
+    Comment    Input Text    ${locator_country_id}    ${country}
+    Comment    Log To Console    ${country}
+    Execute Javascript    window.scroll(1000, 1000)
+    Comment    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Comment    Input Text    ${locator_SelectRegion}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Input Text    ${locator_postal_code}    ${post_code}
     Define angular +name+id_mod    procurementSubject    zip_code_00    ${post_code}    zipCode    address
@@ -141,12 +140,14 @@ date_Time
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Input Text    ${locator_street}    ${street}
     Define angular +name+id_mod    procurementSubject    street_00    ${street}    street    address
+    Comment    sleep    15
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     Input Text    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
-    Define angular +name+id_mod    procurementSubject    latutide_00    ${deliveryLocation_latitude}    latutide    address
+    Comment    Define angular +name+id_mod    procurementSubject    latutide_00    ${deliveryLocation_latitude}    latutide    address
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Define angular +name+id_mod    procurementSubject    longitude_00    ${deliveryLocation_longitude}    longitude    address
+    Comment    Define angular +name+id_mod    procurementSubject    longitude_00    ${deliveryLocation_longitude}    longitude    address
+    sleep    5
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
 
@@ -155,7 +156,7 @@ date_Time
 Информация по закупке
     [Arguments]    ${enquiryPeriod}    ${tenderPeriod}    ${tender_data}
     #Ввод названия тендера
-    ${descr}=    Get From Dictionary    ${tender_data.data}    description
+    ${descr}=    Get From Dictionary    ${tender_data.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
     Define angular    purchase    title    ${descr}
     #Выбор НДС

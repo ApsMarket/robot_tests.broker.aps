@@ -33,3 +33,7 @@ Define angular +name+id_mod
 Define angular date end -.End
     [Arguments]    ${model}    ${id}    ${descr}    ${name}
     Execute Javascript    var ttt=angular.element(document.getElementById('${id}')).scope(); ttt.${model}.${name}="${descr}";
+
+Define angular with value
+    [Arguments]    ${model}    ${id}    ${descr}    ${name}
+    Execute Javascript    var ttt=angular.element(document.getElementById('${id}')).scope(); ttt.${model}.${name}="${descr}";
