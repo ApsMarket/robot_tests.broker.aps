@@ -37,3 +37,7 @@ Define angular date end -.End
 Define angular with value
     [Arguments]    ${model}    ${id}    ${descr}    ${name}
     Execute Javascript    var ttt=angular.element(document.getElementById('${id}')).scope(); ttt.${model}.${name}="${descr}";
+
+Define angular latutide, longitude
+    [Arguments]    ${model}    ${name}    ${id_model}    ${descr}    ${id}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('${id}')).scope(); \ autotestmodel.$parent.${model}.${name}.${id_model}="${descr}"; autotestmodel.$parent.${model}.${name}.${id_model}="${descr}";

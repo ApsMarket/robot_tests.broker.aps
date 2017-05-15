@@ -140,14 +140,13 @@ date_Time
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Input Text    ${locator_street}    ${street}
     Define angular +name+id_mod    procurementSubject    street_00    ${street}    street    address
-    Comment    sleep    15
+    Comment    sleep    500000
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     Input Text    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
-    Comment    Define angular +name+id_mod    procurementSubject    latutide_00    ${deliveryLocation_latitude}    latutide    address
+    Define angular latutide, longitude    procurementSubject    address    latutide    ${deliveryLocation_latitude}    latutide_00
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Comment    Define angular +name+id_mod    procurementSubject    longitude_00    ${deliveryLocation_longitude}    longitude    address
-    sleep    5
+    Define angular latutide, longitude    procurementSubject    address    longitude    ${deliveryLocation_longitude}    longitude_00
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
 
