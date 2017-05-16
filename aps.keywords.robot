@@ -43,8 +43,8 @@ Resource          Angular.robot
     Comment    Wait Until Element Is Visible    ${locator_tenderTitle}
     sleep    3
     Добавить позицию    ${item}
-    Click Element    ${next_step}
-    ${UAID}=    Опубликовать закупку
+    Comment    Click Element    ${next_step}
+    Comment    ${UAID}=    Опубликовать закупку
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -77,11 +77,11 @@ date_Time
     Wait Until Element Is Enabled    ${locator_item_description}
     sleep    3
     #Название предмета закупки
-    ${add_classif}=    Get From Dictionary    ${item}    additionalClassifications
-    ${itemDescript}=    Get From List    ${add_classif}    0
-    ${itemDescript}=    Get From Dictionary    ${itemDescript}    description
-    Input Text    ${locator_item_description}    ${itemDescript}
-    Define angular +id_mod    procurementSubject    procurementSubject_description00    ${itemDescript}    description
+    ${add_classif}=    Get From Dictionary    ${item}    description
+    Comment    ${itemDescript}=    Get From List    ${add_classif}    0
+    Comment    ${itemDescript}=    Get From Dictionary    ${itemDescript}    description
+    Input Text    ${locator_item_description}    ${add_classif}
+    Define angular +id_mod    procurementSubject    procurementSubject_description00    ${add_classif}    description
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Input Text    ${locator_Quantity}    ${editItemQuant}
@@ -124,13 +124,14 @@ date_Time
     Execute Javascript    window.scroll(1000, 1000)
     sleep    15
     #Выбор страны
-    Comment    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Comment    Select From List By Label    ${locator_country_id}    ${country}
-    Comment    Input Text    ${locator_country_id}    ${country}
-    Comment    Log To Console    ${country}
+    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
+    Select From List By Label    ${locator_country_id}    ${country}
+    Input Text    ${locator_country_id}    ${country}
+    Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    Comment    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Comment    Input Text    ${locator_SelectRegion}    ${region}
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Log To Console    ${region}
+    Input Text    ${locator_SelectRegion}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Input Text    ${locator_postal_code}    ${post_code}
     Define angular +name+id_mod    procurementSubject    zip_code_00    ${post_code}    zipCode    address
@@ -142,13 +143,20 @@ date_Time
     Define angular +name+id_mod    procurementSubject    street_00    ${street}    street    address
     Comment    sleep    500000
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
+    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
+    ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
     Input Text    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
-    Define angular latutide, longitude    procurementSubject    address    latutide    ${deliveryLocation_latitude}    latutide_00
+    Define angular latutide/ longitude    procurementSubject    address    latutide    ${deliveryLocation_latitude}    latutide_00
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
+    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
+    ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Define angular latutide, longitude    procurementSubject    address    longitude    ${deliveryLocation_longitude}    longitude_00
+    Log To Console    ${deliveryLocation_longitude}
+    Define angular latutide/ longitude    procurementSubject    address    longitude    ${deliveryLocation_longitude}    longitude_00
+    sleep    5
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
+    sleep    7
 
 Информация по позиции
 
