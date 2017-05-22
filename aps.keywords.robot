@@ -41,10 +41,24 @@ Resource          Angular.robot
     ${item}=    Get From List    ${ttt}    0
     Comment    Execute Javascript    window.scroll(800, 800)
     Comment    Wait Until Element Is Visible    ${locator_tenderTitle}
-    sleep    3
+    sleep    10
     Добавить позицию    ${item}
     Comment    Click Element    ${next_step}
     Comment    ${UAID}=    Опубликовать закупку
+    Click Button    ${locator_next_step}
+    sleep    10
+    #Добавить документ
+    Click Element    ${locator_documents}
+    Wait Until Element Is Enabled    ${locator_add_ documents}
+    Click Element    ${locator_add_ documents}
+    Select From List By Label    ${locator_category}    empty
+    Select From List By Value    ${locator_add_documents_to}    Tender
+    Comment    Click Button    ${locator_download}
+    sleep    10
+    Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
+    sleep    10
+    Click Button    ${locator_save_document}
+    sleep    5
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -120,18 +134,21 @@ date_Time
     #Клик Enter
     Press Key    ${locator_date_delivery_end}    \\\13
     sleep    5
+    Log To Console    8888888888888888888
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
-    sleep    15
+    Log To Console    99999999999999999999
+    sleep    25
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
-    Input Text    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
+    sleep    25
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_SelectRegion}    ${region}
     Log To Console    ${region}
-    Input Text    ${locator_SelectRegion}    ${region}
+    Comment    Input Text    ${locator_SelectRegion}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Input Text    ${locator_postal_code}    ${post_code}
     Define angular +name+id_mod    procurementSubject    zip_code_00    ${post_code}    zipCode    address
@@ -156,7 +173,7 @@ date_Time
     sleep    5
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
-    sleep    7
+    sleep    25
 
 Информация по позиции
 
@@ -239,3 +256,14 @@ Login
     Input Text    ${locator_emailField}    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
+
+Добавить документ
+    [Arguments]    ${filepath}
+    Click Element    ${locator_documents}
+    Wait Until Element Is Enabled    ${locator_add_ documents}
+    Click Element    ${locator_add_ documents}
+    Select From List By Label    ${locator_category}    empty
+    Select From List By Value    ${locator_add_documents_to}    Tender
+    Click Button    ${locator_download}
+    Choose File    ${locator_input_download}    ${filepath}
+    Click Button    ${locator_save_document}
