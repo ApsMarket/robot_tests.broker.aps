@@ -5,7 +5,6 @@ Library           DateTime
 Library           Collections
 Library           Screenshot
 Resource          APStender_subkeywords.robot
-Library           aps_service.py
 Resource          View.robot
 Resource          Locators.robot
 
