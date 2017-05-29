@@ -39,7 +39,7 @@ ${locator_street}    id=street_00
 ${locator_search}    id=Search
 ${locator_search-btn}    id=search-btn
 ${locator_currency}    xpath=.//select[@ng-model="purchase.currency"]
-${locator_items}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/ul/li[2]/a
+${locator_items}    xpath=.//*[@id='procurementSubjectTab']/a
 ${locator_deliveryLocation_latitude}    id=latutide_00
 ${locator_deliveryLocation_longitude}    id=longitude_00
 ${locator_check_dk}    xpath=.//*[@id='tree']
@@ -49,6 +49,6 @@ ${locator_add_ documents}    xpath=.//*[@id='documents']/div/div/div[1]/div/div
 ${locator_category}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[1]/select
 ${locator_add_documents_to}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[2]/select
 ${locator_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
-${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/input
+${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
 ${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step

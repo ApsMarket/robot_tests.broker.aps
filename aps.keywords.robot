@@ -49,12 +49,17 @@ Resource          Angular.robot
     sleep    10
     #Добавить документ
     Click Element    ${locator_documents}
+    sleep    5
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
     Select From List By Label    ${locator_category}    empty
     Select From List By Value    ${locator_add_documents_to}    Tender
     Comment    Click Button    ${locator_download}
     sleep    10
+    Log To Console    333333333
+    Click Button    ${locator_input_download}
+    Log To Console    44444444
+    sleep    5
     Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
     sleep    10
     Click Button    ${locator_save_document}
@@ -84,12 +89,10 @@ date_Time
     [Arguments]    ${item}
     #Клик доб позицию
     Click Element    ${locator_items}
-    sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
     Comment    Wait Until Page Contains    ${locator_item_description}
     Wait Until Element Is Enabled    ${locator_item_description}
-    sleep    3
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Comment    ${itemDescript}=    Get From List    ${add_classif}    0
@@ -124,7 +127,7 @@ date_Time
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
     Log To Console    ${dkpp}
     Input Text    ${locator_dkpp_search}    ${dkpp}
-    sleep    7
+    sleep    3
     Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
@@ -133,18 +136,15 @@ date_Time
     Define angular date end -.End    procurementSubject    delivery_end_    ${date_time}    deliveryEnd
     #Клик Enter
     Press Key    ${locator_date_delivery_end}    \\\13
-    sleep    5
     Log To Console    8888888888888888888
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     Log To Console    99999999999999999999
-    sleep    25
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    sleep    25
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
     Log To Console    ${region}
@@ -170,10 +170,10 @@ date_Time
     Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
     Log To Console    ${deliveryLocation_longitude}
     Define angular latutide/ longitude    procurementSubject    address    longitude    ${deliveryLocation_longitude}    longitude_00
-    sleep    5
+    sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
-    sleep    25
+    sleep    10
 
 Информация по позиции
 
@@ -209,14 +209,14 @@ date_Time
     Input Text    ${locator_min_step}    ${text_ms}
     Comment    Execute Javascript    var ttt=angular.element(document.getElementById('min_step')).scope();ttt.purchase.minStep="${min_step}";
     Define angular    purchase    min_step    ${text_ms}
+    Log To Console    перед периодом уточнений
     #Период уточнений нач дата
     ${enquiry_start}=    Get From Dictionary    ${enquiryPeriod}    startDate
     ${date_time_enq_st}=    dt    ${enquiry_start}
     Comment    ${js}=    Set Variable    $('#period_enquiry_start').datetimepicker({});
     Comment    Log To Console    $('#period_enquiry_start').datetimepicker({});
     Comment    Execute Javascript    ${js}
-    Comment    Input Text    ${locator_discussionDate_start}    ${date_time}
-    sleep    3
+    Input Text    ${locator_discussionDate_start}    ${date_time_enq_st}
     #Период уточнений кон дата
     ${enquiry end}=    Get From Dictionary    ${enquiryPeriod}    endDate
     ${date_time_enq_end}=    dt    ${enquiry end}
@@ -224,7 +224,6 @@ date_Time
     Comment    Execute Javascript    ${js}    $('#period_enquiry_end').datetimepicker({});
     Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_enquiry_end')).scope();ttt.purchase.periodEnquiry.end="${date_time}";
     Comment    Define angular date end    purchase    period_enquiry_end    ${date_time_enq_end}    periodEnquiry
-    sleep    3
     Define angular date    purchase    period_enquiry_start    ${date_time_enq_st}    ${date_time_enq_end}    periodEnquiry
     #Период приема предложений (нач дата)
     ${tender_start}=    Get From Dictionary    ${tenderPeriod}    startDate
@@ -233,7 +232,6 @@ date_Time
     Comment    Execute Javascript    ${js}    $('#period_tender_start').datetimepicker({});
     Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_tender_start)).scope();ttt.purchase.periodTender.start="${date_time}";
     Comment    Define angular date start    purchase    period_tender_start    ${date_time_ten_st}    periodTender
-    sleep    3
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -241,9 +239,10 @@ date_Time
     Comment    Execute Javascript    ${js}    $('#period_tender_end').datetimepicker({});
     Comment    sleep    500000
     Comment    Define angular date end    purchase    period_tender_end    ${date_time_ten_end}    periodTender
-    sleep    3
     Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_enquiry_start')).scope();ttt.purchase.periodEnquiry={};ttt.purchase.periodEnquiry.start="${date_time_enq_st}";ttt.purchase.periodEnquiry.end="${date_time_enq_end}";ttt.purchase.periodTender = {}; ttt.purchase.periodTender.start="${date_time_ten_st}";ttt.purchase.periodTender.end="${date_time_ten_end}";
     Define angular date    purchase    period_enquiry_start    ${date_time_ten_st}    ${date_time_ten_end}    periodTender
+    Log To Console    после периода подачи предл
+    sleep    10
     Click Button    ${locator_button_next_step}
     #$('#period_tender_start').val('${date_time}');
 
