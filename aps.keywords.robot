@@ -30,40 +30,23 @@ Resource          Angular.robot
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
-    sleep    3
     Click Link    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
-    Log To Console    до информ о закупке
-    Информация по закупке    ${tender_data.data.enquiryPeriod}    ${tender_data.data.tenderPeriod}    ${tender_data}
-    Comment    Click Button    ${locator_button_next_step}
+    Информация по закупке    ${tender_data}
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
-    Comment    Execute Javascript    window.scroll(800, 800)
-    Comment    Wait Until Element Is Visible    ${locator_tenderTitle}
-    sleep    10
     Добавить позицию    ${item}
-    Comment    Click Element    ${next_step}
-    Comment    ${UAID}=    Опубликовать закупку
     Click Button    ${locator_next_step}
-    sleep    10
     #Добавить документ
     Click Element    ${locator_documents}
-    sleep    5
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
     Select From List By Label    ${locator_category}    empty
     Select From List By Value    ${locator_add_documents_to}    Tender
-    Comment    Click Button    ${locator_download}
-    sleep    10
-    Log To Console    333333333
     Click Button    ${locator_input_download}
-    Log To Console    44444444
-    sleep    5
     Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
-    sleep    10
     Click Button    ${locator_save_document}
-    sleep    5
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -89,10 +72,12 @@ date_Time
     [Arguments]    ${item}
     #Клик доб позицию
     Click Element    ${locator_items}
+    sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
     Comment    Wait Until Page Contains    ${locator_item_description}
     Wait Until Element Is Enabled    ${locator_item_description}
+    sleep    3
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Comment    ${itemDescript}=    Get From List    ${add_classif}    0
@@ -127,7 +112,7 @@ date_Time
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
     Log To Console    ${dkpp}
     Input Text    ${locator_dkpp_search}    ${dkpp}
-    sleep    3
+    sleep    7
     Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
@@ -136,15 +121,18 @@ date_Time
     Define angular date end -.End    procurementSubject    delivery_end_    ${date_time}    deliveryEnd
     #Клик Enter
     Press Key    ${locator_date_delivery_end}    \\\13
+    sleep    5
     Log To Console    8888888888888888888
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     Log To Console    99999999999999999999
+    sleep    25
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
+    sleep    25
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
     Log To Console    ${region}
@@ -178,11 +166,10 @@ date_Time
 Информация по позиции
 
 Информация по закупке
-    [Arguments]    ${enquiryPeriod}    ${tenderPeriod}    ${tender_data}
+    [Arguments]    ${tender_data}
     #Ввод названия тендера
     ${descr}=    Get From Dictionary    ${tender_data.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
-    Define angular    purchase    title    ${descr}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
@@ -192,57 +179,37 @@ date_Time
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    Comment    Input Text    ${locator_currency}    ${currency}
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('title')).scope();ttt.purchase.title="${descr}";
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
     ${text}=    Convert To string    ${budget}
-    Comment    Log To Console    ${text}
     ${text}=    String.Replace String    ${text}    .    ,
-    Input Text    ${locator_budget}    ${text}
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('budget')).scope();ttt.budget="${budget}";
-    Define angular    purchase    budget    ${text}
+    Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
     ${min_step}=    Get From Dictionary    ${tender_data.data.minimalStep}    amount
     ${text_ms}=    Convert To string    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Input Text    ${locator_min_step}    ${text_ms}
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('min_step')).scope();ttt.purchase.minStep="${min_step}";
-    Define angular    purchase    min_step    ${text_ms}
-    Log To Console    перед периодом уточнений
+    Press Key    ${locator_min_step}    ${text_ms}
     #Период уточнений нач дата
-    ${enquiry_start}=    Get From Dictionary    ${enquiryPeriod}    startDate
+    ${enquiry_start}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    startDate
     ${date_time_enq_st}=    dt    ${enquiry_start}
-    Comment    ${js}=    Set Variable    $('#period_enquiry_start').datetimepicker({});
-    Comment    Log To Console    $('#period_enquiry_start').datetimepicker({});
-    Comment    Execute Javascript    ${js}
-    Input Text    ${locator_discussionDate_start}    ${date_time_enq_st}
     #Период уточнений кон дата
-    ${enquiry end}=    Get From Dictionary    ${enquiryPeriod}    endDate
+    ${enquiry end}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    endDate
     ${date_time_enq_end}=    dt    ${enquiry end}
-    Comment    Input Text    ${locator_discussionDate_end}    ${date_time}
-    Comment    Execute Javascript    ${js}    $('#period_enquiry_end').datetimepicker({});
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_enquiry_end')).scope();ttt.purchase.periodEnquiry.end="${date_time}";
-    Comment    Define angular date end    purchase    period_enquiry_end    ${date_time_enq_end}    periodEnquiry
-    Define angular date    purchase    period_enquiry_start    ${date_time_enq_st}    ${date_time_enq_end}    periodEnquiry
     #Период приема предложений (нач дата)
-    ${tender_start}=    Get From Dictionary    ${tenderPeriod}    startDate
+    ${tender_start}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    startDate
     ${date_time_ten_st}=    dt    ${tender_start}
-    Comment    Input Text    ${locator_bidDate_start}    ${date_time}
-    Comment    Execute Javascript    ${js}    $('#period_tender_start').datetimepicker({});
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_tender_start)).scope();ttt.purchase.periodTender.start="${date_time}";
-    Comment    Define angular date start    purchase    period_tender_start    ${date_time_ten_st}    periodTender
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tenderPeriod}    endDate
+    ${tender_end}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
-    Comment    Input Text    ${locator_bidDate_end}    ${date_time}
-    Comment    Execute Javascript    ${js}    $('#period_tender_end').datetimepicker({});
-    Comment    sleep    500000
-    Comment    Define angular date end    purchase    period_tender_end    ${date_time_ten_end}    periodTender
-    Comment    Execute Javascript    var ttt=angular.element(document.getElementById('period_enquiry_start')).scope();ttt.purchase.periodEnquiry={};ttt.purchase.periodEnquiry.start="${date_time_enq_st}";ttt.purchase.periodEnquiry.end="${date_time_enq_end}";ttt.purchase.periodTender = {}; ttt.purchase.periodTender.start="${date_time_ten_st}";ttt.purchase.periodTender.end="${date_time_ten_end}";
-    Define angular date    purchase    period_enquiry_start    ${date_time_ten_st}    ${date_time_ten_end}    periodTender
-    Log To Console    после периода подачи предл
-    sleep    10
+    Click Element At Coordinates    ${locator_discussionDate_start}    -100    -10
+    Press Key    ${locator_discussionDate_start}    ${date_time_enq_st}
+    Click Element At Coordinates    ${locator_discussionDate_end}    -100    -10
+    Press Key    ${locator_discussionDate_end}    ${date_time_enq_end}
+    Click Element At Coordinates    ${locator_bidDate_start}    -100    -10
+    Press Key    ${locator_bidDate_start}    ${date_time_ten_st}
+    Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
+    Press Key    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    id=createOrUpdatePurchase
     Click Button    ${locator_button_next_step}
     #$('#period_tender_start').val('${date_time}');
 

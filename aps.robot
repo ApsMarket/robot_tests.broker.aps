@@ -1,9 +1,7 @@
 *** Settings ***
-Library           op_robot_tests.tests_files.service_keywords
 Library           String
 Library           Collections
 Library           Selenium2Library
-Library           DebugLibrary
 Resource          ../../op_robot_tests/tests_files/keywords.robot
 Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
@@ -23,10 +21,8 @@ ${js}             ${EMPTY}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}
     Set Window Position    @{user.position}
-    Comment    Log To Console
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='aps_Viewer'    Login    ${user}
-    Comment    Run Keyword If    '${role}'='aps_Viewer'    ${user}
 
 aps.Адаптувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
@@ -36,9 +32,6 @@ aps.Адаптувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${g}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Log To Console    ${SUITE_NAME}
-    Comment    Wait Until Element Is Visible    ${locator_button_create}    5
-    Comment    Click Element    ${locator_button_create}
     Run Keyword If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword If    ${SUITE_NAME}'=='Tests Files.openEU.robot    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword If    ${SUITE_NAME}'=='Tests Files.openUA.robot    Открытые торги с публикацией на укр    ${tender_data}
