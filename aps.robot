@@ -7,7 +7,6 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
-Resource          Angular.robot
 Resource          aps.keywords.robot
 
 *** Variables ***
