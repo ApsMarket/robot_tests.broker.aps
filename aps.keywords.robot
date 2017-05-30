@@ -64,7 +64,7 @@ date_Time
 Добавить позицию
     [Arguments]    ${item}
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_items}
+    Wait Until Element Is Enabled    ${locator_items}    30
     Click Element    ${locator_items}
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
@@ -85,11 +85,12 @@ date_Time
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
-    sleep     3
     Press Key    ${locator_cpv_search}    ${cpv}
-    Wait Until Element Is Enabled    xpath=.//*[@id='tree']
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
+    sleep    1
     Wait Until Element Is Enabled    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
@@ -97,14 +98,16 @@ date_Time
     ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    sleep    3
     Log To Console    ${dkpp}
     Press Key    ${locator_dkpp_search}    ${dkpp}
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    Click Element At Coordinates    ${locator_date_delivery_end}    -200    -10
+    sleep    1
+    Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
     Log To Console    ${date_time}
     Click Element    ${locator_check_location}
@@ -207,3 +210,8 @@ Login
     Click Button    ${locator_download}
     Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
     Click Button    ${locator_save_document}
+
+Подготовить датапикер
+    [Arguments]    ${id}
+    :FOR    ${index}    in range    1    16
+    \    Press Key    ${locator_date_delivery_end}    \\8
