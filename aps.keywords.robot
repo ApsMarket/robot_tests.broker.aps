@@ -71,39 +71,33 @@ date_Time
 Добавить позицию
     [Arguments]    ${item}
     #Клик доб позицию
+    Wait Until Element Is Enabled    ${locator_items}
     Click Element    ${locator_items}
-    sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
-    Comment    Wait Until Page Contains    ${locator_item_description}
     Wait Until Element Is Enabled    ${locator_item_description}
-    sleep    3
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
-    Comment    ${itemDescript}=    Get From List    ${add_classif}    0
-    Comment    ${itemDescript}=    Get From Dictionary    ${itemDescript}    description
-    Input Text    ${locator_item_description}    ${add_classif}
-    Define angular +id_mod    procurementSubject    procurementSubject_description00    ${add_classif}    description
+    Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Input Text    ${locator_Quantity}    ${editItemQuant}
-    Define angular +id_mod    procurementSubject    procurementSubject_quantity00    ${editItemQuant}    quantity
+    Wait Until Element Is Enabled    ${locator_Quantity}
+    Press Key    ${locator_Quantity}    '${editItemQuant}'
+    Log To Console    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
     Select From List By Value    ${locator_code}    ${code}
-    Comment    Define angular    procurementSubject    procurementSubject    ${code}
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
-    Wait Until Element Is Visible    ${locator_cpv_search}
+    Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Input Text    ${locator_cpv_search}    ${cpv}
-    sleep    5
+    Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    xpath=.//*[@id='tree']
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
     sleep    3
-    Wait Until Element Is Visible    ${locator_button_add_dkpp}
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
@@ -111,57 +105,43 @@ date_Time
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
     Log To Console    ${dkpp}
-    Input Text    ${locator_dkpp_search}    ${dkpp}
-    sleep    7
+    Press Key    ${locator_dkpp_search}    ${dkpp}
     Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    Input Text    ${locator_date_delivery_end}    ${date_time}
-    Define angular date end -.End    procurementSubject    delivery_end_    ${date_time}    deliveryEnd
-    #Клик Enter
-    Press Key    ${locator_date_delivery_end}    \\\13
-    sleep    5
-    Log To Console    8888888888888888888
+    Click Element At Coordinates    ${locator_date_delivery_end}    -200    -10
+    Press Key    ${locator_date_delivery_end}    ${date_time}
+    Log To Console    ${date_time}
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
-    Log To Console    99999999999999999999
-    sleep    25
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    sleep    25
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
     Log To Console    ${region}
-    Comment    Input Text    ${locator_SelectRegion}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Input Text    ${locator_postal_code}    ${post_code}
-    Define angular +name+id_mod    procurementSubject    zip_code_00    ${post_code}    zipCode    address
+    Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Input Text    ${locator_locality}    ${locality}
-    Define angular +name+id_mod    procurementSubject    locality_00    ${locality}    locality    address
+    Press Key    ${locator_locality}    ${locality}
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Input Text    ${locator_street}    ${street}
-    Define angular +name+id_mod    procurementSubject    street_00    ${street}    street    address
-    Comment    sleep    500000
+    Press Key    ${locator_street}    ${street}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Input Text    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
-    Define angular latutide/ longitude    procurementSubject    address    latutide    ${deliveryLocation_latitude}    latutide_00
+    Press Key    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Input Text    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
+    Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
     Log To Console    ${deliveryLocation_longitude}
-    Define angular latutide/ longitude    procurementSubject    address    longitude    ${deliveryLocation_longitude}    longitude_00
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
-    sleep    10
+    sleep    5
 
 Информация по позиции
 

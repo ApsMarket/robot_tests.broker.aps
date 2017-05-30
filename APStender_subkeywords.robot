@@ -4,7 +4,6 @@ Library           String
 Library           DateTime
 Library           Collections
 Library           Screenshot
-Library           aps_service.py
 
 *** Keywords ***
 Додати предмет
