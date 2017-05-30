@@ -37,16 +37,9 @@ Resource          Angular.robot
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
-    Click Button    ${locator_next_step}
-    #Добавить документ
-    Click Element    ${locator_documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    Click Element    ${locator_add_ documents}
-    Select From List By Label    ${locator_category}    empty
-    Select From List By Value    ${locator_add_documents_to}    Tender
-    Click Button    ${locator_input_download}
-    Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
-    Click Button    ${locator_save_document}
+    Click Button    ${locator_end_edit}
+    Wait Until Element Is Enabled    ${locator_public}
+    Click Button    ${locator_public}
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -92,11 +85,11 @@ date_Time
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
+    sleep     3
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    xpath=.//*[@id='tree']
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
-    sleep    3
     Wait Until Element Is Enabled    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
@@ -104,6 +97,7 @@ date_Time
     ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
+    sleep    3
     Log To Console    ${dkpp}
     Press Key    ${locator_dkpp_search}    ${dkpp}
     Click Button    ${locator_add_classfier}
@@ -211,5 +205,5 @@ Login
     Select From List By Label    ${locator_category}    empty
     Select From List By Value    ${locator_add_documents_to}    Tender
     Click Button    ${locator_download}
-    Choose File    ${locator_input_download}    ${filepath}
+    Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
     Click Button    ${locator_save_document}

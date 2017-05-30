@@ -50,14 +50,7 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Comment    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
-    Click Element    ${locator_documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    Click Element    ${locator_add_ documents}
-    Select From List By Label    ${locator_category}    empty
-    Select From List By Value    ${locator_add_documents_to}    Tender
-    Click Button    ${locator_download}
-    Choose File    ${locator_input_download}    ${filepath}
-    Click Button    ${locator_save_document}
+    Добавить документ    ${filepath}
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
