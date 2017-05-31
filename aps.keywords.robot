@@ -21,13 +21,13 @@ Library           conv_timeDate.py
 
 Открытые торги с публикацией на укр
     [Arguments]    ${arg1}
-    :FOR    ${index}    in range    1    16
+    : FOR    ${index}    IN RANGE    1    16
 
 Открытые торги с публикацией на англ
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
-    Wait Until Element Is Visible    ${locator_button_create}    15
+    Wait Until Element Is Enabled    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
     Click Link    ${locator_create_dop_zak}
@@ -37,16 +37,14 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
-    Click Button    ${locator_next_step}
-    #Добавить документ
-    Click Element    ${locator_documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    Click Element    ${locator_add_ documents}
-    Select From List By Label    ${locator_category}    empty
-    Select From List By Value    ${locator_add_documents_to}    Tender
-    Click Button    ${locator_input_download}
-    Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
-    Click Button    ${locator_save_document}
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Click Button    ${locator_publish_tender}
+    sleep    5000
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -55,12 +53,6 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
     Click Element    xpath=.//*[@id='purchases']/div[1]/div/div/div/div[2]/a[text()="${tender_uaid}"]    #поменять путь
-
-Опубликовать закупку
-    Click Element    ${loc_TenderPublishTop}
-    Wait Until Element Is Enabled    ${loc_PublishConfirm}
-    Click Element    xpath=.//*[@id='optionsRadiosNotEcp']/..
-    Click Button    xpath=.//*[@class='btn btn-success ecp_true hidden']
 
 date_Time
     [Arguments]    ${date}
@@ -83,7 +75,6 @@ date_Time
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}
     Press Key    ${locator_Quantity}    '${editItemQuant}'
-    Log To Console    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
@@ -119,13 +110,11 @@ date_Time
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
-    ${country}=    ${item.deliveryAddress}    countryName
+    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
-    Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
-    Log To Console    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
@@ -140,11 +129,10 @@ date_Time
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Log To Console    ${deliveryLocation_longitude}
-    sleep    2
     #Клик кнопку "Створити"
+    Wait Until Element Is Enabled    ${locator_button_create_item}
     Click Button    ${locator_button_create_item}
-    sleep    5
+    sleep    2
 
 Информация по позиции
 
@@ -219,5 +207,5 @@ Login
 
 Подготовить датапикер
     [Arguments]    ${id}
-    :FOR    ${index}    in range    1    16
+    : FOR    ${index}    IN RANGE    1    16
     \    Press Key    ${locator_date_delivery_end}    \\8

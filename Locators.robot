@@ -52,3 +52,7 @@ ${locator_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div
 ${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
 ${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step
+${locator_finish_edit}    id=movePurchaseView    # завешити редагування
+${locator_publish_tender}    id=publishPurchase    # публікація тендеру
+${locator_toast_container}    id=toast-container
+${locator_toast_close}    xpath=.//*[@class='toast-close-button']
