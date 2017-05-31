@@ -54,7 +54,7 @@ Resource          Angular.robot
     Click Element    ${locator_search-btn}
     sleep    3
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
-    sleep    5
+    sleep    4
 
 Опубликовать закупку
     Click Element    ${loc_TenderPublishTop}
