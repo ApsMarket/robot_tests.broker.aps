@@ -37,7 +37,7 @@ ${locator_postal_code}    id=zip_code_00
 ${locator_locality}    id=locality_00
 ${locator_street}    id=street_00
 ${locator_search}    id=Search
-${locator_search-btn}    id=search-btn
+${locator_search-btn}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/div[2]/button
 ${locator_currency}    xpath=.//select[@ng-model="purchase.currency"]
 ${locator_items}    xpath=.//*[@id='procurementSubjectTab']/a
 ${locator_deliveryLocation_latitude}    id=latutide_00
@@ -52,6 +52,7 @@ ${locator_download}    xpath=.//*[@id='button_attach_document']/input
 ${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
 ${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step
+${locator_input_search}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/input
 ${locator_finish_edit}    id=movePurchaseView    # завешити редагування
 ${locator_publish_tender}    id=publishPurchase    # публікація тендеру
 ${locator_toast_container}    id=toast-container
