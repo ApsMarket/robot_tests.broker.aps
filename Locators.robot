@@ -48,7 +48,7 @@ ${locator_documents}    xpath=.//*[@id='documentsTab']/a[contains(@href,"#docume
 ${locator_add_ documents}    id=upload_document
 ${locator_category}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[1]/select
 ${locator_add_documents_to}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[2]/select
-${locator_download}    id=button_attach_document
+${locator_download}    xpath=.//*[@id='button_attach_document']/input
 ${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
 ${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step

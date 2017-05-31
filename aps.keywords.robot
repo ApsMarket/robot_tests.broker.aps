@@ -37,9 +37,8 @@ Resource          Angular.robot
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
-    Click Button    ${locator_end_edit}
-    Wait Until Element Is Enabled    ${locator_public}
-    Click Button    ${locator_public}
+    Click Button    ${locator_next_step}
+    Добавить документ    /home/ova/LICENSE for test.txt
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -203,15 +202,22 @@ Login
 Добавить документ
     [Arguments]    ${filepath}
     Click Element    ${locator_documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
-    Select From List By Label    ${locator_category}    empty
+    Log To Console    000000
+    Wait Until Element Is Enabled    ${locator_documents}
+    sleep    3
+    Click Element    ${locator_documents}
+    Click Element    ${locator_category}
+    Wait Until Page Contains Element    ${locator_category}
+    Wait Until Element Is Enabled    ${locator_category}
+    Select From List By Label    ${locator_category}    notice
+    Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
-    Click Button    ${locator_download}
-    Choose File    ${locator_input_download}    /home/ova/LICENSE for test.txt
+    Wait Until Page Contains Element    ${locator_download}
+    Choose File    ${locator_download}    ${filepath}
     Click Button    ${locator_save_document}
 
 Подготовить датапикер
     [Arguments]    ${id}
-    :FOR    ${index}    in range    1    16
+    : FOR    ${index}    IN RANGE    1    16
     \    Press Key    ${locator_date_delivery_end}    \\8
