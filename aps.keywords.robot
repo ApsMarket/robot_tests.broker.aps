@@ -19,6 +19,11 @@ Resource          Angular.robot
 
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
+    Wait Until Element Is Visible    ${locator_button_create}    15
+    Click Button    ${locator_button_create}
+    Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
+    Click Link    ${locator_create_dop_zak}
+    Wait Until Page Contains Element    ${locator_tenderTitle}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${arg1}
