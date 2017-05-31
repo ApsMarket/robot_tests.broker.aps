@@ -32,6 +32,7 @@ Library           conv_timeDate.py
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
+    Поиск тендера по идентификатору    aps_Owner    UA-2017-05-29-000181-1
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
@@ -49,13 +50,6 @@ Library           conv_timeDate.py
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_input_search}
-    Input Text    ${locator_input_search}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_search-btn}
-    Click Element    ${locator_search-btn}
-    sleep    3
-    Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
-    sleep    4
 
 Опубликовать закупку
     Click Element    ${loc_TenderPublishTop}
@@ -229,3 +223,13 @@ Login
     [Arguments]    ${id}
     : FOR    ${index}    IN RANGE    1    16
     \    Press Key    ${locator_date_delivery_end}    \\8
+
+Поиск тендера по идентификатору
+    [Arguments]    ${username}    ${tender_uaid}
+    Wait Until Page Contains Element    ${locator_input_search}
+    Input Text    ${locator_input_search}    ${tender_uaid}
+    Wait Until Element Is Enabled    ${locator_search-btn}
+    Click Element    ${locator_search-btn}
+    sleep    3
+    Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
+    sleep    3
