@@ -29,7 +29,7 @@ aps.Адаптувати дані для оголошення тендера
     [Return]    ${y}
 
 aps.Створити тендер
-    [Arguments]    ${g}    ${tender_data}
+    [Arguments]    ${ffff}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
     Run Keyword If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword If    ${SUITE_NAME}'=='Tests Files.openEU.robot    Открытые торги с публикацией на англ    ${tender_data}

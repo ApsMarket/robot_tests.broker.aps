@@ -7,7 +7,6 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
-Resource          Angular.robot
 
 *** Keywords ***
 Открыть форму создания тендера
@@ -27,12 +26,12 @@ Resource          Angular.robot
 
 Открытые торги с публикацией на укр
     [Arguments]    ${arg1}
+    : FOR    ${index}    IN RANGE    1    16
 
 Открытые торги с публикацией на англ
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
-    Поиск тендера по идентификатору    aps_Owner    UA-2017-05-29-000181-1
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
@@ -43,11 +42,13 @@ Resource          Angular.robot
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
-    Click Button    ${locator_next_step}
-    Добавить документ    /home/ova/LICENSE for test.txt
-
-Поиск тендера по идентификатору
-    [Arguments]    ${username}    ${tender_uaid}
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
@@ -116,7 +117,6 @@ date_Time
     sleep    1
     Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
-    Log To Console    ${date_time}
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
@@ -145,7 +145,7 @@ date_Time
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
-    sleep    5
+    sleep    2
 
 Информация по позиции
 
@@ -210,8 +210,8 @@ Login
 Добавить документ
     [Arguments]    ${filepath}
     Click Element    ${locator_documents}
+    Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
-    Log To Console    000000
     Wait Until Element Is Enabled    ${locator_documents}
     sleep    3
     Click Element    ${locator_documents}
