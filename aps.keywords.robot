@@ -314,7 +314,7 @@ Login
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    sleep    1
+    sleep    2
     Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
     Click Element    ${locator_check_location}
