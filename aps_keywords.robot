@@ -37,6 +37,10 @@ Library           conv_timeDate.py
     Log To Console    555
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
+    ${trtte}=    Get From Dictionary    ${tender}    data
+    ${ttt}=    Get From Dictionary    ${trtte}    items
+    ${item}=    Get From List    ${ttt}    0
+    Добавить позицию    ${item}
 
 Открытые торги с публикацией на англ
 
@@ -294,8 +298,10 @@ Info OpenUA
     ${text_ms}=    Convert To string    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
-    #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
+    #Период приема предложений (конец)
+    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    startDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
     Press Key    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    id=createOrUpdatePurchase
+    Click Button    ${locator_button_next_step}
