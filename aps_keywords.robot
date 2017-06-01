@@ -28,6 +28,14 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию//переговорная процедура    ${item}
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Click Button    ${locator_publish_tender}
+    sleep    5000
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
