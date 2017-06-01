@@ -25,14 +25,18 @@ Library           conv_timeDate.py
     Wait Until Page Contains Element    ${locator_tenderTitle}
 
 Открытые торги с публикацией на укр
-    [Arguments]    ${arg1}
-    : FOR    ${index}    IN RANGE    1    16
+    [Arguments]    ${tender}
+    Wait Until Element Is Visible    ${locator_button_create}    15
+    Click Button    ${locator_button_create}
+    Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
+    Log To Console    555
+    Click Link    ${locator_biddingUkr_create}
+    Info OpenUA    ${tender}
 
 Открытые торги с публикацией на англ
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
-    Поиск тендера по идентификатору    aps_Owner    UA-2017-05-29-000181-1
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
@@ -233,3 +237,34 @@ Login
     sleep    3
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
     sleep    3
+
+Info OpenUA
+    [Arguments]    ${tender}
+    #Ввод названия закупки
+    Wait Until Page Contains Element    ${locator_tenderTitle}
+    ${descr}=    Get From Dictionary    ${tender.data}    title
+    Input Text    ${locator_tenderTitle}    ${descr}
+    #Выбор НДС
+    ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
+    Click Element    ${locator_pdv}
+    Execute Javascript    window.scroll(1000, 1000)
+    #Валюта
+    Wait Until Element Is Enabled    ${locator_currency}    15
+    Click Element    ${locator_currency}
+    ${currency}=    Get From Dictionary    ${tender.data.value}    currency
+    Select From List By Label    ${locator_currency}    ${currency}
+    #Ввод бюджета
+    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    #Ввод мин шага
+    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
+    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    ${locator_min_step}    ${text_ms}
+    #Период приема предложений (кон дата)
+    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
+    ${date_time_ten_end}=    dt    ${tender_end}
+    Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
+    Press Key    ${locator_bidDate_end}    ${date_time_ten_end}

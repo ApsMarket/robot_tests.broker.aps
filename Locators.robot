@@ -57,3 +57,5 @@ ${locator_finish_edit}    id=movePurchaseView    # завешити редагу
 ${locator_publish_tender}    id=publishPurchase    # публікація тендеру
 ${locator_toast_container}    id=toast-container
 ${locator_toast_close}    xpath=.//*[@class='toast-close-button']
+${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
+${locator_currencyZakUa}    id=budget    # id=budget
