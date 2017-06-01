@@ -36,6 +36,7 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Log To Console    555
     Click Link    ${locator_biddingUkr_create}
+    Info OpenUA    ${tender}
 
 Открытые торги с публикацией на англ
 
@@ -268,79 +269,33 @@ Login
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
     sleep    3
 
-Добавить позицию//переговорная процедура
-    [Arguments]    ${item}
-    #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_items}    30
-    Click Element    ${locator_items}
-    Wait Until Element Is Enabled    ${locator_add_item_button}
-    Click Button    ${locator_add_item_button}
-    Wait Until Element Is Enabled    ${locator_item_description}
-    #Название предмета закупки
-    ${add_classif}=    Get From Dictionary    ${item}    description
-    Press Key    ${locator_item_description}    ${add_classif}
-    #Количество товара
-    Comment    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Wait Until Element Is Enabled    ${locator_Quantity}
-    Press Key    ${locator_Quantity}    356
-    #Выбор ед измерения
-    Wait Until Element Is Enabled    ${locator_code}
-    Comment    ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}    KMT
-    #Выбор ДК
-    Click Button    ${locator_button_add_cpv}
-    Wait Until Element Is Enabled    ${locator_cpv_search}
-    ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Press Key    ${locator_cpv_search}    ${cpv}
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
-    #Выбор др ДК
-    sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
-    ${dkpp_w}=    Get From List    ${dkpp_q}    0
-    ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Log To Console    ${dkpp}
-    Press Key    ${locator_dkpp_search}    ${dkpp}
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
-    #Срок поставки (конечная дата)
-    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    ${date_time}=    dt    ${delivery_Date}
-    sleep    2
-    Подготовить датапикер    ${locator_date_delivery_end}
-    Press Key    ${locator_date_delivery_end}    ${date_time}
-    Click Element    ${locator_check_location}
+Info OpenUA
+    [Arguments]    ${tender}
+    #Ввод названия закупкиdddd
+    Wait Until Page Contains Element    ${locator_tenderTitle}
+    ${descr}=    Get From Dictionary    ${tender.data}    title
+    Input Text    ${locator_tenderTitle}    ${descr}
+    #Выбор НДС
+    ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
+    Click Element    ${locator_pdv}
     Execute Javascript    window.scroll(1000, 1000)
-    #Выбор страны
-    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
-    Log To Console    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
-    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_SelectRegion}    ${region}
-    Log To Console    ${region}
-    ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}    ${post_code}
-    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}    ${locality}
-    ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}    ${street}
-    ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
-    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
-    ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
-    ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
-    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
-    ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Log To Console    ${deliveryLocation_longitude}
-    sleep    2
-    #Клик кнопку "Створити"
-    Click Button    ${locator_button_create_item}
-    sleep    2
+    #Валюта
+    Wait Until Element Is Enabled    ${locator_currency}    15
+    Click Element    ${locator_currency}
+    ${currency}=    Get From Dictionary    ${tender.data.value}    currency
+    Select From List By Label    ${locator_currency}    ${currency}
+    #Ввод бюджета
+    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    #Ввод мин шага
+    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
+    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    ${locator_min_step}    ${text_ms}
+    #Период приема предложений (кон дата)
+    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
+    ${date_time_ten_end}=    dt    ${tender_end}
+    Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
+    Press Key    ${locator_bidDate_end}    ${date_time_ten_end}
