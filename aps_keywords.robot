@@ -30,8 +30,13 @@ Library           conv_timeDate.py
     Добавить позицию//переговорная процедура    ${item}
 
 Открытые торги с публикацией на укр
-    [Arguments]    ${arg1}
-    : FOR    ${index}    IN RANGE    1    16
+    [Arguments]    ${tender}
+    Wait Until Element Is Visible    ${locator_button_create}    15
+    Click Button    ${locator_button_create}
+    Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
+    Log To Console    555
+    Click Link    ${locator_biddingUkr_create}
+    Info OpenUA    ${tender}
 
 Открытые торги с публикацией на англ
 
