@@ -57,3 +57,8 @@ ${locator_finish_edit}    id=movePurchaseView    # завешити редагу
 ${locator_publish_tender}    id=publishPurchase    # публікація тендеру
 ${locator_toast_container}    id=toast-container
 ${locator_toast_close}    xpath=.//*[@class='toast-close-button']
+${locator_create_negotiation}    xpath=.//a[@id="url_create_purchase_4"]
+${locator_description}    id=description
+${locator_select_directory_causes}    id=select_directory_causes
+${locator_cause_description}    id=cause_description
+${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
