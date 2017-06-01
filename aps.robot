@@ -7,7 +7,7 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
-Resource          aps.keywords.robot
+Resource          aps_keywords.robot
 
 *** Variables ***
 ${id}             UA-2017-03-14-000099
