@@ -271,7 +271,7 @@ Login
 
 Info OpenUA
     [Arguments]    ${tender}
-    #Ввод названия закупки
+    #Ввод названия закупкиdddd
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
