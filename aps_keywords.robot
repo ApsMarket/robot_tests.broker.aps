@@ -72,6 +72,7 @@ date_Time
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}
     Press Key    ${locator_Quantity}    '${editItemQuant}'
+    Log To Console    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
@@ -93,6 +94,7 @@ date_Time
     ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
+    Log To Console    ${dkpp}
     Press Key    ${locator_dkpp_search}    ${dkpp}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
@@ -108,9 +110,11 @@ date_Time
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
+    Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
+    Log To Console    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
@@ -125,9 +129,11 @@ date_Time
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Wait Until Element Is Enabled    ${locator_button_create_item}
+    Log To Console    ${deliveryLocation_longitude}
+    sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
+    sleep    2
 
 Информация по позиции
 
@@ -168,20 +174,16 @@ date_Time
     ${tender_end}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Click Element At Coordinates    ${locator_discussionDate_start}    -100    -10
-    sleep    1
     Press Key    ${locator_discussionDate_start}    ${date_time_enq_st}
     Click Element At Coordinates    ${locator_discussionDate_end}    -100    -10
-    sleep    1
     Press Key    ${locator_discussionDate_end}    ${date_time_enq_end}
     Click Element At Coordinates    ${locator_bidDate_start}    -100    -10
-    sleep    1
     Press Key    ${locator_bidDate_start}    ${date_time_ten_st}
     Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
-    sleep    1
     Press Key    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
-    sleep    10
     Click Button    ${locator_button_next_step}
+    #$('#period_tender_start').val('${date_time}');
 
 Login
     [Arguments]    ${user}
