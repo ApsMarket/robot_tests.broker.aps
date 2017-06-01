@@ -36,7 +36,6 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Log To Console    555
     Click Link    ${locator_biddingUkr_create}
-    Info OpenUA    ${tender}
 
 Открытые торги с публикацией на англ
 
