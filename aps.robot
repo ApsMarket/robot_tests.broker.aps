@@ -32,10 +32,10 @@ aps.Створити тендер
     [Arguments]    ${ffff}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU.robot'    Открытые торги с публикацией на англ    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA.robot'    Открытые торги с публикацией на укр    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTenderComplaints.robot'    Работа с жалобами    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
