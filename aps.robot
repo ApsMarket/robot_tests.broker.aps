@@ -7,7 +7,7 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
-Resource          aps.keywords.robot
+Resource          aps_keywords.robot
 
 *** Variables ***
 ${id}             UA-2017-03-14-000099
@@ -33,8 +33,8 @@ aps.Створити тендер
     [Documentation]    Створює однопредметний тендер
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU.robot'    Открытые торги с публикацией на англ    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.negotiation.robot'    Переговорная мультилотовая процедура    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA.robot'    Открытые торги с публикацией на укр    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Negotiation'    Переговорная мультилотовая процедура    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTenderComplaints.robot'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 

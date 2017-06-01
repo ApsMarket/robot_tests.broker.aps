@@ -20,9 +20,14 @@ Library           conv_timeDate.py
     [Arguments]    ${tender_data}
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
-    Click Link    ${locator_create_dop_zak}
+    Wait Until Element Is Enabled    ${locator_create_negotiation}    15
+    Click Link    ${locator_create_negotiation}
     Wait Until Page Contains Element    ${locator_tenderTitle}
+    Информация по закупке//переговорная процедура    ${tender_data}
+    ${trtte}=    Get From Dictionary    ${tender_data}    data
+    ${ttt}=    Get From Dictionary    ${trtte}    items
+    ${item}=    Get From List    ${ttt}    0
+    Добавить позицию//переговорная процедура    ${item}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
@@ -54,12 +59,7 @@ Library           conv_timeDate.py
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-
-Опубликовать закупку
-    Click Element    ${loc_TenderPublishTop}
-    Wait Until Element Is Enabled    ${loc_PublishConfirm}
-    Click Element    xpath=.//*[@id='optionsRadiosNotEcp']/..
-    Click Button    xpath=.//*[@class='btn btn-success ecp_true hidden']
+    sleep    5000
 
 date_Time
     [Arguments]    ${date}
@@ -194,6 +194,37 @@ date_Time
     Click Element    id=createOrUpdatePurchase
     Click Button    ${locator_button_next_step}
     #$('#period_tender_start').val('${date_time}');
+
+Информация по закупке//переговорная процедура
+    [Arguments]    ${tender_data}
+    #Ввод названия закупки
+    ${title}=    Get From Dictionary    ${tender_data.data}    title
+    Press Key    ${locator_tenderTitle}    ${title}
+    #Примечания
+    ${description}=    Get From Dictionary    ${tender_data.data}    description
+    Press Key    ${locator_description}    ${description}
+    #Условие применения переговорной процедуры
+    Comment    ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
+    Comment    Press Key    ${locator_select_directory_causes}    ${select_directory_causes}
+    Click Element    ${locator_select_directory_causes}
+    Select From List By Value    ${locator_select_directory_causes}    7
+    #Обоснование
+    ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
+    Press Key    ${locator_cause_description}    ${cause_description}
+    #Выбор НДС
+    ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
+    Click Element    ${locator_pdv}
+    #Валюта
+    Wait Until Element Is Enabled    ${locator_currency}    15
+    ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
+    Select From List By Label    ${locator_currency}    ${currency}
+    Press Key    ${locator_currency}    ${currency}
+    #Стоимость закупки
+    ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    Click Button    ${locator_next_step}
 
 Login
     [Arguments]    ${user}
