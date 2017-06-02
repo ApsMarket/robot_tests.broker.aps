@@ -49,6 +49,8 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
 
 Открытые торги с публикацией на англ
 
@@ -64,14 +66,8 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
-    Wait Until Page Contains Element    ${locator_toast_container}
-    Click Button    ${locator_toast_close}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
-    Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}
-    Wait Until Element Is Enabled    ${locator_publish_tender}
-    Click Button    ${locator_publish_tender}
-    sleep    5000
+    ${tender_UID}=    Опубликовать тендер
+    [Return]    ${tender_UID}
 
 date_Time
     [Arguments]    ${date}
@@ -390,3 +386,16 @@ Info OpenUA
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}
     sleep    2
+
+Опубликовать тендер
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Click Button    ${locator_publish_tender}
+    Wait Until Page Contains Element    ${locator_UID}
+    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
+    Return From Keyword    ${tender_UID}
+    [Return]    ${tender_UID}

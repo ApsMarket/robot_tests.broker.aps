@@ -25,7 +25,7 @@ ${locator_Quantity}    id=procurementSubject_quantity00
 ${locator_code}    id=select_unit00
 ${locator_button_add_cpv}    id=cls_click_00
 ${locator_cpv_search}    id=search-classifier-text
-${locator_button_add_dkpp}    xpath=.//*[@id='updateOrCreateProcurementSubject_0_0']/div[2]/div[4]/div/div[2]/div/span/button
+${locator_button_add_dkpp}    //button[@itemid="otherClassifier"]
 ${locator_dkpp_search}    id=search-classifier-text
 ${locator_add_classfier}    id=add-classifier
 ${locator_date_delivery_end}    id=delivery_end_
@@ -63,3 +63,4 @@ ${locator_select_directory_causes}    id=select_directory_causes
 ${locator_cause_description}    id=cause_description
 ${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
 ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
+${locator_UID}    xpath=//span[@class="text-muted ng-binding"]
