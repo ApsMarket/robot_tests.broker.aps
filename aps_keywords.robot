@@ -49,6 +49,8 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
 
 Открытые торги с публикацией на англ
 
@@ -71,7 +73,7 @@ Library           conv_timeDate.py
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    sleep    5000
+    sleep    5
 
 date_Time
     [Arguments]    ${date}
