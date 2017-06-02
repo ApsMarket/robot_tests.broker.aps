@@ -45,6 +45,10 @@ Library           conv_timeDate.py
     Log To Console    555
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
+    ${trtte}=    Get From Dictionary    ${tender}    data
+    ${ttt}=    Get From Dictionary    ${trtte}    items
+    ${item}=    Get From List    ${ttt}    0
+    Добавить позицию    ${item}
 
 Открытые торги с публикацией на англ
 
@@ -279,7 +283,7 @@ Login
 
 Info OpenUA
     [Arguments]    ${tender}
-    #Ввод названия закупкиdddd
+    #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
@@ -307,6 +311,8 @@ Info OpenUA
     ${date_time_ten_end}=    dt    ${tender_end}
     Click Element At Coordinates    ${locator_bidDate_end}    -100    -10
     Press Key    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    id=createOrUpdatePurchase
+    Click Button    ${locator_button_next_step}
 
 Добавить позицию//переговорная процедура
     [Arguments]    ${item}
