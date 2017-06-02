@@ -63,3 +63,4 @@ ${locator_select_directory_causes}    id=select_directory_causes
 ${locator_cause_description}    id=cause_description
 ${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
 ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
+${locator_UID}    xpath=//span[@class="text-muted ng-binding"]
