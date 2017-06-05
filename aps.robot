@@ -26,7 +26,7 @@ ${js}             ${EMPTY}
 aps.Адаптувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
-    Set To Dictionary    ${y.data.procuringEntity.contactPoint.name}    name
+    Set To Dictionary    ${y.data.procuringEntity.name}
     [Return]    ${y}
 
 aps.Створити тендер
