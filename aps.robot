@@ -23,10 +23,13 @@ ${js}             ${EMPTY}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='aps_Viewer'    Login    ${user}
 
-aps.Адаптувати дані для оголошення тендера
+aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
-    Set To Dictionary    ${y.data.procuringEntity.name}
+    Log To Console    111111111111111111111111111111111111
+    Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
+    Log To Console    ${tender_data.data.procuringEntity}
+    Return From Keyword    ${tender_data}
     [Return]    ${y}
 
 aps.Створити тендер
@@ -110,3 +113,6 @@ aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Отримує посилання на участь в аукціоні тендера tender_uaid в якості учасника
     [Return]    URL сторінки аукціону
+
+aps.Отримати дані із тендера
+    [Arguments]    ${username}    ${field}    ${object_id}
