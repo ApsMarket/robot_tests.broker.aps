@@ -78,11 +78,10 @@ date_Time
 Добавить позицию
     [Arguments]    ${item}
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_items}    30
+    Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
-    Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
-    Wait Until Element Is Enabled    ${locator_item_description}
+    Wait Until Element Is Enabled    ${locator_item_description}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Press Key    ${locator_item_description}    ${add_classif}
@@ -395,7 +394,7 @@ Info OpenUA
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}
+    Wait Until Page Contains Element    ${locator_UID}    50
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
