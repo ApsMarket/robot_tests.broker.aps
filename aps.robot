@@ -29,7 +29,7 @@ aps.Адаптувати дані для оголошення тендера
     [Return]    ${y}
 
 aps.Створити тендер
-    [Arguments]    ${ffff}    ${tender_data}
+    [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
@@ -48,7 +48,11 @@ aps.Внести зміни в тендер
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Comment    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Log To Console    завант документ
+    Click Element    ${locator_click_logo}
+    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Click Button    ${locator_btn_edit_tender}
     Добавить документ    ${filepath}
 
 aps.Пошук тендера по ідентифікатору

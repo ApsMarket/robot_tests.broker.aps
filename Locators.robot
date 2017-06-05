@@ -52,7 +52,7 @@ ${locator_download}    xpath=.//*[@id='button_attach_document']/input
 ${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
 ${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step
-${locator_input_search}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/input
+${locator_input_search}    id=findbykeywords
 ${locator_finish_edit}    id=movePurchaseView    # завешити редагування
 ${locator_publish_tender}    id=publishPurchase    # публікація тендеру
 ${locator_toast_container}    id=toast-container
@@ -64,3 +64,5 @@ ${locator_cause_description}    id=cause_description
 ${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
 ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
 ${locator_UID}    xpath=//span[@class="text-muted ng-binding"]
+${locator_click_logo}    xpath=.//*[@id='logo']/a/span/img
+${locator_btn_edit_tender}    id=purchaseEdit
