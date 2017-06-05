@@ -158,8 +158,11 @@ date_Time
 Информация по закупке
     [Arguments]    ${tender_data}
     #Ввод названия тендера
-    ${descr}=    Get From Dictionary    ${tender_data.data}    title
-    Input Text    ${locator_tenderTitle}    ${descr}
+    ${title}=    Get From Dictionary    ${tender_data.data}    title
+    Input Text    ${locator_tenderTitle}    ${title}
+    #Ввод описания
+    ${descr}=    Get From Dictionary    ${tender_data.data}    description
+    Input Text    ${locator_description}    ${descr}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
@@ -212,10 +215,9 @@ date_Time
     ${description}=    Get From Dictionary    ${tender_data.data}    description
     Press Key    ${locator_description}    ${description}
     #Условие применения переговорной процедуры
-    Comment    ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Comment    Press Key    ${locator_select_directory_causes}    ${select_directory_causes}
-    Click Element    ${locator_select_directory_causes}
-    Select From List By Value    ${locator_select_directory_causes}    7
+    ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
+    Select From List By Value    ${locator_select_directory_causes}    ${select_directory_causes}
+    Press Key    ${locator_select_directory_causes}    ${select_directory_causes}
     #Обоснование
     ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
     Press Key    ${locator_cause_description}    ${cause_description}
@@ -269,6 +271,8 @@ Login
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
+    Click Element    ${locator_click_logo}
+    Wait Until Element Is Enabled    ${locator_input_search}
     Wait Until Page Contains Element    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}

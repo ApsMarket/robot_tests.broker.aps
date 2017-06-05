@@ -26,6 +26,7 @@ ${js}             ${EMPTY}
 aps.Адаптувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
+    Set To Dictionary    ${y.data.procuringEntity.contactPoint.name}    name
     [Return]    ${y}
 
 aps.Створити тендер
@@ -48,7 +49,6 @@ aps.Внести зміни в тендер
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Log To Console    завант документ
     Click Element    ${locator_click_logo}
     Поиск тендера по идентификатору    ${username}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_btn_edit_tender}
