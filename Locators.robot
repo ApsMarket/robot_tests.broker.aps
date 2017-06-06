@@ -66,3 +66,7 @@ ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purc
 ${locator_UID}    xpath=//span[@class="text-muted ng-binding"]
 ${locator_click_logo}    xpath=.//*[@id='logo']/a/span/img
 ${locator_btn_edit_tender}    id=purchaseEdit
+${locator_questions}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div[2]/div/ul/li[2]/a[@href="#questions"]
+${locator_add_discussion}    id=add_discussion
+${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/div/select
+${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
