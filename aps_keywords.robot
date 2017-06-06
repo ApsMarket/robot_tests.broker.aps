@@ -95,6 +95,7 @@ date_Time
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
     Select From List By Value    ${locator_code}    ${code}
+    ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}

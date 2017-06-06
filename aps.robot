@@ -26,15 +26,18 @@ ${js}             ${EMPTY}
 aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
+    #замена названия компании
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
+    #замена cpv на ДК021
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     Set To Dictionary    ${item.classification}    scheme    ДК021
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
-    ${items}=    Get From Dictionary    ${tender_data.data}    items
-    ${item}=    Get From List    ${items}    0
-    Set To Dictionary    ${item.additionalClassifications}    scheme    'ДК016'
+    #замена ДКПП на ДК016
+    ${addit_clas}=    Get From Dictionary    ${item}    additionalClassifications
+    ${addit_clas}=    Get From List    ${addit_clas}    0
+    Set To Dictionary    ${addit_clas}    scheme    ДК016
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -54,8 +57,6 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
-    Comment    Wait Until Element Is Enabled    ${loc_TenderPublishTop}
-    Comment    Click Element    ${loc_TenderPublishTop}
 
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
