@@ -272,6 +272,7 @@ Login
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
     Click Element    ${locator_click_logo}
+    sleep    3
     Wait Until Element Is Enabled    ${locator_input_search}
     Wait Until Page Contains Element    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}

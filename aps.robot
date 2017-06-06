@@ -26,11 +26,19 @@ ${js}             ${EMPTY}
 aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
-    Log To Console    111111111111111111111111111111111111
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
-    Log To Console    ${tender_data.data.procuringEntity}
+    ${items}=    Get From Dictionary    ${tender_data.data}    items
+    ${item}=    Get From List    ${items}    0
+    Set To Dictionary    ${item.classification}    scheme    ДК021
+    Set List Value    ${items}    0    ${item}
+    Set To Dictionary    ${tender_data.data}    items    ${items}
+    ${items}=    Get From Dictionary    ${tender_data.data}    items
+    ${item}=    Get From List    ${items}    0
+    Set To Dictionary    ${item.additionalClassifications}    scheme    'ДК016'
+    Set List Value    ${items}    0    ${item}
+    Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
-    [Return]    ${y}
+    [Return]    ${tender_data}
 
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
@@ -46,8 +54,8 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${loc_TenderPublishTop}
-    Click Element    ${loc_TenderPublishTop}
+    Comment    Wait Until Element Is Enabled    ${loc_TenderPublishTop}
+    Comment    Click Element    ${loc_TenderPublishTop}
 
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
@@ -61,6 +69,7 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
+    Click Element    ${locator_click_logo}
     Поиск тендера по идентификатору    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
@@ -76,6 +85,12 @@ aps.Пошук тендера по ідентифікатору
 Задати питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
+    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Wait Until Element Is Enabled    ${locator_questions}
+    Click Element    ${locator_questions}
+    Click Button    ${locator_add_discussion}
+    Select From List By Label    ${locator_question_to}    0
+    \    ${locator_question_title}
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
