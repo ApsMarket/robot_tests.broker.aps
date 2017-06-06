@@ -245,6 +245,7 @@ Login
 
 Добавить документ
     [Arguments]    ${filepath}
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=//div[@class="page-loader animated fadeIn"]
     Click Element    ${locator_documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
