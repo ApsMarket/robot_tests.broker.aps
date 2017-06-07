@@ -62,8 +62,7 @@ Library           conv_timeDate.py
     Click Link    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Информация по закупке    ${tender_data}
-    ${trtte}=    Get From Dictionary    ${tender_data}    data
-    ${ttt}=    Get From Dictionary    ${trtte}    items
+    ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
     Добавить позицию    ${item}
     ${tender_UID}=    Опубликовать тендер
@@ -77,6 +76,7 @@ date_Time
 
 Добавить позицию
     [Arguments]    ${item}
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
@@ -89,7 +89,6 @@ date_Time
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}
     Press Key    ${locator_Quantity}    '${editItemQuant}'
-    Log To Console    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
     ${code}=    Get From Dictionary    ${item.unit}    code
@@ -112,7 +111,6 @@ date_Time
     ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Log To Console    ${dkpp}
     Press Key    ${locator_dkpp_search}    ${dkpp}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
@@ -120,11 +118,11 @@ date_Time
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    sleep    1
     Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
+    Click Element    ${locator_Quantity}
     Click Element    ${locator_check_location}
-    Execute Javascript    window.scroll(1000, 1000)
+    Execute Javascript    window.scroll(0, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
@@ -147,11 +145,9 @@ date_Time
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Log To Console    ${deliveryLocation_longitude}
-    sleep    2
     #Клик кнопку "Створити"
+    Wait Until Element Is Enabled    ${locator_button_create_item}    15
     Click Button    ${locator_button_create_item}
-    sleep    2
 
 Информация по позиции
 
@@ -267,15 +263,14 @@ Login
 
 Подготовить датапикер
     [Arguments]    ${id}
-    : FOR    ${index}    IN RANGE    1    16
+    : FOR    ${index}    IN RANGE    1    14
     \    Press Key    ${locator_date_delivery_end}    \\8
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
     Click Element    ${locator_click_logo}
-    sleep    3
-    Wait Until Element Is Enabled    ${locator_input_search}
     Wait Until Page Contains Element    ${locator_input_search}
+    Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
