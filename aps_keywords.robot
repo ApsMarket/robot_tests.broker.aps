@@ -120,7 +120,6 @@ date_Time
     ${date_time}=    dt    ${delivery_Date}
     Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
-    Click Element    ${locator_Quantity}
     Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(0, 1000)
     #Выбор страны
@@ -146,7 +145,6 @@ date_Time
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-    Wait Until Element Is Enabled    ${locator_button_create_item}    15
     Click Button    ${locator_button_create_item}
 
 Информация по позиции
@@ -255,8 +253,7 @@ Login
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    notice
-    sleep    5
+    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -396,7 +393,15 @@ Info OpenUA
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}    50
+    Wait Until Page Contains Element    ${locator_UID}
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
+
+Задать вопрос
+    [Arguments]    ${tender_data}
+    Select From List By Label    ${locator_question_to}    0
+    ${title}=    Get From Dictionary    ${tender_data.data}    title
+    Press Key    ${locator_question_title}    ${title}
+    ${description}=    Get From Dictionary    ${tender_data.data}    description
+    Press Key    ${locator_description_question}    ${description}

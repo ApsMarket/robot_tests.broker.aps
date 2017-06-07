@@ -21,7 +21,7 @@ ${js}             ${EMPTY}
     Open Browser    ${user.homepage}    ${user.browser}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
-    Run Keyword If    '${role}'!='aps_Viewer'    Login    ${user}
+    Run Keyword If    '${role}'!='viewer'    Login    ${user}
 
 aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    ${tender_data}
@@ -71,7 +71,8 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Click Element    ${locator_click_logo}
+    Go To    http://192.168.90.169:90/purchases
+    Comment    Click Element    ${locator_click_logo}
     Поиск тендера по идентификатору    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
@@ -91,8 +92,7 @@ aps.Пошук тендера по ідентифікатору
     Wait Until Element Is Enabled    ${locator_questions}
     Click Element    ${locator_questions}
     Click Button    ${locator_add_discussion}
-    Select From List By Label    ${locator_question_to}    0
-    \    ${locator_question_title}
+    Задать вопрос    ${question}
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
