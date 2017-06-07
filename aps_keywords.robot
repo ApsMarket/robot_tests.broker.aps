@@ -273,15 +273,13 @@ Login
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
     Click Element    ${locator_click_logo}
-    sleep    3
-    Wait Until Element Is Enabled    ${locator_input_search}
     Wait Until Page Contains Element    ${locator_input_search}
+    Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
-    sleep    3
+    Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
-    sleep    3
 
 Info OpenUA
     [Arguments]    ${tender}
