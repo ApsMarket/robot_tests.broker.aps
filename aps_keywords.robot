@@ -258,7 +258,7 @@ Login
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    notice
+    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -403,3 +403,11 @@ Info OpenUA
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
+
+Задать вопрос
+    [Arguments]    ${tender_data}
+    Select From List By Label    ${locator_question_to}    0
+    ${title}=    Get From Dictionary    ${tender_data.data}    title
+    Press Key    ${locator_question_title}    ${title}
+    ${description}=    Get From Dictionary    ${tender_data.data}    description
+    Press Key    ${locator_description_question}    ${description}
