@@ -61,8 +61,9 @@ aps.Внести зміни в тендер
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Click Element    ${locator_click_logo}
+    Comment    Click Element    ${locator_click_logo}
     Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Wait Until Page Contains Element    ${locator_btn_edit_tender}
     Wait Until Element Is Enabled    ${locator_btn_edit_tender}
     Click Button    ${locator_btn_edit_tender}
     Добавить документ    ${filepath}

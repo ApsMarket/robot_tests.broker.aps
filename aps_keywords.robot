@@ -76,7 +76,7 @@ date_Time
 
 Добавить позицию
     [Arguments]    ${item}
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]    5
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
@@ -244,17 +244,19 @@ Login
 
 Добавить документ
     [Arguments]    ${filepath}
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=//div[@class="page-loader animated fadeIn"]
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
+    Wait Until Element Is Enabled    ${locator_documents}    \    5
     Click Element    ${locator_documents}
+    Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_documents}
-    sleep    3
     Click Element    ${locator_documents}
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
     Select From List By Label    ${locator_category}    notice
+    sleep    5
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -268,7 +270,6 @@ Login
 
 Поиск тендера по идентификатору
     [Arguments]    ${username}    ${tender_uaid}
-    Click Element    ${locator_click_logo}
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
