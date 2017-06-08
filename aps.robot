@@ -27,32 +27,20 @@ aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
-    Log To Console    @{arguments}
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
-    #замена cpv на ДК021
-    ${items}=    Get From Dictionary    ${tender_data.data}    items
-    ${item}=    Get From List    ${items}    0
-    Set To Dictionary    ${item.classification}    scheme    ДК021
-    Set List Value    ${items}    0    ${item}
-    Set To Dictionary    ${tender_data.data}    items    ${items}
-    #замена ДКПП на ДК016
-    ${addit_clas}=    Get From Dictionary    ${item}    additionalClassifications
-    ${addit_clas}=    Get From List    ${addit_clas}    0
-    Set To Dictionary    ${addit_clas}    scheme    ДК016
-    Set List Value    ${items}    0    ${item}
-    Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openProcedure'    Допороговый однопредметный тендер    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
+    Log To Console    MODE=${MODE}
+    Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
