@@ -114,9 +114,10 @@ date_Time
     Select From List By Label    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_SelectRegion}    ${region}
-    Log To Console    ${region}
+    sleep    5
+    Comment    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Comment    Select From List By Label    ${locator_SelectRegion}    ${region}
+    Comment    Log To Console    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
