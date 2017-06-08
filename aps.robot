@@ -27,27 +27,27 @@ aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
-    Log To Console    @{arguments}
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
-    #замена cpv на ДК021
-    ${items}=    Get From Dictionary    ${tender_data.data}    items
-    ${item}=    Get From List    ${items}    0
-    Set To Dictionary    ${item.classification}    scheme    ДК021
-    Set List Value    ${items}    0    ${item}
-    Set To Dictionary    ${tender_data.data}    items    ${items}
-    #замена ДКПП на ДК016
-    ${addit_clas}=    Get From Dictionary    ${item}    additionalClassifications
-    ${addit_clas}=    Get From List    ${addit_clas}    0
-    Set To Dictionary    ${addit_clas}    scheme    ДК016
-    Set List Value    ${items}    0    ${item}
-    Set To Dictionary    ${tender_data.data}    items    ${items}
+    Comment    #замена cpv на ДК021
+    Comment    ${items}=    Get From Dictionary    ${tender_data.data}    items
+    Comment    ${item}=    Get From List    ${items}    0
+    Comment    Set To Dictionary    ${item.classification}    scheme    ДК021
+    Comment    Set List Value    ${items}    0    ${item}
+    Comment    Set To Dictionary    ${tender_data.data}    items    ${items}
+    Comment    #замена ДКПП на ДК016
+    Comment    ${addit_clas}=    Get From Dictionary    ${item}    additionalClassifications
+    Comment    ${addit_clas}=    Get From List    ${addit_clas}    0
+    Comment    Set To Dictionary    ${addit_clas}    scheme    ДК016
+    Comment    Set List Value    ${items}    0    ${item}
+    Comment    Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
+    Log To Console    ${tender_parameters}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openProcedure'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
