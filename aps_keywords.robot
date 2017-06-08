@@ -102,19 +102,6 @@ date_Time
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    #Выбор др ДК
-    sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
-    ${dkpp_w}=    Get From List    ${dkpp_q}    0
-    ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Press Key    ${locator_dkpp_search}    ${dkpp}
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
