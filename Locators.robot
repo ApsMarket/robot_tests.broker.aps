@@ -71,3 +71,4 @@ ${locator_add_discussion}    id=add_discussion
 ${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/div/select
 ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
+${locator_date_delivery_start}    id=delivery_start_    # Проверить id
