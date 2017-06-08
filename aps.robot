@@ -61,8 +61,7 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Go To    http://192.168.90.169:90/purchases
-    Comment    Click Element    ${locator_click_logo}
+    Go To    ${USERS.user.browser}
     Поиск тендера по идентификатору    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
