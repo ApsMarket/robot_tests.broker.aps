@@ -24,9 +24,11 @@ ${js}             ${EMPTY}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
 
 aps.Підготувати дані для оголошення тендера
-    [Arguments]    ${username}    ${tender_data}
+    [Arguments]    ${username}    @{arguments}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
+    Log To Console    @{arguments}
+    ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     #замена cpv на ДК021
     ${items}=    Get From Dictionary    ${tender_data.data}    items
@@ -46,7 +48,7 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTender'    Допороговый однопредметный тендер    ${tender_data}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openProcedure'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Negotiation'    Переговорная мультилотовая процедура    ${tender_data}
