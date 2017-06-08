@@ -47,12 +47,12 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Log To Console    ${tender_parameters}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openProcedure'    Допороговый однопредметный тендер    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openEU'    Открытые торги с публикацией на англ    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.openUA'    Открытые торги с публикацией на укр    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
+    Log To Console    'MODE='${MODE}
+    Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
+    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
