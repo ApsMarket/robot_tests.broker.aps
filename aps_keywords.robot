@@ -353,9 +353,10 @@ Info OpenUA
     Select From List By Label    ${locator_country_id}    ${country}
     Log To Console    ${country}
     Execute Javascript    window.scroll(1000, 1000)
+    #Выбор региона
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Select From List By Label    ${locator_SelectRegion}    ${region}
-    Log To Console    ${region}
+    #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
