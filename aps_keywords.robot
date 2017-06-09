@@ -101,7 +101,10 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    sleep    2
+    #Срок поставки (начальная дата)
+    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    ${date_time}=    dt    ${delivery_Date_start}
+    Press Key    ${locator_date_delivery_start}    ${date_time}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
@@ -326,6 +329,9 @@ Add item negotiate
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+    #Срок поставки (начальная дата)
+    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    ${date_time}=    dt    ${delivery_Date_start}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
