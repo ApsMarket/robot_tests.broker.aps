@@ -63,7 +63,7 @@ Library           conv_timeDate.py
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
-    Add Item    ${item}
+    Add Item    ${item}    00
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -341,20 +341,18 @@ Add item negotiate
     Click Button    ${locator_add_classfier}
     #Срок поставки (начальная дата)
     sleep    10
-    Comment    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
-    Comment    ${date_time}=    dt    ${delivery_Date_start}
-    Comment    Fill Date    ${locator_date_delivery_start}    ${date_time}
+    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    ${date_time}=    dt    ${delivery_Date_start}
+    Fill Date    ${locator_date_delivery_start}${q}    ${date_time}
     #Срок поставки (конечная дата)
-    Comment    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    Comment    ${date_time}=    dt    ${delivery_Date}
-    sleep    2
-    Comment    Fill Date    ${locator_date_delivery_end}    ${date_time}
+    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
+    ${date_time}=    dt    ${delivery_Date}
+    Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
     Comment    Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}${q}    ${country}
-    Log To Console    ${country}${q}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор региона
     sleep    5
@@ -362,25 +360,24 @@ Add item negotiate
     Select From List By Label    ${locator_SelectRegion}${q}    ${region}
     #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}    ${post_code}
+    Press Key    ${locator_postal_code}${q}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}    ${locality}
+    Press Key    ${locator_locality}${q}    ${locality}
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}    ${street}
+    Press Key    ${locator_street}${q}    ${street}
     sleep    3
     Click Element    ${locator_check_gps}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
+    Press Key    ${locator_deliveryLocation_latitude}${q}    ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
-    Log To Console    ${deliveryLocation_longitude}
+    Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
     sleep    2
     #Клик кнопку "Створити"
-    Click Button    ${locator_button_create_item}
+    Click Button    ${locator_button_create_item}${q}
     sleep    2
 
 Publish tender
