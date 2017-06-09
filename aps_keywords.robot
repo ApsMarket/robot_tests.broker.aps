@@ -312,13 +312,13 @@ Info OpenUA
     ${add_classif}=    Get From Dictionary    ${item}    description
     Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
-    Comment    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
+    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}
-    Press Key    ${locator_Quantity}    456
+    Input Text    ${locator_Quantity}    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}
-    Comment    ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}    KMT
+    ${code}=    Get From Dictionary    ${item.unit}    code
+    Press Key    ${locator_code}    ${code}
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
@@ -333,17 +333,16 @@ Info OpenUA
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
-    ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
-    ${dkpp_w}=    Get From List    ${dkpp_q}    0
-    ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Log To Console    ${dkpp}
-    Press Key    ${locator_dkpp_search}    ${dkpp}
+    Input Text    ${locator_dkpp_search}    000
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+    #Срок поставки (начальная дата)
+    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    ${date_time}=    dt    ${delivery_Date_start}
     #Срок поставки (конечная дата)
-    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    ${date_time}=    dt    ${delivery_Date}
+    ${delivery_Date_end}=    Get From Dictionary    ${item.deliveryDate}    endDate
+    ${date_time}=    dt    ${delivery_Date_end}
     sleep    2
     Подготовить датапикер    ${locator_date_delivery_end}
     Press Key    ${locator_date_delivery_end}    ${date_time}
