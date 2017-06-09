@@ -28,6 +28,8 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}
+    Wait Until Element Is Visible    ${locator_add_item_button}
+    Add second item negotiate    ${item}
     Wait Until Page Contains Element    ${locator_toast_container}
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -289,24 +291,25 @@ Info OpenUA
     Log To Console    finish openUa info
 
 Add item negotiate
-    [Arguments]    ${item}
+    [Arguments]    ${item}    ${q}
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_items}    30
     Click Element    ${locator_items}
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
-    Wait Until Element Is Enabled    ${locator_item_description}
+    Wait Until Element Is Enabled    ${locator_item_description}${q}
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
-    Press Key    ${locator_item_description}    ${add_classif}
+    Press Key    ${locator_item_description}${q}    ${add_classif}
     #Количество товара
-    Comment    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Wait Until Element Is Enabled    ${locator_Quantity}
-    Press Key    ${locator_Quantity}    456
+    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
+    Wait Until Element Is Enabled    ${locator_Quantity}${q}
+    Input Text    ${locator_Quantity}${q}    ${editItemQuant}
     #Выбор ед измерения
-    Wait Until Element Is Enabled    ${locator_code}
-    Comment    ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}    KMT
+    Wait Until Element Is Enabled    ${locator_code}${q}
+    ${code}=    Get From Dictionary    ${item.unit}    code
+    Select From List By Value    ${locator_code}${q}    ${code}
+    ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
@@ -321,33 +324,31 @@ Add item negotiate
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
-    ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
-    ${dkpp_w}=    Get From List    ${dkpp_q}    0
-    ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Log To Console    ${dkpp}
-    Press Key    ${locator_dkpp_search}    ${dkpp}
+    Input Text    ${locator_dkpp_search}    000
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     #Срок поставки (начальная дата)
-    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
-    ${date_time}=    dt    ${delivery_Date_start}
+    sleep    10
+    Comment    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    Comment    ${date_time}=    dt    ${delivery_Date_start}
+    Comment    Fill Date    ${locator_date_delivery_start}    ${date_time}
     #Срок поставки (конечная дата)
-    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    ${date_time}=    dt    ${delivery_Date}
+    Comment    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
+    Comment    ${date_time}=    dt    ${delivery_Date}
     sleep    2
-    Подготовить датапикер    ${locator_date_delivery_end}
-    Press Key    ${locator_date_delivery_end}    ${date_time}
-    Click Element    ${locator_check_location}
+    Comment    Fill Date    ${locator_date_delivery_end}    ${date_time}
+    Comment    Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
-    Log To Console    ${country}
+    Select From List By Label    ${locator_country_id}${q}    ${country}
+    Log To Console    ${country}${q}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор региона
+    sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_SelectRegion}    ${region}
+    Select From List By Label    ${locator_SelectRegion}${q}    ${region}
     #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
@@ -355,6 +356,8 @@ Add item negotiate
     Press Key    ${locator_locality}    ${locality}
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}    ${street}
+    sleep    3
+    Click Element    ${locator_check_gps}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string

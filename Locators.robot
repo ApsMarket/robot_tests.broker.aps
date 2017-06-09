@@ -20,9 +20,9 @@ ${locator_bidDate_start}    id=period_tender_start
 ${locator_bidDate_end}    id=period_tender_end
 ${locator_button_next_step}    xpath=.//*[@id='next_step']
 ${locator_add_item_button}    id=add_procurement_subject0
-${locator_item_description}    id=procurementSubject_description00
-${locator_Quantity}    id=procurementSubject_quantity00
-${locator_code}    id=select_unit00
+${locator_item_description}    id=procurementSubject_description
+${locator_Quantity}    id=procurementSubject_quantity
+${locator_code}    id=select_unit
 ${locator_button_add_cpv}    id=cls_click_
 ${locator_cpv_search}    id=search-classifier-text
 ${locator_button_add_dkpp}    //button[@itemid="otherClassifier"]
@@ -73,3 +73,5 @@ ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/d
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
 ${locator_search_type}    //select[@class="form-control b-r-none ng-pristine ng-untouched ng-valid ng-empty"]
 ${locator_date_delivery_start}    id=delivery_start_    # Проверить id
+${locator_check_gps}    xpath=.//*[@id='is_delivary_01']/div[1]/div[1]
+${locator_item_description_01}    id=procurementSubject_description01
