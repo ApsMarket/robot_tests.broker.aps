@@ -111,7 +111,7 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=//div[@class="modal-backdrop fade"]
+    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
@@ -120,13 +120,12 @@ Add Item
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}    ${date_time}
-    Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(0, 1000)
+    Click Element    ${locator_check_location}
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    sleep    2
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
