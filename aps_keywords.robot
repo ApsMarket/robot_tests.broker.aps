@@ -47,8 +47,7 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
-    Click Button    ${locator_finish_edit}
+    Publish tender
 
 Открытые торги с публикацией на англ
 
@@ -75,7 +74,7 @@ date_Time
 Add Item
     [Arguments]    ${item}
     Log To Console    item add start
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
@@ -83,7 +82,8 @@ Add Item
     Wait Until Element Is Enabled    ${locator_item_description}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
-    Press Key    ${locator_item_description}    ${add_classif}
+    Input Text    ${locator_item_description}    ${add_classif}
+    Comment    Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}
@@ -101,10 +101,21 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+    #Выбор др ДК
+    sleep    1
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
+    Click Button    ${locator_button_add_dkpp}
+    Wait Until Element Is Visible    ${locator_dkpp_search}
+    Clear Element Text    ${locator_dkpp_search}
+    Press Key    ${locator_dkpp_search}    000
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
-    Press Key    ${locator_date_delivery_start}    ${date_time}
+    Fill Date    ${locator_date_delivery_start}    ${date_time}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
@@ -120,6 +131,7 @@ Add Item
     Press Key    ${locator_postal_code}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
     Press Key    ${locator_locality}    ${locality}
+    Press Key    id=locality_00    м. Київ
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}    ${street}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
@@ -131,9 +143,8 @@ Add Item
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
+    Wait Until Element Is Enabled    ${locator_button_create_item}
     Click Button    ${locator_button_create_item}
-
-Item \ info
 
 Info Below
     [Arguments]    ${tender_data}
@@ -324,7 +335,6 @@ Add item negotiate
     ${dkpp_q}=    Get From Dictionary    ${item}    additionalClassifications
     ${dkpp_w}=    Get From List    ${dkpp_q}    0
     ${dkpp}=    Get From Dictionary    ${dkpp_w}    id
-    Log To Console    ${dkpp}
     Press Key    ${locator_dkpp_search}    ${dkpp}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
@@ -370,6 +380,7 @@ Add item negotiate
     sleep    2
 
 Publish tender
+    Log To Console    start punlish tender
     Wait Until Page Contains Element    ${locator_toast_container}
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -379,6 +390,7 @@ Publish tender
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
+    Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 

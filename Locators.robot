@@ -28,13 +28,13 @@ ${locator_cpv_search}    id=search-classifier-text
 ${locator_button_add_dkpp}    //button[@itemid="otherClassifier"]
 ${locator_dkpp_search}    id=search-classifier-text
 ${locator_add_classfier}    id=add-classifier
-${locator_date_delivery_end}    id=delivery_end_
+${locator_date_delivery_end}    id=delivery_end_00
 ${locator_button_create_item}    id=update_00
 ${locator_check_location}    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
 ${locator_country_id}    xpath=.//*[@id='select_countries00']['Україна']
 ${locator_SelectRegion}    id=select_regions00
 ${locator_postal_code}    id=zip_code_00
-${locator_locality}    id=locality_00
+${locator_locality}    id=select_regions00
 ${locator_street}    id=street_00
 ${locator_search}    id=Search
 ${locator_search-btn}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/div[2]/button
@@ -72,4 +72,4 @@ ${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/
 ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
 ${locator_search_type}    //select[@class="form-control b-r-none ng-pristine ng-untouched ng-valid ng-empty"]
-${locator_date_delivery_start}    id=delivery_start_    # Проверить id
+${locator_date_delivery_start}    id=delivery_start_00    # Проверить id
