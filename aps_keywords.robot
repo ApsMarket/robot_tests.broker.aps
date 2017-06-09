@@ -27,9 +27,9 @@ Library           conv_timeDate.py
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
-    Add item negotiate    ${item}
+    Add item negotiate    ${item}    00
     Wait Until Element Is Visible    ${locator_add_item_button}
-    Add second item negotiate    ${item}
+    Add item negotiate    ${item}    01
     Wait Until Page Contains Element    ${locator_toast_container}
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -37,7 +37,6 @@ Library           conv_timeDate.py
     Wait Until Page Contains Element    ${locator_publish_tender}
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    sleep    5000
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
@@ -366,7 +365,7 @@ Add item negotiate
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}${q}    ${street}
     sleep    3
-    Click Element    ${locator_check_gps}
+    Click Element    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string

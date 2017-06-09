@@ -31,10 +31,10 @@ ${locator_add_classfier}    id=add-classifier
 ${locator_date_delivery_end}    id=delivery_end_
 ${locator_button_create_item}    id=update_
 ${locator_check_location}    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
-${locator_country_id}    xpath=.//*[@id='select_countries00']['Україна']
+${locator_country_id}    id=select_countries
 ${locator_SelectRegion}    id=select_regions
 ${locator_postal_code}    id=zip_code_
-${locator_locality}    id=select_regions
+${locator_locality}    id=locality_
 ${locator_street}    id=street_
 ${locator_search}    id=Search
 ${locator_search-btn}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/div[2]/button
