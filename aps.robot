@@ -52,17 +52,17 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Comment    Click Element    ${locator_click_logo}
-    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Search tender    ${username}    ${tender_uaid}
     Wait Until Page Contains Element    ${locator_btn_edit_tender}
     Wait Until Element Is Enabled    ${locator_btn_edit_tender}
     Click Button    ${locator_btn_edit_tender}
-    Добавить документ    ${filepath}
+    Load document    ${filepath}
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Go To    ${USERS.user.browser}
-    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Go To    ${USERS.users['${username}'].homepage}
+    Search tender    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -77,11 +77,11 @@ aps.Пошук тендера по ідентифікатору
 Задати питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
-    Поиск тендера по идентификатору    ${username}    ${tender_uaid}
+    Search tender    ${username}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_questions}
     Click Element    ${locator_questions}
     Click Button    ${locator_add_discussion}
-    Задать вопрос    ${question}
+    Add question    ${question}
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}

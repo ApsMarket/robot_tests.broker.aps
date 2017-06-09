@@ -23,7 +23,7 @@ ${locator_add_item_button}    id=add_procurement_subject0
 ${locator_item_description}    id=procurementSubject_description00
 ${locator_Quantity}    id=procurementSubject_quantity00
 ${locator_code}    id=select_unit00
-${locator_button_add_cpv}    id=cls_click_00
+${locator_button_add_cpv}    id=cls_click_
 ${locator_cpv_search}    id=search-classifier-text
 ${locator_button_add_dkpp}    //button[@itemid="otherClassifier"]
 ${locator_dkpp_search}    id=search-classifier-text
@@ -71,3 +71,4 @@ ${locator_add_discussion}    id=add_discussion
 ${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/div/select
 ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
+${locator_search_type}    //select[@class="form-control b-r-none ng-pristine ng-untouched ng-valid ng-empty"]
