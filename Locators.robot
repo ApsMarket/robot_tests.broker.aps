@@ -29,19 +29,19 @@ ${locator_button_add_dkpp}    //button[@itemid="otherClassifier"]
 ${locator_dkpp_search}    id=search-classifier-text
 ${locator_add_classfier}    id=add-classifier
 ${locator_date_delivery_end}    id=delivery_end_
-${locator_button_create_item}    id=update_00
+${locator_button_create_item}    id=update_
 ${locator_check_location}    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
 ${locator_country_id}    xpath=.//*[@id='select_countries00']['Україна']
-${locator_SelectRegion}    id=select_regions00
-${locator_postal_code}    id=zip_code_00
-${locator_locality}    id=locality_00
-${locator_street}    id=street_00
+${locator_SelectRegion}    id=select_regions
+${locator_postal_code}    id=zip_code_
+${locator_locality}    id=select_regions
+${locator_street}    id=street_
 ${locator_search}    id=Search
 ${locator_search-btn}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/div[2]/button
 ${locator_currency}    xpath=.//select[@ng-model="purchase.currency"]
 ${locator_items}    xpath=.//*[@id='procurementSubjectTab']/a
-${locator_deliveryLocation_latitude}    id=latutide_00
-${locator_deliveryLocation_longitude}    id=longitude_00
+${locator_deliveryLocation_latitude}    id=latutide_
+${locator_deliveryLocation_longitude}    id=longitude_
 ${locator_check_dk}    xpath=.//*[@id='tree']
 ${next_step}      id=next_step
 ${locator_documents}    xpath=.//*[@id='documentsTab']/a[contains(@href,"#documents")]    # .//*[@id='documentsTab']/a[@href='#documents']

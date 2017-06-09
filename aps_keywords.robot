@@ -48,9 +48,8 @@ Library           conv_timeDate.py
     Info OpenUA    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
-    Add Item    ${item}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
-    Click Button    ${locator_finish_edit}
+    Add Item    ${item}    00
+    Publish tender
 
 Открытые торги с публикацией на англ
 
@@ -75,25 +74,27 @@ date_Time
     [Return]    ${aps_date}
 
 Add Item
-    [Arguments]    ${item}
+    [Arguments]    ${item}    ${d}
     Log To Console    item add start
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    sleep    2
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
     Click Button    ${locator_add_item_button}
-    Wait Until Element Is Enabled    ${locator_item_description}    30
+    Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
-    Press Key    ${locator_item_description}    ${add_classif}
+    Input Text    ${locator_item_description}${d}    ${add_classif}
+    Comment    Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Wait Until Element Is Enabled    ${locator_Quantity}
-    Press Key    ${locator_Quantity}    '${editItemQuant}'
+    Wait Until Element Is Enabled    ${locator_Quantity}${d}
+    Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
     #Выбор ед измерения
-    Wait Until Element Is Enabled    ${locator_code}
+    Wait Until Element Is Enabled    ${locator_code}${d}
     ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}    ${code}
+    Select From List By Value    ${locator_code}${d}    ${code}
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
@@ -103,39 +104,49 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+    #Выбор др ДК
+    sleep    1
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
+    Click Button    ${locator_button_add_dkpp}
+    Wait Until Element Is Visible    ${locator_dkpp_search}
+    Clear Element Text    ${locator_dkpp_search}
+    Press Key    ${locator_dkpp_search}    000
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}
+    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
-    Press Key    ${locator_date_delivery_start}    ${date_time}
+    Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    Fill Date    ${locator_date_delivery_end}    ${date_time}
-    Click Element    ${locator_check_location}
+    Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Execute Javascript    window.scroll(0, 1000)
+    Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
+    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
     Execute Javascript    window.scroll(1000, 1000)
-    sleep    2
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}    ${post_code}
+    Press Key    ${locator_postal_code}${d}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}    ${locality}
+    Press Key    ${locator_locality}${d}    ${locality}
+    Press Key    id=locality_${d}    м. Київ
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}    ${street}
+    Press Key    ${locator_street}${d}    ${street}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
+    Press Key    ${locator_deliveryLocation_latitude}${d}    ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
+    Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-    Click Button    ${locator_button_create_item}
-
-Item \ info
+    Wait Until Element Is Enabled    ${locator_button_create_item}${d}
+    Click Button    ${locator_button_create_item}${d}
 
 Info Below
     [Arguments]    ${tender_data}
@@ -373,6 +384,7 @@ Add item negotiate
     sleep    2
 
 Publish tender
+    Log To Console    start punlish tender
     Wait Until Page Contains Element    ${locator_toast_container}
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -382,6 +394,7 @@ Publish tender
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
+    Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 
