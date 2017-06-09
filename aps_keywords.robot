@@ -46,7 +46,7 @@ Library           conv_timeDate.py
     Info OpenUA    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
-    Add Item    ${item}
+    Add Item    ${item}    00
     Publish tender
 
 Открытые торги с публикацией на англ
@@ -72,26 +72,27 @@ date_Time
     [Return]    ${aps_date}
 
 Add Item
-    [Arguments]    ${item}
+    [Arguments]    ${item}    ${d}
     Log To Console    item add start
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    sleep    2
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
     Click Button    ${locator_add_item_button}
-    Wait Until Element Is Enabled    ${locator_item_description}    30
+    Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
-    Input Text    ${locator_item_description}    ${add_classif}
+    Input Text    ${locator_item_description}${d}    ${add_classif}
     Comment    Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Wait Until Element Is Enabled    ${locator_Quantity}
-    Press Key    ${locator_Quantity}    '${editItemQuant}'
+    Wait Until Element Is Enabled    ${locator_Quantity}${d}
+    Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
     #Выбор ед измерения
-    Wait Until Element Is Enabled    ${locator_code}
+    Wait Until Element Is Enabled    ${locator_code}${d}
     ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}    ${code}
+    Select From List By Value    ${locator_code}${d}    ${code}
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
@@ -115,35 +116,35 @@ Add Item
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
-    Fill Date    ${locator_date_delivery_start}    ${date_time}
+    Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
-    Fill Date    ${locator_date_delivery_end}    ${date_time}
+    Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Execute Javascript    window.scroll(0, 1000)
-    Click Element    ${locator_check_location}
+    Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
+    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
     Execute Javascript    window.scroll(1000, 1000)
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}    ${post_code}
+    Press Key    ${locator_postal_code}${d}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}    ${locality}
-    Press Key    id=locality_00    м. Київ
+    Press Key    ${locator_locality}${d}    ${locality}
+    Press Key    id=locality_${d}    м. Київ
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}    ${street}
+    Press Key    ${locator_street}${d}    ${street}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_latitude}    ${deliveryLocation_latitude}
+    Press Key    ${locator_deliveryLocation_latitude}${d}    ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_longitude}    ${deliveryLocation_longitude}
+    Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-    Wait Until Element Is Enabled    ${locator_button_create_item}
-    Click Button    ${locator_button_create_item}
+    Wait Until Element Is Enabled    ${locator_button_create_item}${d}
+    Click Button    ${locator_button_create_item}${d}
 
 Info Below
     [Arguments]    ${tender_data}
@@ -254,13 +255,18 @@ Load document
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
     Wait Until Page Contains Element    ${locator_search_type}
+    Log To Console    1
     Select From List By Label    ${locator_search_type}    По Id
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
+    Log To Console    2
+    Log To Console    ${tender_uaid}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
+    Log To Console    3
     Click Element    ${locator_search-btn}
     Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]    30
+    Log To Console    4
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4
 
 Info OpenUA

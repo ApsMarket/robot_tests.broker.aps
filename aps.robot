@@ -64,6 +64,7 @@ aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
     Go To    ${USERS.users['${username}'].homepage}
+    Log To Console    ${tender_uaid}
     Search tender    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
