@@ -31,9 +31,11 @@ aps.Підготувати дані для оголошення тендера
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    м. Київ
-    ${reg}=    Get From Dictionary    ${tender_data.data}    items
-    ${item}=    Get From List    ${reg}    0
+    ${items}=    Get From Dictionary    ${tender_data.data}    items
+    ${item}=    Get From List    ${items}    0
     Set To Dictionary    ${item.deliveryAddress}    region    м. Київ
+    Set List Value    ${items}    0    ${item}
+    Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 

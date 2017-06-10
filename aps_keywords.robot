@@ -41,10 +41,13 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
-    ${ttt}=    Get From Dictionary    ${tender.data}    items
-    ${item}=    Set Variable    ${ttt[0]}
-    Add Item    ${item}    00
-    Publish tender
+    Add Lot    1    ${tender.data.lots[0]}
+    Wait Until Element Is Enabled    id=next_step
+    Click Button    id=next_step
+    ${items}=    Get From Dictionary    ${tender.data}    items
+    ${item}=    Get From List    ${items}    0
+    Add Item    ${item}    10    1
+    Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
 
@@ -69,19 +72,18 @@ date_Time
     [Return]    ${aps_date}
 
 Add Item
-    [Arguments]    ${item}    ${d}
+    [Arguments]    ${item}    ${d}    ${d_lot}
     Log To Console    item add start
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
     sleep    2
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_add_item_button}    30
     Click Element    ${locator_items}
-    Click Button    ${locator_add_item_button}
+    Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    30
+    Click Button    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Input Text    ${locator_item_description}${d}    ${add_classif}
-    Comment    Press Key    ${locator_item_description}    ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -123,14 +125,17 @@ Add Item
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${d}    ${post_code}
-    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}${d}    ${locality}
-    Press Key    id=locality_${d}    м. Київ
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_region}${d}    ${region}
+    Execute Javascript    window.scroll(1000, 1000)
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}${d}    ${street}
+    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
+    Press Key    ${locator_locality}${d}    ${locality}
+    #Koordinate
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
@@ -277,16 +282,8 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -403,3 +400,36 @@ Fill Date
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
     Execute Javascript    ${ddd}
+
+Set Tender Budget
+    [Arguments]    ${tender}
+    #Ввод бюджета
+    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    #Ввод мин шага
+    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
+    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    ${locator_min_step}    ${text_ms}
+
+Add Lot
+    [Arguments]    ${d}    ${lot}
+    Log To Console    ${lot}
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Input Text    ${locator_multilot_title}${d}    ${lot.title}
+    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotBudget_${d}    '${lot.value.amount}'
+    Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
+    Press Key    id=lotMinStep_${d}    ////13
+    #Input Text    id=lotGuarantee_${d}
+    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
