@@ -30,13 +30,9 @@ Library           conv_timeDate.py
     Add item negotiate    ${item}    00
     Wait Until Element Is Visible    ${locator_add_item_button}
     Add item negotiate    ${item}    01
-    Wait Until Page Contains Element    ${locator_toast_container}
-    Click Button    ${locator_toast_close}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
-    Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}
-    Wait Until Element Is Enabled    ${locator_publish_tender}
-    Click Button    ${locator_publish_tender}
+    Execute Javascript    window.scroll(-1000, -1000)
+    ${tender_UID}=    Publish tender
+    [Return]    ${tender_UID}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
@@ -235,8 +231,8 @@ Login
 
 Load document
     [Arguments]    ${filepath}
-    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
-    Wait Until Element Is Enabled    ${locator_documents}    \    5
+    Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
+    Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
@@ -365,7 +361,7 @@ Add item negotiate
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}${q}    ${street}
     sleep    3
-    Click Element    xpath=.//*[@id='is_delivary_00']/div[1]/div[2]/div
+    Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
