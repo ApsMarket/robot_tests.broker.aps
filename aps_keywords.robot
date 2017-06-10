@@ -61,7 +61,7 @@ Library           conv_timeDate.py
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
-    Add Item    ${item}    00
+    Add Item    ${item}    00    ${EMPTY}
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -219,7 +219,7 @@ Info Negotiate
     Press Key    ${locator_currency}    ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
-    ${text}=    Convert To string    ${budget}
+    ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     Click Button    ${locator_next_step}
@@ -298,6 +298,7 @@ Add item negotiate
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_items}    30
     Click Element    ${locator_items}
+    sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}
     Click Button    ${locator_add_item_button}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
