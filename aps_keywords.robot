@@ -48,7 +48,7 @@ Library           conv_timeDate.py
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}    00
-    Publish tender
+    Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
 
@@ -127,14 +127,17 @@ Add Item
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${d}    ${post_code}
-    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}${d}    ${locality}
-    Press Key    id=locality_${d}    м. Київ
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_region}${d}    ${region}
+    Execute Javascript    window.scroll(1000, 1000)
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}${d}    ${street}
+    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
+    Press Key    ${locator_locality}${d}    ${locality}
+    #Koordinate
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
