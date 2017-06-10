@@ -73,8 +73,12 @@ ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/d
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
 ${locator_search_type}    //select[@class="form-control b-r-none ng-pristine ng-untouched ng-valid ng-empty"]
 ${locator_date_delivery_start}    id=delivery_start_    # Проверить id
-${locator_check_gps}    xpath=.//*[@id='is_delivary_01']/div[1]/div[1]
+${locator_check_gps}    id=is_delivary_
 ${locator_item_description_01}    id=procurementSubject_description01
+${locator_region}    id=select_regions
+${locator_multilot_enabler}    xpath=.//*[@id='is_multilot']
+${locator_multilot_new}    id=buttonAddNewLot
+${locator_multilot_title}    id=lotTitle_
 ${locator_biddingEng_create}    id=url_create_purchase_2    # id=url_create_purchase_2
 ${locator_titleEng}    id=title_en    # id=title_en
 ${locator_item_descriptionEng}    id=procurementSubject_description_En    # id=procurementSubject_description_En
