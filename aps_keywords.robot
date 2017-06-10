@@ -284,16 +284,7 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Set Tender Budget    ${tender}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -410,3 +401,16 @@ Fill Date
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
     Execute Javascript    ${ddd}
+
+Set Tender Budget
+    [Arguments]    ${tender}
+    #Ввод бюджета
+    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    #Ввод мин шага
+    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
+    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    ${locator_min_step}    ${text_ms}

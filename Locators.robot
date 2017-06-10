@@ -76,3 +76,4 @@ ${locator_date_delivery_start}    id=delivery_start_    # Проверить id
 ${locator_check_gps}    xpath=.//*[@id='is_delivary_01']/div[1]/div[1]
 ${locator_item_description_01}    id=procurementSubject_description01
 ${locator_region}    id=select_regions
+${locator_multilot_enabler}    xpath=.//*[@id='is_multilot']
