@@ -597,10 +597,10 @@ Add Feature
     : FOR    ${enum}    IN    @{enums}
     \    ${enid}=    Evaluate    ${enid}+${1}
     \    ${end}=    Set Variable    ${lid}_${pid}_${enid}
-    ${EMPTY}
     \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     \    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     \    ${val}=    Evaluate    ${enum.value}*${100}
+    \    ${val}=    Convert Float To String    ${val}
     \    Log To Console    ${enum}
     \    Log To Console    val \ \ \ ${val}
     \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${end}    ${val}
