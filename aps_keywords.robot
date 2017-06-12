@@ -50,6 +50,15 @@ Library           conv_timeDate.py
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
+    [Arguments]    ${tender}
+    Wait Until Element Is Enabled    ${locator_button_create}    15
+    Click Button    ${locator_button_create}
+    Wait Until Element Is Enabled    ${locator_biddingEng_create}    15
+    Click Link    ${locator_biddingEng_create}
+    Info OpenEng    ${tender}
+    ${ttt}=    Get From Dictionary    ${tender.data}    items
+    ${item}=    Set Variable    ${ttt[0]}
+    Add Item Eng    ${item}    00
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
@@ -73,11 +82,13 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
+    Log To Console    ${item}
     Log To Console    item add start
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
     sleep    2
     #Клик доб позицию
     Click Element    ${locator_items}
+    Log To Console    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    30
     Click Button    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_item_description}${d}    30
@@ -101,16 +112,8 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    #Выбор др ДК
-    sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    Press Key    ${locator_dkpp_search}    000
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
+    Run Keyword If    ${is_dkpp}=='PASS'    Set DKKP    ${item}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -403,7 +406,7 @@ Fill Date
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
     Execute Javascript    ${ddd}
 
-Set Tender Budget
+Tender Budget
     [Arguments]    ${tender}
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender.data.value}    amount
@@ -418,7 +421,6 @@ Set Tender Budget
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Log To Console    ${lot}
     Wait Until Page Contains Element    ${locator_multilot_new}
     Wait Until Element Is Enabled    ${locator_multilot_new}
     Click Button    ${locator_multilot_new}
@@ -435,3 +437,136 @@ Add Lot
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+
+Info OpenEng
+    [Arguments]    ${tender}
+    Log To Console    start openEng info
+    #Ввод названия закупки
+    Wait Until Page Contains Element    ${locator_tenderTitle}
+    ${descr}=    Get From Dictionary    ${tender.data}    title
+    Input Text    ${locator_tenderTitle}    ${descr}
+    Wait Until Page Contains Element    ${locator_titleEng}
+    ${descrEng}=    Get From Dictionary    ${tender.data}    title_en
+    Input Text    ${locator_titleEng}    ${descrEng}
+    #Выбор НДС
+    ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
+    Click Element    ${locator_pdv}
+    Execute Javascript    window.scroll(1000, 1000)
+    #Валюта
+    Wait Until Element Is Enabled    ${locator_currency}    15
+    Click Element    ${locator_currency}
+    Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
+    #Ввод бюджета
+    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
+    ${text}=    Convert To string    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    #Ввод мин шага
+    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
+    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    ${locator_min_step}    ${text_ms}
+    #Период приема предложений (кон дата)
+    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
+    ${date_time_ten_end}=    dt    ${tender_end}
+    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    Sleep    2
+    Comment    Click Element    id=createOrUpdatePurchase
+    Execute Javascript    window.scroll(1000, 1000)
+    Sleep    2
+    Wait Until Element Is Enabled    ${locator_button_next_step}    20
+    Click Button    ${locator_button_next_step}
+    Log To Console    finish openEng info
+
+Add Item Eng
+    [Arguments]    ${item}    ${d}
+    Log To Console    item Eng add start
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    sleep    2
+    #Клик доб позицию
+    Wait Until Element Is Enabled    ${locator_add_item_button}    30
+    Click Element    ${locator_items}
+    Click Button    ${locator_add_item_button}
+    Wait Until Element Is Enabled    ${locator_item_description}${d}    30
+    #Название предмета закупки
+    ${add_classif}=    Get From Dictionary    ${item}    description
+    Input Text    ${locator_item_description}${d}    ${add_classif}
+    Wait Until Element Is Enabled    ${locator_item_descriptionEng}${d}
+    ${add_classifEng}=    Get From Dictionary    ${item}    description_en
+    Log To Console    ${add_classifEng} \ \ \ \ \ \ ${locator_item_descriptionEng}${d}
+    Input Text    ${locator_item_descriptionEng}${d}    ${add_classifEng}
+    #Количество товара
+    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
+    Wait Until Element Is Enabled    ${locator_Quantity}${d}
+    Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
+    #Выбор ед измерения
+    Wait Until Element Is Enabled    ${locator_code}${d}
+    ${code}=    Get From Dictionary    ${item.unit}    code
+    Select From List By Value    ${locator_code}${d}    ${code}
+    ${name}=    Get From Dictionary    ${item.unit}    name
+    #Выбор ДК
+    Click Button    ${locator_button_add_cpv}
+    Wait Until Element Is Enabled    ${locator_cpv_search}
+    ${cpv}=    Get From Dictionary    ${item.classification}    id
+    Press Key    ${locator_cpv_search}    ${cpv}
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}
+    #Выбор др ДК
+    sleep    1
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
+    Click Button    ${locator_button_add_dkpp}
+    Wait Until Element Is Visible    ${locator_dkpp_search}
+    Clear Element Text    ${locator_dkpp_search}
+    Press Key    ${locator_dkpp_search}    000
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}
+    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
+    #Срок поставки (начальная дата)
+    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
+    ${date_time}=    dt    ${delivery_Date_start}
+    Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
+    #Срок поставки (конечная дата)
+    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
+    ${date_time}=    dt    ${delivery_Date}
+    Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
+    Execute Javascript    window.scroll(0, 1000)
+    Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
+    #Выбор страны
+    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
+    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
+    Execute Javascript    window.scroll(1000, 1000)
+    ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
+    Press Key    ${locator_postal_code}${d}    ${post_code}
+    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
+    Press Key    ${locator_locality}${d}    ${locality}
+    ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
+    Press Key    ${locator_street}${d}    ${street}
+    ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
+    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
+    ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
+    Press Key    ${locator_deliveryLocation_latitude}${d}    ${deliveryLocation_latitude}
+    ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
+    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
+    ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
+    Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
+    #Клик кнопку "Створити"
+    Wait Until Element Is Enabled    ${locator_button_create_item}${d}
+    Click Button    ${locator_button_create_item}${d}
+
+Set DKKP
+    [Arguments]    ${item}
+    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Log To Console    DKPP=${dkpp_id}
+    #Выбор др ДК
+    sleep    1
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
+    Click Button    ${locator_button_add_dkpp}
+    Wait Until Element Is Visible    ${locator_dkpp_search}
+    Clear Element Text    ${locator_dkpp_search}
+    Press Key    ${locator_dkpp_search}    ${dkpp_id}
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}

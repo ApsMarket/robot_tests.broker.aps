@@ -79,3 +79,6 @@ ${locator_region}    id=select_regions
 ${locator_multilot_enabler}    xpath=.//*[@id='is_multilot']
 ${locator_multilot_new}    id=buttonAddNewLot
 ${locator_multilot_title}    id=lotTitle_
+${locator_biddingEng_create}    id=url_create_purchase_2    # id=url_create_purchase_2
+${locator_titleEng}    id=title_en    # id=title_en
+${locator_item_descriptionEng}    id=procurementSubject_description_En    # id=procurementSubject_description_En
