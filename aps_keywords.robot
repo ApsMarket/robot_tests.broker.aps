@@ -88,7 +88,7 @@ date_Time
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     Log To Console    item add start id_lot=${d_lot} \ item_lot=${d_lot}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     sleep    2
     #Клик доб позицию
     Click Element    ${locator_items}
@@ -586,23 +586,26 @@ Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Enabled    id=add_features${lid}
     Click Button    id=add_features${lid}
-    Wait Until Element Is Enabled    id=featureTitle_${lid}_0
+    Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    Input Text    id=featureTitle_${lid}_0    ${fi.title}
-    Input Text    id=featureDescription_${lid}_0    ${fi.description}
+    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
+    Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
-    ${val}=    Set Variable    100
-    ${enid}=    Set Variable    0
+    ${val}=    Set Variable    ${100}
+    ${enid}=    Set Variable    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
-    :FOR    ${enum}    IN    @{enums}
-    \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
-    \    ${enid}=    Set Variable    ${enid}+1
-    \    Wait Until Element Is Enabled    id=featureEnumValue_${lid}_0_${enid}
-    \    Log To Console    ${enum}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${lid}_0_${enid}    ${enum.value}*${val}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${lid}_0_${enid}    ${enum.title}
-    \    Comment    Run Keyword Unless    ${enum.value}=='0'
-    \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
+    : FOR    ${enum}    IN    @{enums}
+    \    ${enid}=    Evaluate    ${enid}+${1}
+    \    ${end}=    Set Variable    ${lid}_${pid}_${enid}
     ${EMPTY}
-    Wait Until Element Is Enabled    id=updateFeature_${lid}_0
-    Click Button    id=updateFeature_${lid}_0
+    \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    \    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
+    \    ${val}=    Evaluate    ${enum.value}*${100}
+    \    Log To Console    ${enum}
+    \    Log To Console    val \ \ \ ${val}
+    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${end}    ${val}
+    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${end}    ${enum.title}
+    \    Run Keyword Unless    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
+    \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
+    Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
+    Click Button    id=updateFeature_${lid}_${pid}
