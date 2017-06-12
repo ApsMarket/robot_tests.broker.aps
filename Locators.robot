@@ -19,7 +19,7 @@ ${locator_discussionDate_end}    id=period_enquiry_end
 ${locator_bidDate_start}    id=period_tender_start
 ${locator_bidDate_end}    id=period_tender_end
 ${locator_button_next_step}    xpath=.//*[@id='next_step']
-${locator_add_item_button}    id=add_procurement_subject
+${locator_add_item_button}    id=add_procurement_subject0
 ${locator_item_description}    id=procurementSubject_description
 ${locator_Quantity}    id=procurementSubject_quantity
 ${locator_code}    id=select_unit
