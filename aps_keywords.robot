@@ -82,11 +82,13 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
+    Log To Console    ${item}
     Log To Console    item add start
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
     sleep    2
     #Клик доб позицию
     Click Element    ${locator_items}
+    Log To Console    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    30
     Click Button    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_item_description}${d}    30
@@ -110,16 +112,8 @@ Add Item
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    #Выбор др ДК
-    sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    Press Key    ${locator_dkpp_search}    000
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
+    Run Keyword If    ${is_dkpp}=='PASS'    Set DKKP    ${item}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -425,7 +419,6 @@ Tender Budget
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Log To Console    ${lot}
     Wait Until Page Contains Element    ${locator_multilot_new}
     Wait Until Element Is Enabled    ${locator_multilot_new}
     Click Button    ${locator_multilot_new}
@@ -442,7 +435,6 @@ Add Lot
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
-
 
 Info OpenEng
     [Arguments]    ${tender}
@@ -560,3 +552,19 @@ Add Item Eng
     #Клик кнопку "Створити"
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
+
+Set DKKP
+    [Arguments]    ${item}
+    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Log To Console    DKPP=${dkpp_id}
+    #Выбор др ДК
+    sleep    1
+    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
+    Click Button    ${locator_button_add_dkpp}
+    Wait Until Element Is Visible    ${locator_dkpp_search}
+    Clear Element Text    ${locator_dkpp_search}
+    Press Key    ${locator_dkpp_search}    ${dkpp_id}
+    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
+    Wait Until Element Is Enabled    ${locator_add_classfier}
+    Click Button    ${locator_add_classfier}
