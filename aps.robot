@@ -35,8 +35,10 @@ aps.Підготувати дані для оголошення тендера
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    locality    Кишинeв
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    streetAddress    bvhgfhjhgj
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    Зайченко Марина Григорівна
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0444580520
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    http://www.pcenter.org.ua
+    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    22964365
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     Set To Dictionary    ${item.deliveryAddress}    region    м. Київ
