@@ -4,7 +4,7 @@
 ${item_index}     0
 ${locator_create_dop_zak}    xpath=.//a[@id='url_create_purchase_0']
 ${locator_enter}    xpath=.//*[@id='butLoginPartial']
-${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[4]/a
+${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[3]/a/i
 ${locator_emailField}    id=Email    # id=Email
 ${locator_passwordField}    id=Password    # id=Password
 ${locator_loginButton}    id=submitLogin

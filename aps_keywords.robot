@@ -46,7 +46,24 @@ Library           conv_timeDate.py
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
-    Add Item    ${item}    10    1
+    sleep    5000
+    Add Item    ${item}    00    0
+    Wait Until Element Is Visible    id=featuresTab
+    Click Button    id=featuresTab
+    Wait Until Element Is Enabled    id=add_features1
+    Click Button    id=add_features1
+    Wait Until Element Is Enabled    id=featureTitle_0_0
+    #Param0
+    Input Text    id=featureTitle_0_0    text
+    Input Text    id=featureDescription_0_0    featureDescription_0_0
+    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    #Enum_0_1
+    Wait Until Element Is Enabled    id=featureEnumValue_0_0_1
+    Input Text    id=featureEnumValue_0_0_1    1
+    Input Text    id=featureEnumTitle_0_0_1    featureEnumTitle_0_0_1
+    Input Text    id=featureEnumDescription_0_0_1    featureEnumDescription_0_0_1
+    Wait Until Element Is Enabled    id=updateFeature_0_0
+    Click Button    id=updateFeature_0_0
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -229,7 +246,7 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Wait Until Element Is Visible    ${locator_cabinetEnter}    10
+    Wait Until Element Is Visible    ${locator_cabinetEnter}    30
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
     Wait Until Element Is Visible    ${locator_emailField}    10
@@ -419,6 +436,7 @@ Tender Budget
 
 Add Lot
     [Arguments]    ${d}    ${lot}
+    Log To Console    start lot ${d}
     Wait Until Page Contains Element    ${locator_multilot_new}
     Wait Until Element Is Enabled    ${locator_multilot_new}
     Click Button    ${locator_multilot_new}
@@ -430,11 +448,13 @@ Add Lot
     Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${d}    ////13
     #Input Text    id=lotGuarantee_${d}
+    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Log To Console    finish lot ${d}
 
 Info OpenEng
     [Arguments]    ${tender}
