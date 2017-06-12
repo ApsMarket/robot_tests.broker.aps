@@ -27,9 +27,9 @@ Library           conv_timeDate.py
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
-    Add item negotiate    ${item}    00
-    Wait Until Element Is Visible    ${locator_add_item_button}
-    Add item negotiate    ${item}    01
+    Add item negotiate    ${item}    00    0
+    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
@@ -207,8 +207,10 @@ Info Negotiate
     Press Key    ${locator_description}    ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Select From List By Value    ${locator_select_directory_causes}    ${select_directory_causes}
-    Press Key    ${locator_select_directory_causes}    ${select_directory_causes}
+    Click Element    ${locator_directory_cause}
+    ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Click Element    xpath=html/body
     #Обоснование
     ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
     Press Key    ${locator_cause_description}    ${cause_description}
@@ -297,13 +299,13 @@ Info OpenUA
     Log To Console    finish openUa info
 
 Add item negotiate
-    [Arguments]    ${item}    ${q}
+    [Arguments]    ${item}    ${q}    ${w}
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_items}    30
     Click Element    ${locator_items}
     sleep    3
-    Wait Until Element Is Enabled    ${locator_add_item_button}
-    Click Button    ${locator_add_item_button}
+    Wait Until Element Is Enabled    ${locator_add_item_button}${w}
+    Click Button    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
@@ -371,7 +373,7 @@ Add item negotiate
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
-    Execute Javascript    window.scroll(-1000, -1000)
+    Execute Javascript    window.scroll(1000, 1000)
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}${q}

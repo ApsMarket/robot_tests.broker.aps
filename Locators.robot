@@ -4,7 +4,7 @@
 ${item_index}     0
 ${locator_create_dop_zak}    xpath=.//a[@id='url_create_purchase_0']
 ${locator_enter}    xpath=.//*[@id='butLoginPartial']
-${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[4]/a
+${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[3]/a
 ${locator_emailField}    id=Email    # id=Email
 ${locator_passwordField}    id=Password    # id=Password
 ${locator_loginButton}    id=submitLogin
@@ -19,7 +19,7 @@ ${locator_discussionDate_end}    id=period_enquiry_end
 ${locator_bidDate_start}    id=period_tender_start
 ${locator_bidDate_end}    id=period_tender_end
 ${locator_button_next_step}    xpath=.//*[@id='next_step']
-${locator_add_item_button}    id=add_procurement_subject0
+${locator_add_item_button}    id=add_procurement_subject
 ${locator_item_description}    id=procurementSubject_description
 ${locator_Quantity}    id=procurementSubject_quantity
 ${locator_code}    id=select_unit
@@ -59,7 +59,7 @@ ${locator_toast_container}    id=toast-container
 ${locator_toast_close}    xpath=.//*[@class='toast-close-button']
 ${locator_create_negotiation}    xpath=.//a[@id="url_create_purchase_4"]
 ${locator_description}    id=description
-${locator_select_directory_causes}    id=select_directory_causes
+${locator_select_directory_causes}    xpath=.//*[@ng-bind='directoryCause.cause']
 ${locator_cause_description}    id=cause_description
 ${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
 ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
@@ -82,3 +82,4 @@ ${locator_multilot_title}    id=lotTitle_
 ${locator_biddingEng_create}    id=url_create_purchase_2    # id=url_create_purchase_2
 ${locator_titleEng}    id=title_en    # id=title_en
 ${locator_item_descriptionEng}    id=procurementSubject_description_En    # id=procurementSubject_description_En
+${locator_directory_cause}    xpath=.//*[@id='select_directory_causes']/div[1]/span
