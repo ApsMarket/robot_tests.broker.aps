@@ -368,6 +368,7 @@ Add item negotiate
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
+    Execute Javascript    window.scroll(-1000, -1000)
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}${q}
