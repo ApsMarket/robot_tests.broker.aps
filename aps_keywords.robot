@@ -346,7 +346,6 @@ Add item negotiate
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
-    Comment    Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
