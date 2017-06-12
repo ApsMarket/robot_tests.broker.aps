@@ -41,12 +41,17 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
-    Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step
-    Click Button    id=next_step
+    Comment    Add Lot    1    ${tender.data.lots[0]}
+    Comment    Wait Until Element Is Enabled    id=next_step
+    Comment    Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
-    Add Item    ${item}    10    1
+    Add Item    ${item}    00    0
+    Wait Until Element Is Enabled    id=next_step    30
+    Click Button    id=next_step
+    ${features}=    Get From Dictionary    ${tender.data}    features
+    \    #data    #lot_id    #item_id
+    Add Feature    ${features[0]}    0    0
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -82,8 +87,7 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    Log To Console    ${item}
-    Log To Console    item add start
+    Log To Console    item add start id_lot=${d_lot} \ item_lot=${d_lot}
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
     sleep    2
     #Клик доб позицию
@@ -113,7 +117,11 @@ Add Item
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
-    Run Keyword If    ${is_dkpp}=='PASS'    Set DKKP    ${item}
+    ${dkpp}=    Set Variable    000
+    ${dkpp_id}=    Set Variable    000
+    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -150,6 +158,7 @@ Add Item
     #Клик кнопку "Створити"
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
+    Log To Console    finish add item
 
 Info Below
     [Arguments]    ${tender_data}
@@ -231,7 +240,7 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Wait Until Element Is Visible    ${locator_cabinetEnter}    10
+    Wait Until Element Is Visible    ${locator_cabinetEnter}    30
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
     Wait Until Element Is Visible    ${locator_emailField}    10
@@ -287,8 +296,9 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
-    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
+    Comment    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
+    Comment    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
+    Set Tender Budget    ${tender}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -388,7 +398,7 @@ Publish tender
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}
-    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('header')).scope(); \ return model.$$childHead.purchase.purchase.prozorroId
+    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
@@ -407,7 +417,7 @@ Fill Date
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
     Execute Javascript    ${ddd}
 
-Tender Budget
+Set Tender Budget
     [Arguments]    ${tender}
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender.data.value}    amount
@@ -422,6 +432,7 @@ Tender Budget
 
 Add Lot
     [Arguments]    ${d}    ${lot}
+    Log To Console    start lot ${d}
     Wait Until Page Contains Element    ${locator_multilot_new}
     Wait Until Element Is Enabled    ${locator_multilot_new}
     Click Button    ${locator_multilot_new}
@@ -433,11 +444,13 @@ Add Lot
     Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${d}    ////13
     #Input Text    id=lotGuarantee_${d}
+    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Log To Console    finish lot ${d}
 
 Info OpenEng
     [Arguments]    ${tender}
@@ -557,9 +570,7 @@ Add Item Eng
     Click Button    ${locator_button_create_item}${d}
 
 Set DKKP
-    [Arguments]    ${item}
-    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    [Arguments]    ${dkpp_id}
     Log To Console    DKPP=${dkpp_id}
     #Выбор др ДК
     sleep    1
@@ -571,3 +582,28 @@ Set DKKP
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+
+Add Feature
+    [Arguments]    ${fi}    ${lid}    ${pid}
+    Wait Until Element Is Enabled    id=add_features${lid}
+    Click Button    id=add_features${lid}
+    Wait Until Element Is Enabled    id=featureTitle_${lid}_0
+    #Param0
+    Input Text    id=featureTitle_${lid}_0    ${fi.title}
+    Input Text    id=featureDescription_${lid}_0    ${fi.description}
+    #Enum_0_1
+    ${val}=    Set Variable    100
+    ${enid}=    Set Variable    0
+    ${enums}=    Get From Dictionary    ${fi}    enum
+    :FOR    ${enum}    IN    @{enums}
+    \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    \    ${enid}=    Set Variable    ${enid}+1
+    \    Wait Until Element Is Enabled    id=featureEnumValue_${lid}_0_${enid}
+    \    Log To Console    ${enum}
+    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${lid}_0_${enid}    ${enum.value}*${val}
+    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${lid}_0_${enid}    ${enum.title}
+    \    Comment    Run Keyword Unless    ${enum.value}=='0'
+    \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
+    ${EMPTY}
+    Wait Until Element Is Enabled    id=updateFeature_${lid}_0
+    Click Button    id=updateFeature_${lid}_0
