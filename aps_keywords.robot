@@ -58,6 +58,7 @@ Library           conv_timeDate.py
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
+    Add LotEng
     Add Item Eng    ${item}    00
 
 Допороговый однопредметный тендер
@@ -443,9 +444,8 @@ Add Lot
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
 
-
 Info OpenEng
-    [Arguments]    ${tender}
+    [Arguments]    ${tender}    ${d}
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
@@ -462,16 +462,13 @@ Info OpenEng
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
-    #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    #Выбор многолотовости
+    Log To Console    ${tender.data.lots[0]}
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Comment    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Comment    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -542,7 +539,8 @@ Add Item Eng
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_region}${d}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${d}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
