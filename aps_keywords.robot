@@ -30,9 +30,9 @@ ${enid}           ${0}
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
-    Add item negotiate    ${item}    00
-    Wait Until Element Is Visible    ${locator_add_item_button}
-    Add item negotiate    ${item}    01
+    Add item negotiate    ${item}    00    0
+    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
@@ -217,8 +217,10 @@ Info Negotiate
     Press Key    ${locator_description}    ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Select From List By Value    ${locator_select_directory_causes}    ${select_directory_causes}
-    Press Key    ${locator_select_directory_causes}    ${select_directory_causes}
+    Click Element    ${locator_directory_cause}
+    ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Click Element    xpath=html/body
     #Обоснование
     ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
     Press Key    ${locator_cause_description}    ${cause_description}
@@ -308,13 +310,13 @@ Info OpenUA
     Log To Console    finish openUa info
 
 Add item negotiate
-    [Arguments]    ${item}    ${q}
+    [Arguments]    ${item}    ${q}    ${w}
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_items}    30
     Click Element    ${locator_items}
     sleep    3
-    Wait Until Element Is Enabled    ${locator_add_item_button}
-    Click Button    ${locator_add_item_button}
+    Wait Until Element Is Enabled    ${locator_add_item_button}${w}
+    Click Button    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
@@ -355,7 +357,6 @@ Add item negotiate
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
-    Comment    Click Element    ${locator_check_location}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
@@ -382,7 +383,7 @@ Add item negotiate
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
-    Execute Javascript    window.scroll(-1000, -1000)
+    Execute Javascript    window.scroll(1000, 1000)
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}${q}
@@ -453,7 +454,7 @@ Add Lot
     Log To Console    finish lot ${d}
 
 Info OpenEng
-    [Arguments]    ${tender}
+    [Arguments]    ${tender}    ${d}
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
@@ -470,16 +471,13 @@ Info OpenEng
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
-    #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    #Выбор многолотовости
+    Log To Console    ${tender.data.lots[0]}
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Comment    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Comment    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -550,7 +548,8 @@ Add Item Eng
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_region}${d}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${d}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
