@@ -394,10 +394,10 @@ Publish tender
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Page Contains Element    ${locator_publish_tender}    30
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}
+    Wait Until Page Contains Element    ${locator_UID}    30
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
@@ -594,7 +594,7 @@ Add Feature
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
-    :FOR    ${enum}    IN    @{enums}
+    : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
     \    Log To Console    enid = \ ${enid}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
