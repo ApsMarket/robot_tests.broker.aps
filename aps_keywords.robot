@@ -503,14 +503,16 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_multilot_title}${d}
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
-    Comment    Input Text    ${locator_lotTitleEng}${d}    ${lot.title_en}
+    ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
+    Press Key    ${locator_lotTitleEng}${d}    ${lot.title_en}
+    Input Text    id=lotDescription_${d}    ${lot.description}
     Input Text    id=lotDescription_${d}    ${lot.description}
     Input Text    id=lotBudget_${d}    '${lot.value.amount}'
     Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${d}    ////13
     #Input Text    id=lotGuarantee_${d}
     Execute Javascript    window.scroll(1000, 1000)
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
