@@ -32,6 +32,7 @@ ${enid}           ${0}
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
     Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
     ${tender_UID}=    Publish tender
@@ -288,6 +289,7 @@ Info OpenUA
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
+    Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}

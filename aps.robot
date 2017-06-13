@@ -84,8 +84,8 @@ aps.Пошук тендера по ідентифікатору
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     Reload Page
 
-Отримати інформацію із тендера
-    [Arguments]    ${username}    ${field_name}
+aps.Отримати інформацію із тендера
+    [Arguments]    ${username}    ${field}    ${object_id}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     [Return]    field_value
 
