@@ -8,6 +8,9 @@ Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
 
+*** Variables ***
+${enid}           ${0}
+
 *** Keywords ***
 Открыть форму создания тендера
     Comment    Go To    http://192.168.90.170/purchase/create/0
@@ -41,17 +44,15 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
-    Comment    Add Lot    1    ${tender.data.lots[0]}
-    Comment    Wait Until Element Is Enabled    id=next_step
-    Comment    Click Button    id=next_step
+    Add Lot    1    ${tender.data.lots[0]}
+    Wait Until Element Is Enabled    id=next_step
+    Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
-    Add Item    ${item}    00    0
+    Add Item    ${item}    10    1
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
-    ${features}=    Get From Dictionary    ${tender.data}    features
-    \    #data    #lot_id    #item_id
-    Add Feature    ${features[0]}    0    0
+    Add Feature    ${tender.data.features[0]}    0    0
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -88,7 +89,7 @@ date_Time
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     Log To Console    item add start id_lot=${d_lot} \ item_lot=${d_lot}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     sleep    2
     #Клик доб позицию
     Click Element    ${locator_items}
@@ -296,9 +297,9 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    Comment    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
-    Comment    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
-    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
+    Comment    Set Tender Budget    ${tender}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -453,7 +454,7 @@ Add Lot
     Log To Console    finish lot ${d}
 
 Info OpenEng
-    [Arguments]    ${tender}
+    [Arguments]    ${tender}    ${d}
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
@@ -470,16 +471,13 @@ Info OpenEng
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
-    #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    #Выбор многолотовости
+    Log To Console    ${tender.data.lots[0]}
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Comment    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Comment    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -550,7 +548,8 @@ Add Item Eng
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    Execute Javascript    window.scroll(1000, 1000)
+    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
+    Select From List By Label    ${locator_region}${d}    ${region}
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${d}    ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
@@ -587,23 +586,30 @@ Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Enabled    id=add_features${lid}
     Click Button    id=add_features${lid}
-    Wait Until Element Is Enabled    id=featureTitle_${lid}_0
+    Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    Input Text    id=featureTitle_${lid}_0    ${fi.title}
-    Input Text    id=featureDescription_${lid}_0    ${fi.description}
+    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
+    Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
-    ${val}=    Set Variable    100
-    ${enid}=    Set Variable    0
+    Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
     :FOR    ${enum}    IN    @{enums}
-    \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
-    \    ${enid}=    Set Variable    ${enid}+1
-    \    Wait Until Element Is Enabled    id=featureEnumValue_${lid}_0_${enid}
-    \    Log To Console    ${enum}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${lid}_0_${enid}    ${enum.value}*${val}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${lid}_0_${enid}    ${enum.title}
-    \    Comment    Run Keyword Unless    ${enum.value}=='0'
+    \    ${val}=    Evaluate    int(${enum.value}*${100})
+    \    Log To Console    enid = \ ${enid}
+    \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
+    \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
-    ${EMPTY}
-    Wait Until Element Is Enabled    id=updateFeature_${lid}_0
-    Click Button    id=updateFeature_${lid}_0
+    Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
+    Click Button    id=updateFeature_${lid}_${pid}
+
+Add Enum
+    [Arguments]    ${enum}    ${p}
+    ${val}=    Evaluate    int(${enum.value}*${100})
+    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    ${enid_}=    Evaluate    ${enid}+${1}
+    Set Suite Variable    ${enid}    ${enid_}
+    ${end}=    Set Variable    ${p}_${enid}
+    Log To Console    ${end}
+    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
+    Input Text    id=featureEnumValue_${end}    ${val}
+    Input Text    id=featureEnumTitle_${end}    ${enum.title}
