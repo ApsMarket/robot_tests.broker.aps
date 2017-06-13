@@ -8,6 +8,9 @@ Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
 
+*** Variables ***
+${enid}           ${0}
+
 *** Keywords ***
 Открыть форму создания тендера
     Comment    Go To    http://192.168.90.170/purchase/create/0
@@ -41,17 +44,15 @@ Library           conv_timeDate.py
     Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
-    Comment    Add Lot    1    ${tender.data.lots[0]}
-    Comment    Wait Until Element Is Enabled    id=next_step
-    Comment    Click Button    id=next_step
+    Add Lot    1    ${tender.data.lots[0]}
+    Wait Until Element Is Enabled    id=next_step
+    Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
-    Add Item    ${item}    00    0
+    Add Item    ${item}    10    1
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
-    ${features}=    Get From Dictionary    ${tender.data}    features
-    \    #data    #lot_id    #item_id
-    Add Feature    ${features[0]}    0    0
+    Add Feature    ${tender.data.features[0]}    0    0
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -294,9 +295,9 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
-    Comment    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
-    Comment    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
-    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
+    Comment    Set Tender Budget    ${tender}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -591,21 +592,25 @@ Add Feature
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
-    ${val}=    Set Variable    ${100}
-    ${enid}=    Set Variable    ${0}
+    Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
-    : FOR    ${enum}    IN    @{enums}
-    \    ${enid}=    Evaluate    ${enid}+${1}
-    \    ${end}=    Set Variable    ${lid}_${pid}_${enid}
-    \    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
-    \    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
-    \    ${val}=    Evaluate    ${enum.value}*${100}
-    \    ${val}=    Convert Float To String    ${val}
-    \    Log To Console    ${enum}
-    \    Log To Console    val \ \ \ ${val}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumValue_${end}    ${val}
-    \    Run Keyword If    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${end}    ${enum.title}
-    \    Run Keyword Unless    ${enum.value}=='0'    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
+    :FOR    ${enum}    IN    @{enums}
+    \    ${val}=    Evaluate    int(${enum.value}*${100})
+    \    Log To Console    enid = \ ${enid}
+    \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
+    \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
+
+Add Enum
+    [Arguments]    ${enum}    ${p}
+    ${val}=    Evaluate    int(${enum.value}*${100})
+    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    ${enid_}=    Evaluate    ${enid}+${1}
+    Set Suite Variable    ${enid}    ${enid_}
+    ${end}=    Set Variable    ${p}_${enid}
+    Log To Console    ${end}
+    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
+    Input Text    id=featureEnumValue_${end}    ${val}
+    Input Text    id=featureEnumTitle_${end}    ${enum.title}
