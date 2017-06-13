@@ -30,11 +30,15 @@ aps.Підготувати дані для оголошення тендера
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    м. Київ
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    countryName    Україна
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    locality    Київ
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    streetAddress    вулиця Виборзька, 40, 95
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    03680
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    countryName    Молдова, Республіка
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    locality    Кишинeв
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    streetAddress    bvhgfhjhgj
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    http://www.pcenter.org.ua
+    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    22964365
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     Set To Dictionary    ${item.deliveryAddress}    region    м. Київ
@@ -80,8 +84,8 @@ aps.Пошук тендера по ідентифікатору
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     Reload Page
 
-Отримати інформацію із тендера
-    [Arguments]    ${username}    ${field_name}
+aps.Отримати інформацію із тендера
+    [Arguments]    ${username}    ${field}    ${object_id}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     [Return]    field_value
 
