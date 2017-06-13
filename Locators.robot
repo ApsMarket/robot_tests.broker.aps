@@ -4,7 +4,7 @@
 ${item_index}     0
 ${locator_create_dop_zak}    xpath=.//a[@id='url_create_purchase_0']
 ${locator_enter}    xpath=.//*[@id='butLoginPartial']
-${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[4]/a
+${locator_cabinetEnter}    xpath=.//*[@id='header']/nav/div[2]/ul/li[3]/a/i
 ${locator_emailField}    id=Email    # id=Email
 ${locator_passwordField}    id=Password    # id=Password
 ${locator_loginButton}    id=submitLogin
@@ -19,7 +19,7 @@ ${locator_discussionDate_end}    id=period_enquiry_end
 ${locator_bidDate_start}    id=period_tender_start
 ${locator_bidDate_end}    id=period_tender_end
 ${locator_button_next_step}    xpath=.//*[@id='next_step']
-${locator_add_item_button}    id=add_procurement_subject0
+${locator_add_item_button}    id=add_procurement_subject
 ${locator_item_description}    id=procurementSubject_description
 ${locator_Quantity}    id=procurementSubject_quantity
 ${locator_code}    id=select_unit
