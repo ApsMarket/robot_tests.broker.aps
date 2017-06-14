@@ -647,7 +647,7 @@ Add Enum
 
 Sync
     [Arguments]    ${uaid}
-    ${off}=    Get Current Date    local    -15m    timestamp    true
+    ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
     Log To Console    ${off}
-    Log To Console    $.get('192.168.90.149:3005/api/sync/purchase/tenderID/offset=${off}&tenderID=${uaid}')
-    Execute Javascript    $.get('192.168.90.149:3005/api/sync/purchase/tenderID/offset=${off}&tenderID=${uaid}')
+    Log To Console    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
