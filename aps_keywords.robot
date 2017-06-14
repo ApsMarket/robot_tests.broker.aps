@@ -458,7 +458,7 @@ Add Lot
     Log To Console    finish lot ${d}
 
 Info OpenEng
-    [Arguments]    ${tender}    ${d}
+    [Arguments]    ${tender}
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
@@ -470,18 +470,18 @@ Info OpenEng
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
+    sleep    5
+    #Выбор многолотовости
+    Wait Until Element Is Enabled    ${locator_multilot_enabler}
+    Click Element    ${locator_multilot_enabler}
+    sleep    5
     Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
+    ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
-    #Выбор многолотовости
-    Log To Console    ${tender.data.lots[0]}
-    Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}
-    Click Button    ${locator_multilot_new}
-    Comment    Wait Until Page Contains Element    ${locator_multilot_title}${d}
-    Comment    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Press Key    ${locator_currency}    ${currency}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -493,6 +493,33 @@ Info OpenEng
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
     Click Button    ${locator_button_next_step}
     Log To Console    finish openEng info
+    #Добавление лота
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Sleep    2
+    ${d}=    Set Variable    1
+    ${lot}=    Get From Dictionary    ${tender.data}    lots
+    ${lot}=    Get From List    ${lot}    0
+    Log To Console    ${locator_multilot_title}${d}
+    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Input Text    ${locator_multilot_title}${d}    ${lot.title}
+    ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
+    Press Key    ${locator_lotTitleEng}${d}    ${lot.title_en}
+    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotBudget_${d}    '${lot.value.amount}'
+    Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
+    Press Key    id=lotMinStep_${d}    ////13
+    #Input Text    id=lotGuarantee_${d}
+    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Log To Console    finish lot ${d}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}

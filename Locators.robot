@@ -82,4 +82,6 @@ ${locator_multilot_title}    id=lotTitle_
 ${locator_biddingEng_create}    id=url_create_purchase_2    # id=url_create_purchase_2
 ${locator_titleEng}    id=title_en    # id=title_en
 ${locator_item_descriptionEng}    id=procurementSubject_description_En    # id=procurementSubject_description_En
+${locator_isMultilote}    id=is_multilot    # id=is_multilot
+${locator_lotTitleEng}    id=lotTitle_En_    # id=lotTitle_En
 ${locator_directory_cause}    xpath=.//*[@id='select_directory_causes']/div[1]/span
