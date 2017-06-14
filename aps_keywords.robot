@@ -646,3 +646,10 @@ Add Enum
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
+
+Sync
+    [Arguments]    ${uaid}
+    ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
+    Log To Console    ${off}
+    Log To Console    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
