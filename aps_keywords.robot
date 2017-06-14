@@ -508,7 +508,7 @@ Info OpenEng
     ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
     Press Key    ${locator_lotTitleEng}${d}    ${lot.title_en}
     Input Text    id=lotDescription_${d}    ${lot.description}
-    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotDescription_En_${d}    ${lot.description}
     Input Text    id=lotBudget_${d}    '${lot.value.amount}'
     Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${d}    ////13
@@ -520,6 +520,8 @@ Info OpenEng
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${d}
+    #нажатие след.шаг
+    Click Button    ${locator_next_step}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
