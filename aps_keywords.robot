@@ -644,3 +644,10 @@ Add Enum
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
+
+Sync
+    [Arguments]    ${uaid}
+    ${off}=    Get Current Date    local    -15m    timestamp    true
+    Log To Console    ${off}
+    Log To Console    $.get('192.168.90.149:3005/api/sync/purchase/tenderID/offset=${off}&tenderID=${uaid}')
+    Execute Javascript    $.get('192.168.90.149:3005/api/sync/purchase/tenderID/offset=${off}&tenderID=${uaid}')
