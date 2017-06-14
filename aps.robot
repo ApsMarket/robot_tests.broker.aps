@@ -8,6 +8,7 @@ Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
 Resource          aps_keywords.robot
+Resource          view.robot
 
 *** Variables ***
 ${id}             UA-2017-03-14-000099
@@ -136,9 +137,17 @@ aps.Отримати інформацію із тендера
     [Return]    URL сторінки аукціону
 
 aps.Отримати дані із тендера
-    [Arguments]    ${username}    ${field}    ${object_id}
+    [Arguments]    ${username}    @{arguments}
+    Search tender    ${username}    @{arguments[0]}
+    Run Keyword And Return If    @{arguments[0]}=='value.amount'    Get Field value.amount
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    @{arguments}
     Log To Console    ${username}
     Log To Console    ${arguments}
+
+aps.Отримати інформацію із предмету
+    [Arguments]    ${username}    @{arguments}
+
+aps.Отримати інформацію із лоту
+    [Arguments]    ${username}    @{arguments}

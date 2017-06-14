@@ -46,6 +46,7 @@ ${enid}           ${0}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
+    Wait Until Element Is Not Visible    xpath=//div[@class="page-loader animated fadeIn]
     Wait Until Element Is Enabled    id=next_step
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
@@ -305,6 +306,7 @@ Info OpenUA
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
+    Log To Console    date_time_ten_end=${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
@@ -424,12 +426,12 @@ Set Tender Budget
     [Arguments]    ${tender}
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
+    ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
     ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    Convert Float To String    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
 
