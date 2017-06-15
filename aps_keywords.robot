@@ -36,7 +36,7 @@ ${enid}           ${0}
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
-    ${tender_UID}=    Publish tender
+    ${tender_UID}=    Publish tender/negotiation
     [Return]    ${tender_UID}
 
 Открытые торги с публикацией на укр
@@ -323,7 +323,7 @@ Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
     #Клик доб позицию
     Comment    Wait Until Element Is Enabled    ${locator_items}    35
-    Click Element    ${locator_items}
+    Comment    Click Element    ${locator_items}
     sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}
     Click Button    ${locator_add_item_button}${w}
@@ -350,14 +350,15 @@ Add item negotiate
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
     sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    Input Text    ${locator_dkpp_search}    000
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
+    Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
+    Log To Console    cpv ${cpv}
+    ${dkpp}=    Set Variable    000
+    ${dkpp_id}=    Set Variable    000
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Set DKKP    ${dkpp_id}
     #Срок поставки (начальная дата)
     sleep    10
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -659,5 +660,24 @@ Sync
     Log To Console    ${off}
     Log To Console    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+
 Add participant into negotiate
     [Arguments]    ${tender_data}
+
+Publish tender/negotiation
+    Log To Console    start punlish tender
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    Execute Javascript    $("#publishNegotiationAutoTest").click()
+    ${url}=    Get Location
+    Log To Console    ${url}
+    Wait Until Page Contains Element    ${locator_UID}    40
+    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
+    Log To Console    finish punlish tender ${tender_UID}
+    Reload Page
+    Return From Keyword    ${tender_UID}
+    [Return]    ${tender_UID}

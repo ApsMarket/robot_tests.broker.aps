@@ -85,3 +85,5 @@ ${locator_item_descriptionEng}    id=procurementSubject_description_En    # id=p
 ${locator_isMultilote}    id=is_multilot    # id=is_multilot
 ${locator_lotTitleEng}    id=lotTitle_En_    # id=lotTitle_En
 ${locator_directory_cause}    xpath=.//*[@id='select_directory_causes']/div[1]/span
+${locator_participant}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/md-content/md-tabs/md-tabs-wrapper/md-tabs-canvas/md-pagination-wrapper/md-tab-item[3]/a
+${locator_add_participant}    id=addProcuringParticipant0

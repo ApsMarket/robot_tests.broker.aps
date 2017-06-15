@@ -151,7 +151,15 @@ aps.Створити постачальника, додати документа
     ${ua_id}=    Get From List    ${arguments}    1
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
-    
+    Wait Until Page Contains Element    ${locator_btn_edit_tender}
+    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Click Button    ${locator_btn_edit_tender}
+    Wait Until Element Is Enabled    ${locator_participant}
+    Click Element    ${locator_participant}
+    Wait Until Page Contains Element    ${locator_add_participant}
+    Wait Until Element Is Enabled    ${locator_add_participant}
+    Click Element    ${locator_add_participant}
+
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
 
