@@ -66,7 +66,7 @@ ${enid}           ${0}
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
-    Add Item Eng    ${item}    00
+    Add Item Eng    ${item}    1
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
@@ -495,7 +495,7 @@ Info OpenEng
     Log To Console    finish openEng info
     #Добавление лота
     Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
     Sleep    2
     ${d}=    Set Variable    1
@@ -526,12 +526,13 @@ Info OpenEng
 Add Item Eng
     [Arguments]    ${item}    ${d}
     Log To Console    item Eng add start
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
-    sleep    2
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    30
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_add_item_button}    30
-    Click Element    ${locator_items}
-    Click Button    ${locator_add_item_button}
+    Sleep    2
+    Wait Until Element Is Enabled    ${locator_add_item_button}${d}    30
+    Log To Console    do klika
+    Click Button    ${locator_add_item_button}${d}
+    Log To Console    posle klika
     Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
