@@ -47,6 +47,7 @@ ${enid}           ${0}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
+    Wait Until Element Is Not Visible    xpath=//div[@class="page-loader animated fadeIn]
     Wait Until Element Is Enabled    id=next_step
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
@@ -290,6 +291,7 @@ Info OpenUA
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
+    Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
@@ -305,6 +307,7 @@ Info OpenUA
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
+    Log To Console    date_time_ten_end=${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
@@ -397,10 +400,10 @@ Publish tender
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}
+    Wait Until Page Contains Element    ${locator_publish_tender}    30
     Wait Until Element Is Enabled    ${locator_publish_tender}
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}
+    Wait Until Page Contains Element    ${locator_UID}    30
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
@@ -424,12 +427,12 @@ Set Tender Budget
     [Arguments]    ${tender}
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender.data.value}    amount
-    ${text}=    Convert To string    ${budget}
+    ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
     ${min_step}=    Get From Dictionary    ${tender.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    Convert Float To String    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
 
@@ -456,7 +459,7 @@ Add Lot
     Log To Console    finish lot ${d}
 
 Info OpenEng
-    [Arguments]    ${tender}    ${d}
+    [Arguments]    ${tender}
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
@@ -468,18 +471,18 @@ Info OpenEng
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
+    sleep    5
+    #Выбор многолотовости
+    Wait Until Element Is Enabled    ${locator_multilot_enabler}
+    Click Element    ${locator_multilot_enabler}
+    sleep    5
     Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
+    ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
-    #Выбор многолотовости
-    Log To Console    ${tender.data.lots[0]}
-    Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}
-    Click Button    ${locator_multilot_new}
-    Comment    Wait Until Page Contains Element    ${locator_multilot_title}${d}
-    Comment    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Press Key    ${locator_currency}    ${currency}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -491,6 +494,33 @@ Info OpenEng
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
     Click Button    ${locator_button_next_step}
     Log To Console    finish openEng info
+    #Добавление лота
+    Wait Until Page Contains Element    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Click Button    ${locator_multilot_new}
+    Sleep    2
+    ${d}=    Set Variable    1
+    ${lot}=    Get From Dictionary    ${tender.data}    lots
+    ${lot}=    Get From List    ${lot}    0
+    Log To Console    ${locator_multilot_title}${d}
+    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Input Text    ${locator_multilot_title}${d}    ${lot.title}
+    ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
+    Press Key    ${locator_lotTitleEng}${d}    ${lot.title_en}
+    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    id=lotBudget_${d}    '${lot.value.amount}'
+    Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
+    Press Key    id=lotMinStep_${d}    ////13
+    #Input Text    id=lotGuarantee_${d}
+    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Log To Console    finish lot ${d}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
@@ -616,5 +646,11 @@ Add Enum
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
 
+Sync
+    [Arguments]    ${uaid}
+    ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
+    Log To Console    ${off}
+    Log To Console    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
 Add participant into negotiate
     [Arguments]    ${tender_data}

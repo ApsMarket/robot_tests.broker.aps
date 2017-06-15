@@ -8,6 +8,7 @@ Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
 Resource          aps_keywords.robot
+Resource          view.robot
 
 *** Variables ***
 ${id}             UA-2017-03-14-000099
@@ -77,6 +78,7 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
+    Run Keyword If    '${role}'!='viewer'    Sync    ${tender_uaid}
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
 
@@ -85,8 +87,8 @@ aps.Пошук тендера по ідентифікатору
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     Reload Page
 
-Отримати інформацію із тендера
-    [Arguments]    ${username}    ${field_name}
+aps.Отримати інформацію із тендера
+    [Arguments]    ${username}    ${field}    ${object_id}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     [Return]    field_value
 
@@ -137,7 +139,9 @@ aps.Пошук тендера по ідентифікатору
     [Return]    URL сторінки аукціону
 
 aps.Отримати дані із тендера
-    [Arguments]    ${username}    ${field}    ${object_id}
+    [Arguments]    ${username}    @{arguments}
+    Search tender    ${username}    @{arguments[0]}
+    Run Keyword And Return If    @{arguments[0]}=='value.amount'    Get Field value.amount
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    @{arguments}
@@ -147,3 +151,9 @@ aps.Створити постачальника, додати документа
     ${ua_id}=    Get From List    ${arguments}    1
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
+    
+aps.Отримати інформацію із предмету
+    [Arguments]    ${username}    @{arguments}
+
+aps.Отримати інформацію із лоту
+    [Arguments]    ${username}    @{arguments}

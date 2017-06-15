@@ -15,6 +15,3 @@ def dt(var_date):
 
 def convert_float_to_string(number):
     return format(number, '.2f')
-
-def convert_float_to_string_f(number, frmat):
-    return format(number, frmat)
