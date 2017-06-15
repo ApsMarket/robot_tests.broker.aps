@@ -125,11 +125,8 @@ Add Item
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    ${dkpp}=    Set Variable    000
     ${dkpp_id}=    Set Variable    000
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Run Keyword If    '${is_dkpp}'=='PASS'    Get OtherDK    ${item}
     Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
@@ -658,3 +655,9 @@ Sync
     Log To Console    ${off}
     Log To Console    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+
+Get OtherDK
+    [Arguments]    ${item}
+    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Return From Keyword    ${dkpp_id}
