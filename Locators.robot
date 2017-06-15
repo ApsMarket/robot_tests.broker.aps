@@ -87,3 +87,8 @@ ${locator_lotTitleEng}    id=lotTitle_En_    # id=lotTitle_En
 ${locator_directory_cause}    xpath=.//*[@id='select_directory_causes']/div[1]/span
 ${locator_participant}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/md-content/md-tabs/md-tabs-wrapper/md-tabs-canvas/md-pagination-wrapper/md-tab-item[3]/a
 ${locator_add_participant}    id=addProcuringParticipant0
+${locator_amount}    id=awardAmount_0_0
+${locator_check_participant}    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+${locator_code_edrpou}    id=procuringParticipantEdrpou_0_0
+${locator_reestr}    id=procuringParticipantScheme_0_0
+${locator_legalName}    id=procuringParticipantLegalName_0_0

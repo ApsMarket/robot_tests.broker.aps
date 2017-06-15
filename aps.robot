@@ -159,6 +159,24 @@ aps.Створити постачальника, додати документа
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
     Click Element    ${locator_add_participant}
+    ${data}=    Get From Dictionary    ${arguments}    data
+    ${suppl}=    Get From Dictionary    ${data}    suppliers
+    ${data}=    Get From List    ${suppl}    0
+    #Цена предложения
+    ${amount}=    Get From Dictionary    ${data.value}    amount
+    Press Key    ${locator_amount}    ${amount}
+    #Выбрать участника
+    Click Element    ${locator_check_participant}
+    #Код
+    ${code_edrpou}=    Get From Dictionary    ${suppl.identifier}    id
+    Press Key    ${locator_code_edrpou}    ${code_edrpou}
+    #Нац реестр
+    ${reestr}=    Get From Dictionary    ${suppl.identifier}    scheme
+    Select From List By Value    ${locator_reestr}    UA-EDR
+    Press Key    ${locator_reestr}    ${reestr}
+    #Наименование участника (legalName)
+    ${legalName}=    Get From Dictionary    ${suppl.identifier}    legalName
+    Press Key    ${locator_legalName}    ${legalName}
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
