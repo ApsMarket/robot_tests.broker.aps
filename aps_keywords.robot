@@ -126,7 +126,7 @@ Add Item
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
     ${dkpp_id}=    Set Variable    000
-    Run Keyword If    '${is_dkpp}'=='PASS'    Get OtherDK    ${item}
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
