@@ -46,7 +46,7 @@ ${enid}           ${0}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Not Visible    xpath=//div[@class="page-loader animated fadeIn]
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Wait Until Element Is Enabled    id=next_step
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
@@ -55,6 +55,8 @@ ${enid}           ${0}
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
     Add Feature    ${tender.data.features[0]}    0    0
+    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[2]}    0    0
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -120,9 +122,12 @@ Add Item
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
+    Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
+    Log To Console    cpv ${cpv}
     ${dkpp}=    Set Variable    000
     ${dkpp_id}=    Set Variable    000
     Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp}
     Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
     Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
@@ -615,10 +620,12 @@ Set DKKP
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
+    Log Many    ${fi}
     Wait Until Element Is Enabled    id=add_features${lid}
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
+    \    \    ${fi.title}
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
@@ -626,7 +633,7 @@ Add Feature
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    Log To Console    enid = \ ${enid}
+    \    Comment    Log To Console    enid = \ ${enid}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
@@ -640,7 +647,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    ${end}
+    Comment    Log To Console    ${end}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
