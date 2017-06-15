@@ -46,12 +46,13 @@ ${enid}           ${0}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
     Add Feature    ${tender.data.features[0]}    0    0
@@ -96,11 +97,11 @@ Add Item
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     sleep    2
     #Клик доб позицию
-    Click Element    ${locator_items}
+    Comment    Click Element    ${locator_items}
     Log To Console    ${locator_add_item_button}${d_lot}
-    Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    30
+    Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
     Click Button    ${locator_add_item_button}${d_lot}
-    Wait Until Element Is Enabled    ${locator_item_description}${d}    30
+    Wait Until Element Is Enabled    ${locator_item_description}${d}    50
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Input Text    ${locator_item_description}${d}    ${add_classif}
@@ -126,9 +127,9 @@ Add Item
     Log To Console    cpv ${cpv}
     ${dkpp}=    Set Variable    000
     ${dkpp_id}=    Set Variable    000
-    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp}
-    Run Keyword If    ${is_dkpp}=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
     Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
@@ -443,8 +444,8 @@ Set Tender Budget
 Add Lot
     [Arguments]    ${d}    ${lot}
     Log To Console    start lot ${d}
-    Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Wait Until Page Contains Element    ${locator_multilot_new}    30
+    Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
     Wait Until Page Contains Element    ${locator_multilot_title}${d}
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
@@ -625,7 +626,6 @@ Add Feature
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    \    \    ${fi.title}
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
