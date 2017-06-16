@@ -70,7 +70,7 @@ ${enid}           ${0}
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
-    Add Item Eng    ${item}    00
+    Add Item Eng    ${item}    1
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
@@ -507,41 +507,45 @@ Info OpenEng
     Log To Console    finish openEng info
     #Добавление лота
     Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}
+    Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
     Sleep    2
-    ${d}=    Set Variable    1
+    ${w}=    Set Variable    1
     ${lot}=    Get From Dictionary    ${tender.data}    lots
     ${lot}=    Get From List    ${lot}    0
-    Log To Console    ${locator_multilot_title}${d}
-    Wait Until Page Contains Element    ${locator_multilot_title}${d}
-    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
-    Input Text    ${locator_multilot_title}${d}    ${lot.title}
+    Log To Console    ${locator_multilot_title}${w}
+    Wait Until Page Contains Element    ${locator_multilot_title}${w}
+    Wait Until Element Is Enabled    ${locator_multilot_title}${w}
+    Input Text    ${locator_multilot_title}${w}    ${lot.title}
     ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
-    Press Key    ${locator_lotTitleEng}${d}    ${lot.title_en}
-    Input Text    id=lotDescription_${d}    ${lot.description}
-    Input Text    id=lotDescription_${d}    ${lot.description}
-    Input Text    id=lotBudget_${d}    '${lot.value.amount}'
-    Press Key    id=lotMinStep_${d}    '${lot.minimalStep.amount}'
-    Press Key    id=lotMinStep_${d}    ////13
-    #Input Text    id=lotGuarantee_${d}
+    Press Key    ${locator_lotTitleEng}${w}    ${lot.title_en}
+    Input Text    id=lotDescription_${w}    ${lot.description}
+    Comment    Input Text    id=lotDescription_En_${d}    ${lot.description}
+    Input Text    id=lotBudget_${w}    '${lot.value.amount}'
+    Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
+    Press Key    id=lotMinStep_${w}    ////13
+    #Input Text    id=lotGuarantee_${w}
     Execute Javascript    window.scroll(1000, 1000)
     Comment    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
-    Log To Console    finish lot ${d}
+    Log To Console    finish lot ${w}
+    #нажатие след.шаг
+    Click Button    ${locator_next_step}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
     Log To Console    item Eng add start
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
-    sleep    2
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    30
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_add_item_button}    30
-    Click Element    ${locator_items}
-    Click Button    ${locator_add_item_button}
+    Sleep    2
+    ${f}=    Set Variable    1
+    Log To Console    do klika
+    Click Button    ${locator_add_item_button}${f}
+    Log To Console    posle klika
+    ${d}=    Set Variable    10
     Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
@@ -577,7 +581,7 @@ Add Item Eng
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
-    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
+    Comment    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
