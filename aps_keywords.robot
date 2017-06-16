@@ -685,8 +685,9 @@ Publish tender/negotiation
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Comment    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
-    Comment    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    sleep    3
     Execute Javascript    $("#publishNegotiationAutoTest").click()
     ${url}=    Get Location
     Log To Console    ${url}
