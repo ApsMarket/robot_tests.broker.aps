@@ -39,10 +39,11 @@ aps.Підготувати дані для оголошення тендера
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    http://www.pcenter.org.ua
-    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    22964365
+    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    12345636
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
-    Set To Dictionary    ${item.deliveryAddress}    region    м. Київ
+    : FOR    ${en}    IN    @{items}
+    \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -143,9 +144,39 @@ aps.Отримати дані із тендера
     Run Keyword And Return If    @{arguments[0]}=='value.amount'    Get Field value.amount
 
 aps.Створити постачальника, додати документацію і підтвердити його
-    [Arguments]    ${username}    @{arguments}
-    Log To Console    ${username}
-    Log To Console    ${arguments}
+    [Arguments]    @{arguments}
+    ${supplier}=    Get From List    ${arguments}    2
+    ${username}=    Get From List    ${arguments}    0
+    ${filepath}=    Get From List    ${arguments}    3
+    ${ua_id}=    Get From List    ${arguments}    1
+    Go To    ${USERS.users['${username}'].homepage}
+    Search tender    ${username}    ${ua_id}
+    Wait Until Page Contains Element    ${locator_btn_edit_tender}
+    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Click Button    ${locator_btn_edit_tender}
+    Wait Until Element Is Enabled    ${locator_participant}
+    Click Element    ${locator_participant}
+    Wait Until Page Contains Element    ${locator_add_participant}
+    Wait Until Element Is Enabled    ${locator_add_participant}
+    Click Element    ${locator_add_participant}
+    ${data}=    Get From Dictionary    ${arguments}    data
+    ${suppl}=    Get From Dictionary    ${data}    suppliers
+    ${data}=    Get From List    ${suppl}    0
+    #Цена предложения
+    ${amount}=    Get From Dictionary    ${data.value}    amount
+    Press Key    ${locator_amount}    ${amount}
+    #Выбрать участника
+    Click Element    ${locator_check_participant}
+    #Код
+    ${code_edrpou}=    Get From Dictionary    ${suppl.identifier}    id
+    Press Key    ${locator_code_edrpou}    ${code_edrpou}
+    #Нац реестр
+    ${reestr}=    Get From Dictionary    ${suppl.identifier}    scheme
+    Select From List By Value    ${locator_reestr}    UA-EDR
+    Press Key    ${locator_reestr}    ${reestr}
+    #Наименование участника (legalName)
+    ${legalName}=    Get From Dictionary    ${suppl.identifier}    legalName
+    Press Key    ${locator_legalName}    ${legalName}
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
