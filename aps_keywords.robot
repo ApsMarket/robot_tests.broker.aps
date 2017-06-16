@@ -82,7 +82,7 @@ ${enid}           ${0}
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
-    Add Item    ${item}    00    ${EMPTY}
+    Add Item    ${item}    00    0
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -195,6 +195,7 @@ Info Below
     ${text_ms}=    Convert To string    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
+    sleep    10
     #Период уточнений нач дата
     ${enquiry_start}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    startDate
     ${date_time_enq_st}=    dt    ${enquiry_start}
