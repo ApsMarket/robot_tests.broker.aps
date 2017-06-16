@@ -163,7 +163,7 @@ Add Item
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
     Log To Console    finish add item
@@ -285,7 +285,7 @@ Search tender
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
-    Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]    30
+    Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]    50
     Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4/a
 
 Info OpenUA
@@ -669,6 +669,7 @@ Get OtherDK
     ${dkpp}=    Get From List    ${item.additionalClassifications}    0
     ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
     Return From Keyword    ${dkpp_id}
+
 Add participant into negotiate
     [Arguments]    ${tender_data}
 
