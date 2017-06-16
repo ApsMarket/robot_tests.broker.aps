@@ -11,6 +11,7 @@ Resource          aps.robot
 
 *** Variables ***
 ${enid}           ${0}
+${locator_necTitle}    id=featureTitle_
 
 *** Keywords ***
 Открыть форму создания тендера
@@ -71,6 +72,16 @@ ${enid}           ${0}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item Eng    ${item}    1
+    Add Necinovi pokaznyky
+    ${aaa}=    Get From Dictionary    ${tender.data.enum}    title
+    # наступний крок
+    Wait Until Element Is Visible    ${locator_button_next_step}
+    Click Button    ${locator_button_next_step}
+    #Добавление нец показателя к тендеру
+    ${fea1}=    Set Variable    0
+    Comment    ${fea2}=    Set Variable    1
+    Wait Until Element Is Enabled    ${locator_addNecPokaznyk}${fea1}
+    Click Button    ${locator_addNecPokaznyk}${fea1}
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
