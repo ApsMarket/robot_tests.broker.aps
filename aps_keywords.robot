@@ -56,8 +56,9 @@ ${enid}           ${0}
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
-    Add Feature    ${tender.data.features[0]}    0    0
-    Comment    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[0]}    1    0
+    Execute Javascript    window.scroll(0, -1000)
     Comment    Add Feature    ${tender.data.features[2]}    0    0
     Run Keyword And Return    Publish tender
 
@@ -408,6 +409,7 @@ Publish tender
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    30
     Wait Until Element Is Enabled    ${locator_publish_tender}
+    sleep    3
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}    30
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
@@ -623,7 +625,6 @@ Add Feature
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    \    \    ${fi.title}
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
