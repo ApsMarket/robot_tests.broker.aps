@@ -286,8 +286,8 @@ Search tender
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
-    Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]    50
-    Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4/a
+    Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
     [Arguments]    ${tender}

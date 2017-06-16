@@ -97,6 +97,7 @@ aps.Отримати інформацію із тендера
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field value.amount
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field \ tenderPeriod.startDate
     [Return]    field_value
 
 Задати питання
