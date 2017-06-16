@@ -70,6 +70,8 @@ aps.Внести зміни в тендер
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Click Element    ${locator_click_logo}
     Search tender    ${username}    ${tender_uaid}
+    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
+    Log To Console    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
     Wait Until Page Contains Element    ${locator_btn_edit_tender}
     Wait Until Element Is Enabled    ${locator_btn_edit_tender}
     Click Button    ${locator_btn_edit_tender}
@@ -95,6 +97,7 @@ aps.Отримати інформацію із тендера
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field value.amount
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field \ tenderPeriod.startDate
     [Return]    field_value
 
 Задати питання

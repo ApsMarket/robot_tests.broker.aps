@@ -57,8 +57,9 @@ ${locator_necTitle}    id=featureTitle_
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
-    Add Feature    ${tender.data.features[0]}    0    0
-    Comment    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[0]}    1    0
+    Execute Javascript    window.scroll(0, -1000)
     Comment    Add Feature    ${tender.data.features[2]}    0    0
     Run Keyword And Return    Publish tender
 
@@ -93,7 +94,7 @@ ${locator_necTitle}    id=featureTitle_
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
-    Add Item    ${item}    00    ${EMPTY}
+    Add Item    ${item}    00    0
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -206,6 +207,7 @@ Info Below
     ${text_ms}=    Convert To string    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
+    sleep    10
     #Период уточнений нач дата
     ${enquiry_start}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    startDate
     ${date_time_enq_st}=    dt    ${enquiry_start}
@@ -296,8 +298,8 @@ Search tender
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
-    Wait Until Page Contains Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]    50
-    Click Element    xpath=.//*[@id='purchase-page']/div/div//*[@class="spanProzorroId"][text()="${tender_uaid}"]/../../../../../div/div/div/h4/a
+    Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
     [Arguments]    ${tender}
@@ -418,6 +420,7 @@ Publish tender
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    30
     Wait Until Element Is Enabled    ${locator_publish_tender}
+    sleep    3
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}    30
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
@@ -633,7 +636,6 @@ Add Feature
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    \    \    ${fi.title}
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
@@ -694,8 +696,8 @@ Publish tender/negotiation
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
-    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    Comment    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Comment    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
     Execute Javascript    $("#publishNegotiationAutoTest").click()
     ${url}=    Get Location
     Log To Console    ${url}
