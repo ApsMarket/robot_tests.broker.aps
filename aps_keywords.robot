@@ -7,6 +7,7 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
+Resource          aps.robot
 
 *** Variables ***
 ${enid}           ${0}
@@ -35,7 +36,7 @@ ${enid}           ${0}
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
-    ${tender_UID}=    Publish tender
+    ${tender_UID}=    Publish tender/negotiation
     [Return]    ${tender_UID}
 
 Открытые торги с публикацией на укр
@@ -46,7 +47,7 @@ ${enid}           ${0}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Wait Until Element Is Enabled    id=next_step
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
@@ -162,7 +163,7 @@ Add Item
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
     Log To Console    finish add item
@@ -320,8 +321,8 @@ Info OpenUA
 Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_items}    30
-    Click Element    ${locator_items}
+    Comment    Wait Until Element Is Enabled    ${locator_items}    35
+    Comment    Click Element    ${locator_items}
     sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}
     Click Button    ${locator_add_item_button}${w}
@@ -348,14 +349,15 @@ Add item negotiate
     Click Button    ${locator_add_classfier}
     #Выбор др ДК
     sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    Input Text    ${locator_dkpp_search}    000
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
+    Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
+    Log To Console    cpv ${cpv}
+    ${dkpp}=    Set Variable    000
+    ${dkpp_id}=    Set Variable    000
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Set DKKP    ${dkpp_id}
     #Срок поставки (начальная дата)
     sleep    10
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -616,6 +618,7 @@ Add Feature
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
+    \    \    ${fi.title}
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
@@ -666,3 +669,23 @@ Get OtherDK
     ${dkpp}=    Get From List    ${item.additionalClassifications}    0
     ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
     Return From Keyword    ${dkpp_id}
+Add participant into negotiate
+    [Arguments]    ${tender_data}
+
+Publish tender/negotiation
+    Log To Console    start punlish tender
+    Wait Until Page Contains Element    ${locator_toast_container}
+    Click Button    ${locator_toast_close}
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    Execute Javascript    $("#publishNegotiationAutoTest").click()
+    ${url}=    Get Location
+    Log To Console    ${url}
+    Wait Until Page Contains Element    ${locator_UID}    40
+    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
+    Log To Console    finish punlish tender ${tender_UID}
+    Reload Page
+    Return From Keyword    ${tender_UID}
+    [Return]    ${tender_UID}
