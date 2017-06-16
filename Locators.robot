@@ -71,7 +71,7 @@ ${locator_add_discussion}    id=add_discussion
 ${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/div/select
 ${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
 ${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
-${locator_search_type}    //select[@class="form-control b-r-none ng-pristine ng-untouched ng-valid ng-empty"]
+${locator_search_type}    id=searchType
 ${locator_date_delivery_start}    id=delivery_start_    # Проверить id
 ${locator_check_gps}    id=is_delivary_
 ${locator_item_description_01}    id=procurementSubject_description01

@@ -11,7 +11,8 @@ Library           conv_timeDate.py
 *** Keywords ***
 Get Field value.amount
     ${r}=    Get Text    xpath=.//*[@id='purchaseBudget']
-    ${r}=    Replace String    ${r}    ' '    ${EMPTY}
-    ${r}=    Replace String    ${r}    UAH    ${EMPTY}
+    ${r}=    Remove String    ${r}    ${SPACE}
+    ${r}=    Remove String    ${r}    UAH
+    ${r}=    Convert To Number    ${r}
     Return From Keyword    ${r}
     [Return]    ${value}

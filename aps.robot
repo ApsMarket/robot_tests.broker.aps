@@ -77,7 +77,7 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Run Keyword If    '${role}'!='viewer'    Sync    ${tender_uaid}
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
 
@@ -87,8 +87,13 @@ aps.Пошук тендера по ідентифікатору
     Reload Page
 
 aps.Отримати інформацію із тендера
-    [Arguments]    ${username}    ${field}    ${object_id}
+    [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
+    ${is_tender_open}=    Set Variable    000
+    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field value.amount
     [Return]    field_value
 
 Задати питання
@@ -139,8 +144,6 @@ aps.Отримати інформацію із тендера
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
-    Search tender    ${username}    @{arguments[0]}
-    Run Keyword And Return If    @{arguments[0]}=='value.amount'    Get Field value.amount
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    @{arguments}
