@@ -46,6 +46,7 @@ aps.Підготувати дані для оголошення тендера
     \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
+    Comment    Set To Dictionary    ${tender_data.features.enum}    title_en    flower
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 
