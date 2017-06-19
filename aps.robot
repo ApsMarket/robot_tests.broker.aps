@@ -96,8 +96,9 @@ aps.Отримати інформацію із тендера
     ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
-    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field value.amount
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field \ tenderPeriod.startDate
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
     [Return]    field_value
 
 Задати питання
@@ -186,6 +187,24 @@ aps.Створити постачальника, додати документа
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
+    ${is_tender_open}=    Set Variable    000
+    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Wait Until Element Is Enabled    id=procurement-subject-tab
+    Click Element    id=procurement-subject-tab
+    Wait Until Element Is Enabled    id=procurement-subject
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field item.description    ${arguments[1]}
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
+    ${is_tender_open}=    Set Variable    000
+    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
+    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Wait Until Element Is Enabled    id=view-lots-tab
+    Click Element    id=view-lots-tab
+    Wait Until Element Is Enabled    id=view-lots
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field lot.description    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
+    Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep

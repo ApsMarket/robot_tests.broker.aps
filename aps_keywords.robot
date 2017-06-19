@@ -57,6 +57,7 @@ ${enid}           ${0}
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
+    Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
     Execute Javascript    window.scroll(0, -1000)
     Comment    Add Feature    ${tender.data.features[2]}    0    0
@@ -281,12 +282,12 @@ Load document
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
     Wait Until Page Contains Element    ${locator_search_type}
-    Select From List By Label    ${locator_search_type}    По Id
+    Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_search-btn}
-    Click Element    ${locator_search-btn}
+    Wait Until Element Is Enabled    id=butSimpleSearch
+    Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
@@ -409,7 +410,7 @@ Publish tender
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    30
     Wait Until Element Is Enabled    ${locator_publish_tender}
-    sleep    3
+    sleep    10
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}    30
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
