@@ -80,7 +80,6 @@ aps.Внести зміни в тендер
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
 
@@ -187,10 +186,7 @@ aps.Створити постачальника, додати документа
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
-    ${is_tender_open}=    Set Variable    000
-    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Prepare View    ${username}    ${arguments[0]}
     Wait Until Element Is Enabled    id=procurement-subject-tab
     Click Element    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
@@ -198,13 +194,20 @@ aps.Отримати інформацію із предмету
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
-    ${is_tender_open}=    Set Variable    000
-    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Prepare View    ${username}    ${arguments[0]}
     Wait Until Element Is Enabled    id=view-lots-tab
     Click Element    id=view-lots-tab
     Wait Until Element Is Enabled    id=view-lots
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field lot.description    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+
+aps.Отримати інформацію із нецінового показника
+    [Arguments]    ${username}    @{arguments}
+    Prepare View    ${username}    ${arguments[0]}
+    Wait Until Element Is Enabled    id=features-tab
+    Click Element    id=features-tab
+    Wait Until Element Is Enabled    id=features
+    Execute Javascript    window.scroll(0, 1000)
+    ${d}=    Set Variable    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]

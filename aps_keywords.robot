@@ -281,6 +281,7 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
     Wait Until Page Contains Element    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
