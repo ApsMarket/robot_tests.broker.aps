@@ -261,10 +261,10 @@ Login
 
 Load document
     [Arguments]    ${filepath}
-    Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
-    Wait Until Page Contains Element    xpath=.//div[@class='btn btn-primary ng-binding']
+    Comment    Wait Until Page Contains Element    xpath=.//div[@class='btn btn-primary ng-binding']
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
@@ -273,7 +273,7 @@ Load document
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
+    Select From List By Label    ${locator_category}    Документи закупівлі
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
