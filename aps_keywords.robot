@@ -261,6 +261,7 @@ Login
 Load document
     [Arguments]    ${filepath}
     Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
+    Wait Until Page Contains Element    xpath=.//div[@class='btn btn-primary ng-binding']
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
     Wait Until Page Contains Element    ${locator_add_ documents}
@@ -327,6 +328,8 @@ Add item negotiate
     Comment    Wait Until Element Is Enabled    ${locator_items}    35
     Comment    Click Element    ${locator_items}
     sleep    3
+    Log To Console    ${locator_add_item_button}${w}
+    Wait Until Page Contains Element    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}
     Click Button    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
