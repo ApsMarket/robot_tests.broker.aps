@@ -92,3 +92,5 @@ ${locator_check_participant}    xpath=.//*[@id='createOrUpdateProcuringParticipa
 ${locator_code_edrpou}    id=procuringParticipantEdrpou_0_0
 ${locator_reestr}    id=procuringParticipantScheme_0_0
 ${locator_legalName}    id=procuringParticipantLegalName_0_0
+${locator_addNecPokaznyk}    id=add_features
+${locator_necTitleUkr}    id=featureTitle_

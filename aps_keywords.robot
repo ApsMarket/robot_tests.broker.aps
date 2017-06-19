@@ -11,6 +11,7 @@ Resource          aps.robot
 
 *** Variables ***
 ${enid}           ${0}
+${locator_necTitle}    id=featureTitle_
 
 *** Keywords ***
 Открыть форму создания тендера
@@ -73,6 +74,17 @@ ${enid}           ${0}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item Eng    ${item}    1
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    Wait Until Element Is Enabled    id=next_step    30
+    Click Button    id=next_step
+    Add Feature    ${tender.data.features[1]}    0    0
+    Add Feature    ${tender.data.features[0]}    1    0
+    Comment    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Load document    ${filepath}
+    Execute Javascript    window.scroll(-1000, -1000)
+    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
@@ -282,6 +294,7 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
     Wait Until Page Contains Element    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
@@ -631,16 +644,19 @@ Add Feature
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
+    Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    Comment    Log To Console    enid = \ ${enid}
+    \    Log To Console    val = \ ${val}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
+    \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
+    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
 
@@ -661,14 +677,17 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
+    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Comment    Log To Console    ${end}
+    Log To Console    id=featureEnumValue_${end}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
+    Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
+    Input Text    id=featureEnumTitleEn_${end}    flowers
 
 Sync
     [Arguments]    ${uaid}
