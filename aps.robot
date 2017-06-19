@@ -74,11 +74,14 @@ aps.Внести зміни в тендер
     Comment    sleep    10
     Comment    ${id}=    Execute Javascript    var test=angular.element(document.getElementById(\'header\')).scope(); test.$$childHead.purchaseId;
     ${id}=    Get Location
-    ${id}=    Fetch From Right    /    ${id}
+    ${id}=    Fetch From Right    ${id}    /
+    Log To Console    111111
     Log To Console    ${id}
-    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Click Button    ${locator_btn_edit_tender}
+    Log To Console    222222
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Comment    Wait Until Page Contains Element    s
+    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Comment    Click Button    ${locator_btn_edit_tender}
     Load document    ${filepath}
 
 aps.Пошук тендера по ідентифікатору

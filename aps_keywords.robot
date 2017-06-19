@@ -288,6 +288,7 @@ Search tender
     Wait Until Element Is Enabled    ${locator_search-btn}
     Click Element    ${locator_search-btn}
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
