@@ -96,10 +96,7 @@ aps.Пошук тендера по ідентифікатору
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-    ${is_tender_open}=    Set Variable    000
-    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Prepare View    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
@@ -173,7 +170,7 @@ aps.Створити постачальника, додати документа
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
     Click Element    ${locator_add_participant}
-    ${data}=    Get From Dictionary    ${arguments}    data
+    ${data}=    Get From Dictionary    ${arguments}    1
     ${suppl}=    Get From Dictionary    ${data}    suppliers
     ${data}=    Get From List    ${suppl}    0
     #Цена предложения
