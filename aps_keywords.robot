@@ -56,12 +56,12 @@ ${dkkp_id}        ${EMPTY}
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
-    Comment    Wait Until Element Is Enabled    id=next_step    30
-    Comment    Click Button    id=next_step
-    Comment    Add Feature    ${tender.data.features[1]}    0    0
-    Comment    Execute Javascript    window.scroll(0, 500)
-    Comment    Add Feature    ${tender.data.features[0]}    1    0
-    Comment    Execute Javascript    window.scroll(0, -1000)
+    Wait Until Element Is Enabled    id=next_step    30
+    Click Button    id=next_step
+    Add Feature    ${tender.data.features[1]}    0    0
+    Execute Javascript    window.scroll(0, 500)
+    Add Feature    ${tender.data.features[0]}    1    0
+    Execute Javascript    window.scroll(0, -1000)
     Comment    Add Feature    ${tender.data.features[2]}    0    0
     Run Keyword And Return    Publish tender
 
@@ -141,12 +141,9 @@ Add Item
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    Set Suite Variable    ${dkkp_id}    000
-    Log To Console    1111
+    ${dkpp_id}=    Set Variable    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
-    Log To Console    2222
-    Set DKKP
-    Log To Console    3333
+    Set DKKP    ${dkpp_id}
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -280,6 +277,7 @@ Load document
     Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
+    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Click Element    ${locator_add_ documents}
@@ -306,7 +304,6 @@ Search tender
     Wait Until Element Is Enabled    id=butSimpleSearch
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -710,8 +707,9 @@ Publish tender/negotiation
     Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Comment    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
-    Comment    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Wait Until Element Is Enabled    id=publishNegotiationAutoTest
+    sleep    3
     Execute Javascript    $("#publishNegotiationAutoTest").click()
     ${url}=    Get Location
     Log To Console    ${url}

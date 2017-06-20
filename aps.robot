@@ -69,13 +69,17 @@ aps.Внести зміни в тендер
 Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Click Element    ${locator_click_logo}
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
-    Log To Console    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
-    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Click Button    ${locator_btn_edit_tender}
+    Comment    Log To Console    var test=angular.element(document.getElementById(\'header\')).scope(); return test.$$childHead.purchaseId;
+    Comment    sleep    10
+    Comment    ${id}=    Execute Javascript    var test=angular.element(document.getElementById(\'header\')).scope(); test.$$childHead.purchaseId;
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Comment    Wait Until Page Contains Element    s
+    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Comment    Click Button    ${locator_btn_edit_tender}
     Load document    ${filepath}
 
 aps.Пошук тендера по ідентифікатору
@@ -158,9 +162,12 @@ aps.Створити постачальника, додати документа
     ${ua_id}=    Get From List    ${arguments}    1
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
-    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Click Button    ${locator_btn_edit_tender}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Comment    Wait Until Page Contains Element    ${locator_btn_edit_tender}
+    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Comment    Click Button    ${locator_btn_edit_tender}
     Wait Until Element Is Enabled    ${locator_participant}
     Click Element    ${locator_participant}
     Wait Until Page Contains Element    ${locator_add_participant}
