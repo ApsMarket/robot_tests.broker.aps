@@ -304,6 +304,7 @@ Search tender
     Wait Until Element Is Enabled    id=butSimpleSearch
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    20
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
