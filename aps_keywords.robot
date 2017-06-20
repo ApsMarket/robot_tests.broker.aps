@@ -12,6 +12,7 @@ Resource          aps.robot
 *** Variables ***
 ${enid}           ${0}
 ${locator_necTitle}    id=featureTitle_
+${dkkp_id}        ${EMPTY}
 
 *** Keywords ***
 Открыть форму создания тендера
@@ -55,12 +56,12 @@ ${locator_necTitle}    id=featureTitle_
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
-    Wait Until Element Is Enabled    id=next_step    30
-    Click Button    id=next_step
-    Add Feature    ${tender.data.features[1]}    0    0
-    Execute Javascript    window.scroll(0, 500)
-    Add Feature    ${tender.data.features[0]}    1    0
-    Execute Javascript    window.scroll(0, -1000)
+    Comment    Wait Until Element Is Enabled    id=next_step    30
+    Comment    Click Button    id=next_step
+    Comment    Add Feature    ${tender.data.features[1]}    0    0
+    Comment    Execute Javascript    window.scroll(0, 500)
+    Comment    Add Feature    ${tender.data.features[0]}    1    0
+    Comment    Execute Javascript    window.scroll(0, -1000)
     Comment    Add Feature    ${tender.data.features[2]}    0    0
     Run Keyword And Return    Publish tender
 
@@ -140,9 +141,12 @@ Add Item
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    ${dkpp_id}=    Set Variable    000
+    Set Suite Variable    ${dkkp_id}    000
+    Log To Console    1111
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
-    Set DKKP    ${dkpp_id}
+    Log To Console    2222
+    Set DKKP
+    Log To Console    3333
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -302,6 +306,7 @@ Search tender
     Wait Until Element Is Enabled    id=butSimpleSearch
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -657,15 +662,14 @@ Add Feature
     Click Button    id=updateFeature_${lid}_${pid}
 
 Set DKKP
-    [Arguments]    ${dkpp_id}
-    Log To Console    DKPP=${dkpp_id}
+    Log To Console    ${dkkp_id}
     #Выбор др ДК
     sleep    1
     Wait Until Element Is Enabled    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
-    Press Key    ${locator_dkpp_search}    ${dkpp_id}
+    Press Key    ${locator_dkpp_search}    ${dkkp_id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
@@ -683,7 +687,7 @@ Add Enum
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
-    Input Text    id=featureEnumTitleEn_${end}    flowers
+    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitleEn_${end}    flowers
 
 Sync
     [Arguments]    ${uaid}
@@ -693,8 +697,9 @@ Sync
 Get OtherDK
     [Arguments]    ${item}
     ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
-    Return From Keyword    ${dkpp_id}
+    ${dkpp_id_local}=    Get From Dictionary    ${dkpp}    id
+    Log To Console    Other DK ${dkpp_id_local}
+    Set Suite Variable    ${dkkp_id}    ${dkpp_id_local}
 
 Add participant into negotiate
     [Arguments]    ${tender_data}
