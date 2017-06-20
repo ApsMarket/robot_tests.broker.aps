@@ -273,7 +273,7 @@ Login
     Click Element    ${locator_loginButton}
 
 Load document
-    [Arguments]    ${filepath}
+    [Arguments]    ${filepath}    ${to}    ${to_name}
     Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
@@ -288,7 +288,8 @@ Load document
     Wait Until Element Is Enabled    ${locator_category}
     Select From List By Value    ${locator_category}    biddingDocuments
     Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    Tender
+    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Run Keyword If    '${to}'=='Lot'    Select \ Doc For Lot    ${to_name}
     Wait Until Page Contains Element    ${locator_download}
     Choose File    ${locator_download}    ${filepath}
     Click Button    ${locator_save_document}

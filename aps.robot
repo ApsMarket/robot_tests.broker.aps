@@ -219,3 +219,7 @@ aps.Отримати інформацію із нецінового показн
     Execute Javascript    window.scroll(0, 1000)
     ${d}=    Set Variable    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+
+aps.Завантажити документ в лот
+    [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
+    Search tender    ${username}    ${ua_id}
