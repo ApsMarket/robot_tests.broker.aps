@@ -304,6 +304,7 @@ Search tender
     Wait Until Element Is Enabled    id=butSimpleSearch
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    20
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -416,8 +417,8 @@ Add item negotiate
 
 Publish tender
     Log To Console    start punlish tender
-    Wait Until Page Contains Element    ${locator_toast_container}
-    Click Button    ${locator_toast_close}
+    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    30
@@ -686,7 +687,9 @@ Add Enum
 Sync
     [Arguments]    ${uaid}
     ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
+    Log To Console    Synk \ date=${off}&tenderId=${uaid}
     Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    sleep     2
 
 Get OtherDK
     [Arguments]    ${item}
