@@ -650,7 +650,7 @@ Add Feature
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    Log To Console    val = \ ${val}
+    \    #Log To Console    val = \ ${val}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
@@ -680,7 +680,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end}
+    #Log To Console    id=featureEnumValue_${end}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
