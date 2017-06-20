@@ -94,3 +94,5 @@ ${locator_reestr}    id=procuringParticipantScheme_0_0
 ${locator_legalName}    id=procuringParticipantLegalName_0_0
 ${locator_addNecPokaznyk}    id=add_features
 ${locator_necTitleUkr}    id=featureTitle_
+${locator_necPositionButton}    id=featureOf_1_
+${locator_necPositionTitle}    id=featureItem_1_0
