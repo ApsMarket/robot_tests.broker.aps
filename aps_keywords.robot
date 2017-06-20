@@ -371,11 +371,10 @@ Add item negotiate
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
     ${dkpp}=    Set Variable    000
-    ${dkpp_id}=    Set Variable    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
-    Set DKKP    ${dkpp_id}
+    Set DKKP
     #Срок поставки (начальная дата)
     sleep    10
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
