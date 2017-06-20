@@ -49,8 +49,8 @@ ${dkkp_id}        ${EMPTY}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Wait Until Element Is Enabled    id=next_step
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
@@ -274,12 +274,11 @@ Login
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
-    Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Click Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
@@ -425,11 +424,11 @@ Publish tender
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}    30
+    Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
-    sleep    10
+    sleep    5
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}    30
+    Wait Until Page Contains Element    ${locator_UID}    50
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
@@ -723,3 +722,11 @@ Publish tender/negotiation
     Reload Page
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
+
+Select \ Doc For Lot
+    [Arguments]    ${arg1}
+    Wait Until Page Contains    xpath=//select[@name='Lot']
+    Wait Until Element Is Enabled    xpath=//select[@name='Lot']
+    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
+    Log To Console    value - ${label}
+    Select From List By Label    xpath=//select[@name='Lot']    ${label}

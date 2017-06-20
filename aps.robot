@@ -66,21 +66,15 @@ aps.Внести зміни в тендер
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
 
-Завантажити документ
+aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Comment    Log To Console    var test=angular.element(document.getElementById(\'header\')).scope(); return test.$$childHead.purchaseId;
-    Comment    sleep    10
-    Comment    ${id}=    Execute Javascript    var test=angular.element(document.getElementById(\'header\')).scope(); test.$$childHead.purchaseId;
     ${id}=    Get Location
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
-    Comment    Wait Until Page Contains Element    s
-    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Comment    Click Button    ${locator_btn_edit_tender}
-    Load document    ${filepath}
+    Load document    ${filepath}    Tender    ${EMPTY}
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -222,4 +216,9 @@ aps.Отримати інформацію із нецінового показн
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Load document    ${file}    Lot    ${lot_id}
