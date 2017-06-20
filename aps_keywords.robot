@@ -55,8 +55,8 @@ ${dkkp_id}        ${EMPTY}
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Execute Javascript    window.scroll(0, 500)
@@ -276,6 +276,7 @@ Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
@@ -288,7 +289,7 @@ Load document
     Select From List By Value    ${locator_category}    biddingDocuments
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    ${to}
-    Run Keyword If    '${to}'=='Lot'    Select \ Doc For Lot    ${to_name}
+    Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
     Wait Until Page Contains Element    ${locator_download}
     Choose File    ${locator_download}    ${filepath}
     Click Button    ${locator_save_document}
@@ -639,6 +640,7 @@ Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Visible    id=add_features${lid}
     Wait Until Element Is Enabled    id=add_features${lid}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -723,10 +725,21 @@ Publish tender/negotiation
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 
-Select \ Doc For Lot
-    [Arguments]    ${arg1}
-    Wait Until Page Contains    xpath=//select[@name='Lot']
+Select Doc For Lot
+    [Arguments]    ${arg}
+    Click Element    xpath=//select[@name='DocumentOf']
+    sleep    500
+    Wait Until Page Contains    xpath=//select[@name='Lot']    30
     Wait Until Element Is Enabled    xpath=//select[@name='Lot']
-    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
-    Log To Console    value - ${label}
-    Select From List By Label    xpath=//select[@name='Lot']    ${label}
+    Comment    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
+    Log To Console    value - ${arg}
+    Select From List By Label    xpath=//select[@name='Lot']    ${arg}
+
+Set Field tenderPeriod.endDate
+    [Arguments]    ${value}
+    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    Log To Console    ${value}
+    Log To Console    ${date_time_ten_end}
+    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    ${locator_bidDate_end}
+    Click Element    id=createOrUpdatePurchase

@@ -65,6 +65,24 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Comment    Wait Until Page Contains Element    id=purchaseEdit
+    Comment    Click Button    id=purchaseEdit
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
+    Wait Until Element Is Enabled    id=save_changes    50
+    Click Button    id=save_changes
+    Wait Until Element Is Enabled    id=movePurchaseView
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Log To Console    11111
+    Click Button    id=movePurchaseView
+    Log To Console    22222
+    Wait Until Element Is Enabled    id=publishPurchase
+    Log To Console    3333333
+    Click Button    id=publishPurchase
+    sleep    2
 
 aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
