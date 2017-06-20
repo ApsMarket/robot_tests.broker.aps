@@ -286,7 +286,7 @@ Load document
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
+    Select From List By Value    ${locator_category}    biddingDocuments
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -692,7 +692,7 @@ Sync
     ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
     Log To Console    Synk \ date=${off}&tenderId=${uaid}
     Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    sleep     2
+    sleep    2
 
 Get OtherDK
     [Arguments]    ${item}
