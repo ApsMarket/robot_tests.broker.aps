@@ -29,6 +29,9 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
+    Log To Console    111111
+    Log To Console    ${arguments}
+    Log To Console    22222
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
@@ -46,7 +49,6 @@ aps.Підготувати дані для оголошення тендера
     \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
-    Comment    Set To Dictionary    ${tender_data.features.enum}    title_en    flower
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 
@@ -152,12 +154,12 @@ aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
 
 aps.Створити постачальника, додати документацію і підтвердити його
-    [Arguments]    ${ua_id}    ${s}    ${filepath}
+    [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
     Comment    ${supplier}=    Get From List    ${arguments}    2
     Comment    ${username}=    Get From List    ${arguments}    0
     Comment    ${filepath}=    Get From List    ${arguments}    3
     Comment    ${ua_id}=    Get From List    ${arguments}    1
-    ${username}=    Set Variable    aps_Owner
+    Comment    ${username}=    Set Variable    aps_Owner
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${id}=    Get Location
@@ -173,19 +175,51 @@ aps.Створити постачальника, додати документа
     Click Element    ${locator_add_participant}
     #Цена предложения
     ${amount}=    Get From Dictionary    ${s.data.value}    amount
-    Press Key    ${locator_amount}    ${amount}
+    Wait Until Page Contains Element    ${locator_amount}
+    Wait Until Element Is Enabled    ${locator_amount}
+    Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}
     #Код
-    ${code_edrpou}=    Get From Dictionary    ${suppl.identifier}    id
-    Press Key    ${locator_code_edrpou}    ${code_edrpou}
+    ${sup}=    Get From List    ${s.data.suppliers}    0
+    ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
+    Wait Until Page Contains Element    ${locator_code_edrpou}
+    Wait Until Element Is Enabled    ${locator_code_edrpou}
+    Press Key    ${locator_code_edrpou}    ${sup.identifier.id}
     #Нац реестр
-    ${reestr}=    Get From Dictionary    ${suppl.identifier}    scheme
+    ${reestr}=    Get From Dictionary    ${sup.identifier}    scheme
     Select From List By Value    ${locator_reestr}    UA-EDR
     Press Key    ${locator_reestr}    ${reestr}
     #Наименование участника (legalName)
-    ${legalName}=    Get From Dictionary    ${suppl.identifier}    legalName
+    ${legalName}=    Get From Dictionary    ${sup.identifier}    legalName
     Press Key    ${locator_legalName}    ${legalName}
+    #Выбор страны
+    ${country}=    Get From Dictionary    ${sup.address}    countryName
+    Select From List By Label    ${locator_country_id}    ${country}
+    #Выбор региона
+    ${region}=    Get From Dictionary    ${sup.address}    region
+    Select From List By Label    ${locator_SelectRegion}    ${region}
+    #Индекс
+    ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
+    Press Key    ${locator_post_code}    ${post_code}
+    #Насел пункт
+    ${locality}=    Get From Dictionary    ${sup.address}    locality
+    Press Key    ${locator_local}    ${locality}
+    #Адрес
+    ${street}=    Get From Dictionary    ${sup.address}    streetAddress
+    Press Key    ${locator_street_ng}    ${street}
+    #ФИО
+    ${name}=    Get From Dictionary    ${sup.contactPoint}    name
+    Press Key    ${locator_name}    ${name}
+    #e-mail
+    ${mail}=    Get From Dictionary    ${sup.contactPoint}    email
+    Press Key    ${locator_mail_ng}    ${mail}
+    #Телефон
+    ${phone}=    Get From Dictionary    ${sup.contactPoint}    telephone
+    Press Key    ${locator_phone_ng}    ${phone}
+    #Click but
+    Wait Until Element Is Visible    ${locator_save_participant}
+    Click Button    ${locator_save_participant}
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
