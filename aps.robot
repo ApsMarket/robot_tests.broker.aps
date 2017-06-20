@@ -65,18 +65,34 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Comment    Wait Until Page Contains Element    id=purchaseEdit
+    Comment    Click Button    id=purchaseEdit
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
+    Wait Until Element Is Enabled    id=save_changes    50
+    Click Button    id=save_changes
+    Wait Until Element Is Enabled    id=movePurchaseView
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Log To Console    11111
+    Click Button    id=movePurchaseView
+    Log To Console    22222
+    Wait Until Element Is Enabled    id=publishPurchase
+    Log To Console    3333333
+    Click Button    id=publishPurchase
+    sleep    2
 
-Завантажити документ
+aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Click Element    ${locator_click_logo}
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
-    Log To Console    Execute Javascript    var test=angular.element(document.getElementById('title')).scope();test.purchaseId
-    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Click Button    ${locator_btn_edit_tender}
-    Load document    ${filepath}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Load document    ${filepath}    Tender    ${EMPTY}
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -158,9 +174,12 @@ aps.Створити постачальника, додати документа
     ${ua_id}=    Get From List    ${arguments}    1
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
-    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Click Button    ${locator_btn_edit_tender}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Comment    Wait Until Page Contains Element    ${locator_btn_edit_tender}
+    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
+    Comment    Click Button    ${locator_btn_edit_tender}
     Wait Until Element Is Enabled    ${locator_participant}
     Click Element    ${locator_participant}
     Wait Until Page Contains Element    ${locator_add_participant}
@@ -212,3 +231,12 @@ aps.Отримати інформацію із нецінового показн
     Execute Javascript    window.scroll(0, 1000)
     ${d}=    Set Variable    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+
+aps.Завантажити документ в лот
+    [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
+    Go To    ${USERS.users['${username}'].homepage}
+    Search tender    ${username}    ${ua_id}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Load document    ${file}    Lot    ${lot_id}
