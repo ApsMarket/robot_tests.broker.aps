@@ -12,6 +12,7 @@ Resource          aps.robot
 *** Variables ***
 ${enid}           ${0}
 ${locator_necTitle}    id=featureTitle_
+${dkkp_id}        ${EMPTY}
 
 *** Keywords ***
 Открыть форму создания тендера
@@ -140,9 +141,9 @@ Add Item
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    ${dkpp_id}=    Set Variable    000
+    ${dkkp_id}=    Set Variable    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
-    Set DKKP    ${dkpp_id}
+    Set DKKP
     Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -273,7 +274,7 @@ Login
 
 Load document
     [Arguments]    ${filepath}
-    Comment    Wait Until Page Contains Element    xpath=.//div[@class='btn btn-primary ng-binding']
+    Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
@@ -285,7 +286,7 @@ Load document
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    Документи закупівлі
+    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -303,7 +304,6 @@ Search tender
     Wait Until Element Is Enabled    id=butSimpleSearch
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -342,8 +342,6 @@ Add item negotiate
     Comment    Wait Until Element Is Enabled    ${locator_items}    35
     Comment    Click Element    ${locator_items}
     sleep    3
-    Log To Console    ${locator_add_item_button}${w}
-    Wait Until Page Contains Element    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}
     Click Button    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
@@ -661,15 +659,14 @@ Add Feature
     Click Button    id=updateFeature_${lid}_${pid}
 
 Set DKKP
-    [Arguments]    ${dkpp_id}
-    Log To Console    DKPP=${dkpp_id}
+    Log To Console    ${dkkp_id}
     #Выбор др ДК
     sleep    1
     Wait Until Element Is Enabled    ${locator_button_add_dkpp}
     Click Button    ${locator_button_add_dkpp}
     Wait Until Element Is Visible    ${locator_dkpp_search}
     Clear Element Text    ${locator_dkpp_search}
-    Press Key    ${locator_dkpp_search}    ${dkpp_id}
+    Press Key    ${locator_dkpp_search}    ${dkkp_id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
@@ -687,7 +684,7 @@ Add Enum
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
-    Input Text    id=featureEnumTitleEn_${end}    flowers
+    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitleEn_${end}    flowers
 
 Sync
     [Arguments]    ${uaid}
@@ -697,8 +694,9 @@ Sync
 Get OtherDK
     [Arguments]    ${item}
     ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
-    Return From Keyword    ${dkpp_id}
+    ${dkpp_id_local}=    Get From Dictionary    ${dkpp}    id
+    Log To Console    Other DK ${dkpp_id_local}
+    Set Suite Variable    ${dkkp_id}    ${dkpp_id_local}
 
 Add participant into negotiate
     [Arguments]    ${tender_data}
