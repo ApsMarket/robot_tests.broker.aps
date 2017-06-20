@@ -152,11 +152,12 @@ aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
 
 aps.Створити постачальника, додати документацію і підтвердити його
-    [Arguments]    @{arguments}
-    ${supplier}=    Get From List    ${arguments}    2
-    ${username}=    Get From List    ${arguments}    0
-    ${filepath}=    Get From List    ${arguments}    3
-    ${ua_id}=    Get From List    ${arguments}    1
+    [Arguments]    ${ua_id}    ${s}    ${filepath}
+    Comment    ${supplier}=    Get From List    ${arguments}    2
+    Comment    ${username}=    Get From List    ${arguments}    0
+    Comment    ${filepath}=    Get From List    ${arguments}    3
+    Comment    ${ua_id}=    Get From List    ${arguments}    1
+    ${username}=    Set Variable    aps_Owner
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${id}=    Get Location
@@ -170,11 +171,8 @@ aps.Створити постачальника, додати документа
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
     Click Element    ${locator_add_participant}
-    ${data}=    Get From Dictionary    ${arguments}    1
-    ${suppl}=    Get From Dictionary    ${data}    suppliers
-    ${data}=    Get From List    ${suppl}    0
     #Цена предложения
-    ${amount}=    Get From Dictionary    ${data.value}    amount
+    ${amount}=    Get From Dictionary    ${s.data.value}    amount
     Press Key    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}

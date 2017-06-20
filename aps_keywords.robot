@@ -286,7 +286,7 @@ Load document
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    Повідомлення про закупівлю
+    Select From List By Label    ${locator_category}    Документи закупівлі
     Click Element    ${locator_add_documents_to}
     Select From List By Value    ${locator_add_documents_to}    Tender
     Wait Until Page Contains Element    ${locator_download}
@@ -370,10 +370,8 @@ Add item negotiate
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    ${dkpp}=    Set Variable    000
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
+    Set Suite Variable    ${dkkp_id}    000
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
     #Срок поставки (начальная дата)
     sleep    10
