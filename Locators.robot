@@ -101,3 +101,6 @@ ${locator_name}    id=procuringParticipantName_0_0
 ${locator_mail_ng}    id=procuringParticipantMail_0_0
 ${locator_phone_ng}    id=procuringParticipantPhone_00
 ${locator_save_participant}    id=updateProcuringParticipant_0_0
+${locator_necPositionButton}    id=featureOf_1_
+${locator_necPositionTitle}    id=featureItem_1_0
+${locator_add_doc_ng}    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/label/i

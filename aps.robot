@@ -41,7 +41,7 @@ aps.Підготувати дані для оголошення тендера
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    http://www.pcenter.org.ua
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    https://dfgsdfadfg.com
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    12345636
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
@@ -210,7 +210,7 @@ aps.Створити постачальника, додати документа
     Select From List By Label    ${locator_country_id}    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); \ autotestmodel.regions.push({id:0,name:'${region}'}); \ autotestmodel.$apply(); \ $("#select_regions option[value='0']").attr("selected", "selected"); \ var autotestmodel=angular.element(document.getElementById('procuringParticipant.procuringParticipants.region')).scope(); \ autotestmodel.procuringParticipants; autotestmodel.procuringParticipants.region.id=0; \ autotestmodel.procuringParticipants.region.name='${region}';
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};
     Execute Javascript    window.scroll(1000, 1000)
     #Индекс
     ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
@@ -233,6 +233,14 @@ aps.Створити постачальника, додати документа
     #Click but
     Wait Until Element Is Visible    ${locator_save_participant}
     Click Button    ${locator_save_participant}
+    #Add doc
+    Wait Until Page Contains Element    ${locator_add_doc_ng}
+    Choose File    ${locator_add_doc_ng}    ${filepath}
+    #save
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    #publish
+    Publish tender/negotiation
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
