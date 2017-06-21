@@ -62,7 +62,8 @@ ${dkkp_id}        ${EMPTY}
     Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
     Execute Javascript    window.scroll(0, -1000)
-    Comment    Add Feature    ${tender.data.features[2]}    0    0
+    Comment    Add Feature    ${tender.data.features[2]}    1    0
+    Comment    Execute Javascript    window.scroll(0, -1000)
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -642,6 +643,7 @@ Add Feature
     Wait Until Element Is Visible    id=add_features${lid}
     Wait Until Element Is Enabled    id=add_features${lid}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    sleep    2
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -729,19 +731,18 @@ Publish tender/negotiation
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 
-<<<<<<< HEAD
 Select Item Param
     [Arguments]    ${relatedItem}
     Log To Console    11111
-    Wait Until Page Contains Element    ${locator_necPositionButton}
-    Wait Until Element Is Visible    ${locator_necPositionButton}
-    Click Element    ${locator_necPositionButton}
+    Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
+    Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
+    Click Element    xpath=//label[@for='featureOf_1_0']
     Log To Console    22222
-    Wait Until Page Contains Element    ${locator_necPositionTitle}
-    Wait Until Element Is Visible    ${locator_necPositionTitle}
-    Comment    Input Text    ${locator_necPositionTitle}${lid}_${pid}    ${fi.title_en}
-    Select From List By Value    ${locator_necPositionTitle}    string:${relatedItem}
-=======
+    Wait Until Page Contains Element    id=featureItem_1_0
+    Wait Until Element Is Enabled    id=featureItem_1_0
+    Log To Console    string:${relatedItem}
+    Select From List By Value    id=featureItem_1_0    string:${relatedItem}
+
 Select Doc For Lot
     [Arguments]    ${arg}
     Click Element    xpath=//select[@name='DocumentOf']
@@ -760,4 +761,3 @@ Set Field tenderPeriod.endDate
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    ${locator_bidDate_end}
     Click Element    id=createOrUpdatePurchase
->>>>>>> 53436f6094a867e2ae97e2b13b0563714181f5cc
