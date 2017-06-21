@@ -123,6 +123,7 @@ Add Item
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Input Text    ${locator_item_description}${d}    ${add_classif}
+    Input Text    procurementSubjectGuid_${d}    ${item.id}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -455,6 +456,7 @@ Add Lot
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
     Input Text    id=lotDescription_${d}    ${lot.description}
+    Input Text    lotGuid_${d}    ${lot.id}
     ${budget}=    Get From Dictionary    ${lot.value}    amount
     ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
