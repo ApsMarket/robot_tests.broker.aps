@@ -67,22 +67,34 @@ aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Comment    Wait Until Page Contains Element    id=purchaseEdit
+    Comment    Click Button    id=purchaseEdit
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
+    Wait Until Element Is Enabled    id=save_changes    50
+    Click Button    id=save_changes
+    Wait Until Element Is Enabled    id=movePurchaseView
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Log To Console    11111
+    Click Button    id=movePurchaseView
+    Log To Console    22222
+    Wait Until Element Is Enabled    id=publishPurchase
+    Log To Console    3333333
+    Click Button    id=publishPurchase
+    sleep    2
 
-Завантажити документ
+aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Comment    Log To Console    var test=angular.element(document.getElementById(\'header\')).scope(); return test.$$childHead.purchaseId;
-    Comment    sleep    10
-    Comment    ${id}=    Execute Javascript    var test=angular.element(document.getElementById(\'header\')).scope(); test.$$childHead.purchaseId;
     ${id}=    Get Location
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
-    Comment    Wait Until Page Contains Element    s
-    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Comment    Click Button    ${locator_btn_edit_tender}
-    Load document    ${filepath}
+    Load document    ${filepath}    Tender    ${EMPTY}
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -198,7 +210,8 @@ aps.Створити постачальника, додати документа
     Select From List By Label    ${locator_country_id}    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
-    Select From List By Label    ${locator_SelectRegion}    ${region}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); \ autotestmodel.regions.push({id:0,name:'${region}'}); \ autotestmodel.$apply(); \ $("#select_regions option[value='0']").attr("selected", "selected"); \ var autotestmodel=angular.element(document.getElementById('procuringParticipant.procuringParticipants.region')).scope(); \ autotestmodel.procuringParticipants; autotestmodel.procuringParticipants.region.id=0; \ autotestmodel.procuringParticipants.region.name='${region}';
+    Execute Javascript    window.scroll(1000, 1000)
     #Индекс
     ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
     Press Key    ${locator_post_code}    ${post_code}
@@ -248,3 +261,12 @@ aps.Отримати інформацію із нецінового показн
     Execute Javascript    window.scroll(0, 1000)
     ${d}=    Set Variable    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+
+aps.Завантажити документ в лот
+    [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
+    Go To    ${USERS.users['${username}'].homepage}
+    Search tender    ${username}    ${ua_id}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Load document    ${file}    Lot    ${lot_id}

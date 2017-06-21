@@ -49,14 +49,14 @@ ${dkkp_id}        ${EMPTY}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Wait Until Element Is Enabled    id=next_step
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
+    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Execute Javascript    window.scroll(0, 500)
@@ -273,22 +273,23 @@ Login
     Click Element    ${locator_loginButton}
 
 Load document
-    [Arguments]    ${filepath}
-    Comment    Run Keyword And Ignore Error    Wait Until Page Does Not Contain Element    xpath=.//div[@class="page-loader animated fadeIn"]
+    [Arguments]    ${filepath}    ${to}    ${to_name}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
     Click Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
     Click Element    ${locator_category}
     Wait Until Page Contains Element    ${locator_category}
     Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Label    ${locator_category}    Документи закупівлі
+    Select From List By Value    ${locator_category}    biddingDocuments
     Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    Tender
+    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
     Wait Until Page Contains Element    ${locator_download}
     Choose File    ${locator_download}    ${filepath}
     Click Button    ${locator_save_document}
@@ -421,11 +422,11 @@ Publish tender
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    ${locator_publish_tender}    30
+    Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
-    sleep    10
+    sleep    5
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}    30
+    Wait Until Page Contains Element    ${locator_UID}    50
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Log To Console    finish punlish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
@@ -636,6 +637,7 @@ Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Visible    id=add_features${lid}
     Wait Until Element Is Enabled    id=add_features${lid}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -647,7 +649,7 @@ Add Feature
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    Log To Console    val = \ ${val}
+    \    #Log To Console    val = \ ${val}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
@@ -677,7 +679,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end}
+    #Log To Console    id=featureEnumValue_${end}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -689,7 +691,7 @@ Sync
     ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
     Log To Console    Synk \ date=${off}&tenderId=${uaid}
     Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    sleep     2
+    sleep    2
 
 Get OtherDK
     [Arguments]    ${item}
@@ -719,3 +721,22 @@ Publish tender/negotiation
     Reload Page
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
+
+Select Doc For Lot
+    [Arguments]    ${arg}
+    Click Element    xpath=//select[@name='DocumentOf']
+    sleep    500
+    Wait Until Page Contains    xpath=//select[@name='Lot']    30
+    Wait Until Element Is Enabled    xpath=//select[@name='Lot']
+    Comment    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
+    Log To Console    value - ${arg}
+    Select From List By Label    xpath=//select[@name='Lot']    ${arg}
+
+Set Field tenderPeriod.endDate
+    [Arguments]    ${value}
+    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    Log To Console    ${value}
+    Log To Console    ${date_time_ten_end}
+    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    ${locator_bidDate_end}
+    Click Element    id=createOrUpdatePurchase
