@@ -114,6 +114,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
+    Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
     [Return]    field_value
 
 Задати питання
@@ -210,7 +212,8 @@ aps.Створити постачальника, додати документа
     Select From List By Label    ${locator_country_id}    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
-    Set region
+    sleep    3
+    Set region    ${region}
     Execute Javascript    window.scroll(1000, 1000)
     #Индекс
     ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
@@ -235,6 +238,7 @@ aps.Створити постачальника, додати документа
     Click Button    ${locator_save_participant}
     #Add doc
     Wait Until Page Contains Element    ${locator_add_doc_ng}
+    sleep    10
     Choose File    ${locator_add_doc_ng}    ${filepath}
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
