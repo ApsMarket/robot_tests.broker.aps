@@ -116,7 +116,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
-    [Return]    field_value
+    Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
+    [Return]    ${field_value}
 
 Задати питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}
