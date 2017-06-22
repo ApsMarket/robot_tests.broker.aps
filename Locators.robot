@@ -94,5 +94,13 @@ ${locator_reestr}    id=procuringParticipantScheme_0_0
 ${locator_legalName}    id=procuringParticipantLegalName_0_0
 ${locator_addNecPokaznyk}    id=add_features
 ${locator_necTitleUkr}    id=featureTitle_
+${locator_post_code}    id=procuringParticipantIndex_0_0
+${locator_local}    id=procuringParticipantLocality_0_0
+${locator_street_ng}    id=procuringParticipantStreet_0_0
+${locator_name}    id=procuringParticipantName_0_0
+${locator_mail_ng}    id=procuringParticipantMail_0_0
+${locator_phone_ng}    id=procuringParticipantPhone_00
+${locator_save_participant}    id=updateProcuringParticipant_0_0
 ${locator_necPositionButton}    id=featureOf_1_
 ${locator_necPositionTitle}    id=featureItem_1_0
+${locator_add_doc_ng}    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/label/i

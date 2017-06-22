@@ -29,6 +29,9 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
+    Log To Console    111111
+    Log To Console    ${arguments}
+    Log To Console    22222
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
@@ -38,7 +41,7 @@ aps.Підготувати дані для оголошення тендера
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    http://www.pcenter.org.ua
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    https://dfgsdfadfg.com
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    12345636
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
@@ -46,7 +49,6 @@ aps.Підготувати дані для оголошення тендера
     \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
-    Comment    Set To Dictionary    ${tender_data.features.enum}    title_en    flower
     Return From Keyword    ${tender_data}
     [Return]    ${tender_data}
 
@@ -105,10 +107,7 @@ aps.Пошук тендера по ідентифікатору
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-    ${is_tender_open}=    Set Variable    000
-    ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${arguments[0]}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
-    Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Search tender    ${username}    ${arguments[0]}
+    Prepare View    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
@@ -165,11 +164,12 @@ aps.Отримати дані із тендера
     Log To Console    отримати дані із тендера в
 
 aps.Створити постачальника, додати документацію і підтвердити його
-    [Arguments]    @{arguments}
-    ${supplier}=    Get From List    ${arguments}    2
-    ${username}=    Get From List    ${arguments}    0
-    ${filepath}=    Get From List    ${arguments}    3
-    ${ua_id}=    Get From List    ${arguments}    1
+    [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
+    Comment    ${supplier}=    Get From List    ${arguments}    2
+    Comment    ${username}=    Get From List    ${arguments}    0
+    Comment    ${filepath}=    Get From List    ${arguments}    3
+    Comment    ${ua_id}=    Get From List    ${arguments}    1
+    Comment    ${username}=    Set Variable    aps_Owner
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${id}=    Get Location
@@ -183,24 +183,62 @@ aps.Створити постачальника, додати документа
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
     Click Element    ${locator_add_participant}
-    ${data}=    Get From Dictionary    ${arguments}    data
-    ${suppl}=    Get From Dictionary    ${data}    suppliers
-    ${data}=    Get From List    ${suppl}    0
     #Цена предложения
-    ${amount}=    Get From Dictionary    ${data.value}    amount
-    Press Key    ${locator_amount}    ${amount}
+    ${amount}=    Get From Dictionary    ${s.data.value}    amount
+    Wait Until Page Contains Element    ${locator_amount}
+    Wait Until Element Is Enabled    ${locator_amount}
+    Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}
     #Код
-    ${code_edrpou}=    Get From Dictionary    ${suppl.identifier}    id
-    Press Key    ${locator_code_edrpou}    ${code_edrpou}
+    ${sup}=    Get From List    ${s.data.suppliers}    0
+    ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
+    Wait Until Page Contains Element    ${locator_code_edrpou}
+    Wait Until Element Is Enabled    ${locator_code_edrpou}
+    Press Key    ${locator_code_edrpou}    ${sup.identifier.id}
     #Нац реестр
-    ${reestr}=    Get From Dictionary    ${suppl.identifier}    scheme
+    ${reestr}=    Get From Dictionary    ${sup.identifier}    scheme
     Select From List By Value    ${locator_reestr}    UA-EDR
     Press Key    ${locator_reestr}    ${reestr}
     #Наименование участника (legalName)
-    ${legalName}=    Get From Dictionary    ${suppl.identifier}    legalName
+    ${legalName}=    Get From Dictionary    ${sup.identifier}    legalName
     Press Key    ${locator_legalName}    ${legalName}
+    #Выбор страны
+    ${country}=    Get From Dictionary    ${sup.address}    countryName
+    Select From List By Label    ${locator_country_id}    ${country}
+    #Выбор региона
+    ${region}=    Get From Dictionary    ${sup.address}    region
+    Set region
+    Execute Javascript    window.scroll(1000, 1000)
+    #Индекс
+    ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
+    Press Key    ${locator_post_code}    ${post_code}
+    #Насел пункт
+    ${locality}=    Get From Dictionary    ${sup.address}    locality
+    Press Key    ${locator_local}    ${locality}
+    #Адрес
+    ${street}=    Get From Dictionary    ${sup.address}    streetAddress
+    Press Key    ${locator_street_ng}    ${street}
+    #ФИО
+    ${name}=    Get From Dictionary    ${sup.contactPoint}    name
+    Press Key    ${locator_name}    ${name}
+    #e-mail
+    ${mail}=    Get From Dictionary    ${sup.contactPoint}    email
+    Press Key    ${locator_mail_ng}    ${mail}
+    #Телефон
+    ${phone}=    Get From Dictionary    ${sup.contactPoint}    telephone
+    Press Key    ${locator_phone_ng}    ${phone}
+    #Click but
+    Wait Until Element Is Visible    ${locator_save_participant}
+    Click Button    ${locator_save_participant}
+    #Add doc
+    Wait Until Page Contains Element    ${locator_add_doc_ng}
+    Choose File    ${locator_add_doc_ng}    ${filepath}
+    #save
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
+    #publish
+    Publish tender/negotiation
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}

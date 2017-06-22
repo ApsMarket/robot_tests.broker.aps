@@ -370,12 +370,9 @@ Add item negotiate
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
-    ${dkpp}=    Set Variable    000
-    ${dkpp_id}=    Set Variable    000
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}=    Get From List    ${item.additionalClassifications}    0
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp}
-    Run Keyword If    '${is_dkpp[0]}'=='PASS'    ${dkpp_id}=    Get From Dictionary    ${dkpp}    id
-    Set DKKP    ${dkpp_id}
+    Set Suite Variable    ${dkkp_id}    000
+    Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
+    Set DKKP
     #Срок поставки (начальная дата)
     sleep    10
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
@@ -752,3 +749,7 @@ Set Field tenderPeriod.endDate
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    ${locator_bidDate_end}
     Click Element    id=createOrUpdatePurchase
+
+Set region
+    [Arguments]    ${region}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};
