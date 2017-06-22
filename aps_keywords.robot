@@ -758,3 +758,7 @@ Set Field tenderPeriod.endDate
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    ${locator_bidDate_end}
     Click Element    id=createOrUpdatePurchase
+
+Set region
+    [Arguments]    ${region}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};

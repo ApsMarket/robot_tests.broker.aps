@@ -210,7 +210,7 @@ aps.Створити постачальника, додати документа
     Select From List By Label    ${locator_country_id}    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};
+    Set region
     Execute Javascript    window.scroll(1000, 1000)
     #Индекс
     ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
