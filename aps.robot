@@ -116,6 +116,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
+    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'
     Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
     [Return]    ${field_value}
 
@@ -167,6 +170,7 @@ aps.Отримати інформацію із тендера
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
+    Log To Console    отримати дані із тендера в
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
@@ -274,6 +278,8 @@ aps.Отримати інформацію із нецінового показн
     Click Element    id=features
     Execute Javascript    window.scroll(0, 2000)
     ${d}=    Set Variable    ${arguments[1]}
+    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
 
 aps.Завантажити документ в лот
