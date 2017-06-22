@@ -62,8 +62,8 @@ ${dkkp_id}        ${EMPTY}
     Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
     Execute Javascript    window.scroll(0, -1000)
-    Comment    Add Feature    ${tender.data.features[2]}    1    0
-    Comment    Execute Javascript    window.scroll(0, -1000)
+    Add Feature    ${tender.data.features[2]}    1    0
+    Execute Javascript    window.scroll(0, -1000)
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -111,19 +111,17 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    Log To Console    item add start id_lot=${d_lot} \ item_lot=${d_lot}
     Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     sleep    2
     #Клик доб позицию
     Comment    Click Element    ${locator_items}
-    Log To Console    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
     Click Button    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_item_description}${d}    50
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Input Text    ${locator_item_description}${d}    ${add_classif}
-    Input Text    procurementSubjectGuid_${d}    ${item.id}
+    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -142,7 +140,6 @@ Add Item
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
-    Log To Console    is DKKP - \ ${is_dkpp[0]} \ - \ ${is_dkpp[1]}
     Log To Console    cpv ${cpv}
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
@@ -184,7 +181,7 @@ Add Item
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
-    Log To Console    finish add item
+    Log To Console    finish item ${d}
 
 Info Below
     [Arguments]    ${tender_data}
@@ -313,7 +310,6 @@ Search tender
 
 Info OpenUA
     [Arguments]    ${tender}
-    Log To Console    start openUa info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
@@ -334,7 +330,6 @@ Info OpenUA
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
-    Log To Console    date_time_ten_end=${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
@@ -423,7 +418,8 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    Log To Console    start punlish tender
+    ${id}=    Get Location
+    Log To Console    ${id}
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -434,7 +430,7 @@ Publish tender
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    ${locator_UID}    50
     ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
-    Log To Console    finish punlish tender ${tender_UID}
+    Log To Console    publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 
@@ -448,7 +444,6 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Log To Console    start lot ${d}
     Wait Until Page Contains Element    ${locator_multilot_new}    30
     Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
@@ -456,7 +451,7 @@ Add Lot
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
     Input Text    id=lotDescription_${d}    ${lot.description}
-    Input Text    lotGuid_${d}    ${lot.id}
+    Execute Javascript    angular.element(document.getElementById('divLotControllerEdit')).scope().lotPurchasePlan.guid='${lot.id}'
     ${budget}=    Get From Dictionary    ${lot.value}    amount
     ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
@@ -465,7 +460,7 @@ Add Lot
     ${text}=    Convert Float To String    ${step}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    id=lotMinStep_${d}    ${text}
-    Press Key    id=lotMinStep_${d}    //13
+    Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
     Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
@@ -653,7 +648,6 @@ Add Feature
     Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
-    Run Keyword And Ignore Error    Log To Console    ${fi.relatedItem} \ \ ${fi.featureOf}
     Run Keyword If    '${fi.featureOf}'=='item'    Select Item Param    ${fi.relatedItem}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
@@ -664,8 +658,8 @@ Add Feature
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
+    \    Execute Javascript    window.scroll(1000, 1000)
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
-    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
 
@@ -735,20 +729,16 @@ Publish tender/negotiation
 
 Select Item Param
     [Arguments]    ${relatedItem}
-    Log To Console    11111
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
-    Log To Console    22222
     Wait Until Page Contains Element    id=featureItem_1_0
     Wait Until Element Is Enabled    id=featureItem_1_0
-    Log To Console    string:${relatedItem}
     Select From List By Value    id=featureItem_1_0    string:${relatedItem}
 
 Select Doc For Lot
     [Arguments]    ${arg}
     Click Element    xpath=//select[@name='DocumentOf']
-    sleep    500
     Wait Until Page Contains    xpath=//select[@name='Lot']    30
     Wait Until Element Is Enabled    xpath=//select[@name='Lot']
     Comment    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
@@ -758,7 +748,6 @@ Select Doc For Lot
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Log To Console    ${value}
     Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    ${locator_bidDate_end}

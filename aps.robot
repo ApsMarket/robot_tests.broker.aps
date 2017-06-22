@@ -19,7 +19,7 @@ ${js}             ${EMPTY}
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
-    Open Browser    ${user.homepage}    ${user.browser}
+    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -76,11 +76,8 @@ aps.Внести зміни в тендер
     Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
-    Log To Console    11111
     Click Button    id=movePurchaseView
-    Log To Console    22222
     Wait Until Element Is Enabled    id=publishPurchase
-    Log To Console    3333333
     Click Button    id=publishPurchase
     sleep    2
 
@@ -115,7 +112,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
-    [Return]    field_value
+    [Return]    ${field_value}
 
 Задати питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}
@@ -229,7 +226,8 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Execute Javascript    window.scroll(0, 1000)
+    Click Element    id=features
+    Execute Javascript    window.scroll(0, 2000)
     ${d}=    Set Variable    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
 
@@ -241,3 +239,16 @@ aps.Завантажити документ в лот
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${file}    Lot    ${lot_id}
+
+aps.Змінити лот
+    [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Click Element    id=lots-tab
+    Wait Until Page Contains Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
+    Click Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
+    sleep    500
+    Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
