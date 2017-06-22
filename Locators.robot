@@ -4,7 +4,7 @@
 ${item_index}     0
 ${locator_create_dop_zak}    xpath=.//a[@id='url_create_purchase_0']
 ${locator_enter}    xpath=.//*[@id='butLoginPartial']
-${locator_cabinetEnter}    xpath=.//*[@id='liLoginNoAuthenticated']/a/i
+${locator_cabinetEnter}    xpath=//*[@id='liLoginNoAuthenticated']/a
 ${locator_emailField}    id=Email    # id=Email
 ${locator_passwordField}    id=Password    # id=Password
 ${locator_loginButton}    id=submitLogin

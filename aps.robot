@@ -19,7 +19,7 @@ ${js}             ${EMPTY}
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
-    Open Browser    ${user.homepage}    ${user.browser}
+    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -270,7 +270,8 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Execute Javascript    window.scroll(0, 1000)
+    Click Element    id=features
+    Execute Javascript    window.scroll(0, 2000)
     ${d}=    Set Variable    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
 
@@ -282,3 +283,16 @@ aps.Завантажити документ в лот
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${file}    Lot    ${lot_id}
+
+aps.Змінити лот
+    [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Click Element    id=lots-tab
+    Wait Until Page Contains Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
+    Click Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
+    sleep    500
+    Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
