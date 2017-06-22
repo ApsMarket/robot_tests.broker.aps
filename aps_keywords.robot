@@ -111,16 +111,14 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
     sleep    2
     #Клик доб позицию
-    Comment    Click Element    ${locator_items}
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
     Click Button    ${locator_add_item_button}${d_lot}
     Wait Until Element Is Enabled    ${locator_item_description}${d}    50
     #Название предмета закупки
-    ${add_classif}=    Get From Dictionary    ${item}    description
-    Input Text    ${locator_item_description}${d}    ${add_classif}
+    Input Text    ${locator_item_description}${d}    ${item.description}
     Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
@@ -128,8 +126,7 @@ Add Item
     Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${d}
-    ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}${d}    ${code}
+    Select From List By Value    ${locator_code}${d}    ${item.unit.code}
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
@@ -144,41 +141,33 @@ Add Item
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
-    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]    5
     #Срок поставки (начальная дата)
-    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
-    ${date_time}=    dt    ${delivery_Date_start}
+    ${date_time}=    dt    ${item.deliveryDate.startDate}
     Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
     #Срок поставки (конечная дата)
-    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    ${date_time}=    dt    ${delivery_Date}
+    ${date_time}=    dt    ${item.deliveryDate.endDate}
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Execute Javascript    window.scroll(0, 1000)
     Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
-    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}${d}    ${post_code}
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
-    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_region}${d}    ${region}
+    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
+    Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    Select From List By Label    id=select_regions${d}    ${item.deliveryAddress.region}
+    Comment    Set region    ${item.deliveryAddress.region}
     Execute Javascript    window.scroll(1000, 1000)
-    ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}${d}    ${street}
-    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}${d}    ${locality}
+    Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
+    Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
     #Koordinate
-    ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
-    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
+    ${deliveryLocation_latitude}    Convert To String    ${item.deliveryLocation.latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
     Press Key    ${locator_deliveryLocation_latitude}${d}    ${deliveryLocation_latitude}
-    ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
-    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
+    ${deliveryLocation_longitude}=    Convert To String    ${item.deliveryLocation.longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     #Клик кнопку "Створити"
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
     Log To Console    finish item ${d}
@@ -752,4 +741,4 @@ Set Field tenderPeriod.endDate
 
 Set region
     [Arguments]    ${region}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); \ autotestmodel.regions.push({id:0,name:'${region}'}); \ autotestmodel.$apply(); \ autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected");
