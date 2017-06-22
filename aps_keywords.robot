@@ -61,9 +61,9 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
-    Execute Javascript    window.scroll(0, -1000)
+    Execute Javascript    window.scroll(0, 1000)
     Add Feature    ${tender.data.features[2]}    1    0
-    Execute Javascript    window.scroll(0, -1000)
+    Execute Javascript    window.scroll(0, 1000)
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -409,13 +409,17 @@ Publish tender
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
+    Execute Javascript    window.scroll(0, -1500)
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
-    sleep    5
+    sleep    2
     Click Button    ${locator_publish_tender}
-    Wait Until Page Contains Element    ${locator_UID}    50
-    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
+    Wait Until Page Contains Element    id=purchaseProzorroId    50
+    Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
+    Wait Until Element Is Visible    id=purchaseProzorroId    90
+    ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
+    sleep    5
     Log To Console    publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
@@ -725,11 +729,11 @@ Select Item Param
 Select Doc For Lot
     [Arguments]    ${arg}
     Click Element    xpath=//select[@name='DocumentOf']
-    Wait Until Page Contains    xpath=//select[@name='Lot']    30
-    Wait Until Element Is Enabled    xpath=//select[@name='Lot']
-    Comment    ${label}=    Get Text    xpath=//option[contains(text(),'l-30a48c7d')]/@label
+    Wait Until Page Contains Element    id=documentOfLotSelect    30
+    Wait Until Element Is Enabled    id=documentOfLotSelect
+    ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
     Log To Console    value - ${arg}
-    Select From List By Label    xpath=//select[@name='Lot']    ${arg}
+    Select From List By Label    id=documentOfLotSelect    ${arg}
 
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}

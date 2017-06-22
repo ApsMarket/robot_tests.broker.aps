@@ -9,18 +9,6 @@ Library           DateTime
 Library           conv_timeDate.py
 
 *** Keywords ***
-Get Field tenderPeriod.startDate
-    ${startDate}=    Get Text    id=purchasePeriodTenderStart
-    ${startDate}    Replace String    ${startDate}    ${SPACE}    T
-    Return From Keyword    ${startDate}
-    [Return]    ${startDate}
-
-Get Field tenderPeriod.endDate
-    ${endDate}=    Get Text    id=purchasePeriodTenderEnd
-    ${endDate}=    Replace String    ${endDate}    ${SPACE}    T
-    Return From Keyword    ${endDate}
-    [Return]    ${endDate}
-
 Get Field item.description
     [Arguments]    ${id}
     ${path}=    Set Variable    xpath=//h4[@class='m-t-xxs m-b-sm procurementSubjectNameUa ng-binding'][contains(.,'${id}')]
@@ -52,8 +40,20 @@ Prepare View
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
 
 Get Field feature.title
+    [Arguments]    ${username}    ${id}    ${ua_id}
+    Prepare View    ${username}    ${ua_id}
+    Wait Until Element Is Enabled    id=features-tab
+    Click Element    id=features-tab
+    Wait Until Element Is Enabled    id=features
+    Click Element    id=features
+    Execute Javascript    window.scroll(0, 2000)
+    ${d}=    Set Variable    ${id}
+    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_0_0')]//div[contains(text(),'${d}')]
+
+Get Field Date
     [Arguments]    ${id}
-    ${path}=    Set Variable    ${id}
-    Wait Until Element Is Visible    ${path}
-    ${r}=    Get Text    ${path}
-    Return From Keyword    ${r}
+    ${startDate}=    Get Text    ${id}
+    ${startDate}    Replace String    ${startDate}    ${SPACE}    T
+    Return From Keyword    ${startDate}

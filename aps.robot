@@ -109,8 +109,11 @@ aps.Отримати інформацію із тендера
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     Prepare View    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
+    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'
     [Return]    ${field_value}
 
 Задати питання
@@ -267,6 +270,8 @@ aps.Отримати інформацію із нецінового показн
     Click Element    id=features
     Execute Javascript    window.scroll(0, 2000)
     ${d}=    Set Variable    ${arguments[1]}
+    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
 
 aps.Завантажити документ в лот
