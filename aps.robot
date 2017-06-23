@@ -30,22 +30,16 @@ aps.Підготувати дані для оголошення тендера
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
-    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    countryName    Молдова, Республіка
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    locality    Кишинeв
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    streetAddress    bvhgfhjhgj
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    https://dfgsdfadfg.com
-    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    12345636
+    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     : FOR    ${en}    IN    @{items}
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')&('${en.additionalClassifications.id}'=='7242.1')    Set To Dictionary    ${en.additionalClassifications.id}    7242
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications.id}'=='7242.1'    Set To Dictionary    ${en.additionalClassifications.id}
+    \    ...    7242
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
