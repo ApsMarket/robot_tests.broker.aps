@@ -33,20 +33,19 @@ aps.Підготувати дані для оголошення тендера
     Log To Console    ${arguments}
     Log To Console    22222
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
-    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    countryName    Молдова, Республіка
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    locality    Кишинeв
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    streetAddress    bvhgfhjhgj
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    postalCode    23455
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name    QA #1
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    telephone    0723344432
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    url    https://dfgsdfadfg.com
-    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    id    12345636
+    Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     : FOR    ${en}    IN    @{items}
-    \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
+    \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
+    \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7242.1'    Set To Dictionary    ${en.additionalClassifications.id}
+    \    ...    7242
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='17.12.77-80.00'    Set To Dictionary    ${en.additionalClassifications.id}
+    \    ...    17.12
+    \    Comment
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -78,11 +77,8 @@ aps.Внести зміни в тендер
     Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
-    Log To Console    11111
     Click Button    id=movePurchaseView
-    Log To Console    22222
     Wait Until Element Is Enabled    id=publishPurchase
-    Log To Console    3333333
     Click Button    id=publishPurchase
     sleep    2
 
@@ -95,6 +91,7 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
+    Publish tender
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -116,9 +113,11 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
-    Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
+    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    ${arguments[1]}
     [Return]    ${field_value}
 
 Задати питання
@@ -216,8 +215,7 @@ aps.Створити постачальника, додати документа
     Select From List By Label    ${locator_country_id}    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
-    sleep    3
-    Set region    ${region}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'${region}',initName:'${region}'};
     Execute Javascript    window.scroll(1000, 1000)
     #Индекс
     ${post_code}=    Get From Dictionary    ${sup.address}    postalCode
@@ -289,6 +287,7 @@ aps.Завантажити документ в лот
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${file}    Lot    ${lot_id}
+    Publish tender
 
 aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
