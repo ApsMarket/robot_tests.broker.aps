@@ -82,11 +82,7 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
-    Comment    Execute Javascript    window.scroll(1000, 1000)
-    Comment    Load document    ${filepath}
     Execute Javascript    window.scroll(-1000, -1000)
-    Comment    Wait Until Element Is Enabled    ${locator_finish_edit}
-    Comment    Click Button    ${locator_finish_edit}
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
@@ -315,7 +311,6 @@ Info OpenUA
     Select From List By Label    ${locator_currency}    ${currency}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
-    Comment    Set Tender Budget    ${tender}
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -492,11 +487,9 @@ Info OpenEng
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
-    sleep    5
     #Выбор многолотовости
     Wait Until Element Is Enabled    ${locator_multilot_enabler}
     Click Element    ${locator_multilot_enabler}
-    sleep    5
     Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
@@ -508,10 +501,7 @@ Info OpenEng
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Sleep    2
-    Comment    Click Element    id=createOrUpdatePurchase
     Execute Javascript    window.scroll(1000, 1000)
-    Sleep    2
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
     Click Button    ${locator_button_next_step}
     Log To Console    finish openEng info
@@ -519,7 +509,6 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_multilot_new}
     Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
-    Sleep    2
     ${w}=    Set Variable    1
     ${lot}=    Get From Dictionary    ${tender.data}    lots
     ${lot}=    Get From List    ${lot}    0
@@ -530,13 +519,11 @@ Info OpenEng
     ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
     Press Key    ${locator_lotTitleEng}${w}    ${lot.title_en}
     Input Text    id=lotDescription_${w}    ${lot.description}
-    Comment    Input Text    id=lotDescription_En_${d}    ${lot.description}
     Input Text    id=lotBudget_${w}    '${lot.value.amount}'
     Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${w}    ////13
     #Input Text    id=lotGuarantee_${w}
     Execute Javascript    window.scroll(1000, 1000)
-    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
