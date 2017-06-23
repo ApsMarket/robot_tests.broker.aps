@@ -154,8 +154,8 @@ Add Item
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
-    Select From List By Label    id=select_regions${d}    ${item.deliveryAddress.region}
-    Comment    Set region    ${item.deliveryAddress.region}
+    Comment    Select From List By Label    id=select_regions${d}    ${item.deliveryAddress.region}
+    Set region    ${item.deliveryAddress.region}    ${d}
     Execute Javascript    window.scroll(1000, 1000)
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
     Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
@@ -404,8 +404,6 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    ${id}=    Get Location
-    Log To Console    ${id}
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Element Is Enabled    ${locator_finish_edit}
@@ -413,6 +411,8 @@ Publish tender
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
+    ${id}=    Get Location
+    Log To Console    ${id}
     sleep    2
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
@@ -744,5 +744,5 @@ Set Field tenderPeriod.endDate
     Click Element    id=createOrUpdatePurchase
 
 Set region
-    [Arguments]    ${region}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'а21ааа',initName:'${region}'};
+    [Arguments]    ${region}    ${item_no}
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[label='${region}']").attr("selected", "selected");
