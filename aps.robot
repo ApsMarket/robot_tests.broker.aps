@@ -109,8 +109,6 @@ aps.Отримати інформацію із тендера
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     Prepare View    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart

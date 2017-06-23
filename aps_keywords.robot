@@ -162,8 +162,9 @@ Add Item
     ${deliveryLocation_longitude}=    Convert To String    ${item.deliveryLocation.longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
-    Run Keyword If    '${MODE}'=='openeu'    Add Item Eng
+    Run Keyword If    '${MODE}'=='openeu'    Add Item Eng    ${item}    ${d}
     #Клик кнопку "Створити"
+    Execute Javascript    window.scroll(1000, 1000)
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
