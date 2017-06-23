@@ -115,7 +115,7 @@ Add Item
     Wait Until Element Is Enabled    ${locator_item_description}${d}    50
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
-    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
+    Comment    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -189,12 +189,12 @@ Info Below
     Select From List By Label    ${locator_currency}    ${currency}
     #Ввод бюджета
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
-    ${text}=    Convert To string    ${budget}
+    ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
     ${min_step}=    Get From Dictionary    ${tender_data.data.minimalStep}    amount
-    ${text_ms}=    Convert To string    ${min_step}
+    ${text_ms}=    Convert Float To String    ${min_step}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
     sleep    10
