@@ -75,7 +75,7 @@ ${dkkp_id}        ${EMPTY}
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
-    Add Item Eng    ${item}    1
+    Add Item    ${item}    10    1
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
@@ -162,6 +162,7 @@ Add Item
     ${deliveryLocation_longitude}=    Convert To String    ${item.deliveryLocation.longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
+    Run Keyword If    '${MODE}'=='openeu'    Add Item Eng
     #Клик кнопку "Створити"
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
@@ -534,83 +535,11 @@ Info OpenEng
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
-    Log To Console    item Eng add start
-    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    30
-    #Клик доб позицию
-    Sleep    2
-    ${f}=    Set Variable    1
-    Log To Console    do klika
-    Click Button    ${locator_add_item_button}${f}
-    Log To Console    posle klika
-    ${d}=    Set Variable    10
-    Wait Until Element Is Enabled    ${locator_item_description}${d}    30
     #Название предмета закупки
-    ${add_classif}=    Get From Dictionary    ${item}    description
-    Input Text    ${locator_item_description}${d}    ${add_classif}
     Wait Until Element Is Enabled    ${locator_item_descriptionEng}${d}
     ${add_classifEng}=    Get From Dictionary    ${item}    description_en
     Log To Console    ${add_classifEng} \ \ \ \ \ \ ${locator_item_descriptionEng}${d}
     Input Text    ${locator_item_descriptionEng}${d}    ${add_classifEng}
-    #Количество товара
-    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
-    Wait Until Element Is Enabled    ${locator_Quantity}${d}
-    Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
-    #Выбор ед измерения
-    Wait Until Element Is Enabled    ${locator_code}${d}
-    ${code}=    Get From Dictionary    ${item.unit}    code
-    Select From List By Value    ${locator_code}${d}    ${code}
-    ${name}=    Get From Dictionary    ${item.unit}    name
-    #Выбор ДК
-    Click Button    ${locator_button_add_cpv}
-    Wait Until Element Is Enabled    ${locator_cpv_search}
-    ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Press Key    ${locator_cpv_search}    ${cpv}
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
-    #Выбор др ДК
-    sleep    1
-    Wait Until Element Is Enabled    ${locator_button_add_dkpp}
-    Click Button    ${locator_button_add_dkpp}
-    Wait Until Element Is Visible    ${locator_dkpp_search}
-    Clear Element Text    ${locator_dkpp_search}
-    Press Key    ${locator_dkpp_search}    000
-    Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
-    Comment    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
-    #Срок поставки (начальная дата)
-    ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
-    ${date_time}=    dt    ${delivery_Date_start}
-    Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
-    #Срок поставки (конечная дата)
-    ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
-    ${date_time}=    dt    ${delivery_Date}
-    Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
-    Execute Javascript    window.scroll(0, 1000)
-    Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
-    #Выбор страны
-    ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
-    Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${country}
-    ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_region}${d}    ${region}
-    ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
-    Press Key    ${locator_postal_code}${d}    ${post_code}
-    ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
-    Press Key    ${locator_locality}${d}    ${locality}
-    ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
-    Press Key    ${locator_street}${d}    ${street}
-    ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
-    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
-    ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_latitude}${d}    ${deliveryLocation_latitude}
-    ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
-    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
-    ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
-    Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
-    #Клик кнопку "Створити"
-    Wait Until Element Is Enabled    ${locator_button_create_item}${d}
-    Click Button    ${locator_button_create_item}${d}
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}

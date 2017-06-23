@@ -118,7 +118,6 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
-    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'
     Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
     [Return]    ${field_value}
 
