@@ -154,8 +154,8 @@ Add Item
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
-    Comment    Select From List By Label    id=select_regions${d}    ${item.deliveryAddress.region}
-    Set region    ${item.deliveryAddress.region}    ${d}
+    Wait Until Element Is Enabled    id=select_regions${d}
+    Set Region    ${item.deliveryAddress.region}    ${d}
     Execute Javascript    window.scroll(1000, 1000)
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
     Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
@@ -743,6 +743,6 @@ Set Field tenderPeriod.endDate
     Click Element    ${locator_bidDate_end}
     Click Element    id=createOrUpdatePurchase
 
-Set region
+Set Region
     [Arguments]    ${region}    ${item_no}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions option[value='0']").attr("selected", "selected");
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected");
