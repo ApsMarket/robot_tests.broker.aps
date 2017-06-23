@@ -401,9 +401,10 @@ Add item negotiate
 Publish tender
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Wait Until Element Is Enabled    id=movePurchaseView
     Execute Javascript    window.scroll(0, -1500)
-    Click Button    ${locator_finish_edit}
+    Click Button    id=movePurchaseView
+    Log To Console    завершити редагування
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
     ${id}=    Get Location
@@ -725,6 +726,7 @@ Select Doc For Lot
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    ${date_time_ten_end}=    Get Substring    ${value}    \    -3
     Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    ${locator_bidDate_end}

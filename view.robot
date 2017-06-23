@@ -43,8 +43,6 @@ Get Field feature.title
     [Arguments]    ${id}
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
-    Wait Until Element Is Enabled    id=features
-    Click Element    id=features
     Execute Javascript    window.scroll(0, 2000)
     ${d}=    Set Variable    ${id}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30

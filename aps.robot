@@ -70,14 +70,7 @@ aps.Внести зміни в тендер
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
-    Wait Until Element Is Enabled    id=save_changes    50
-    Click Button    id=save_changes
-    Wait Until Element Is Enabled    id=movePurchaseView
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
-    Click Button    id=movePurchaseView
-    Wait Until Element Is Enabled    id=publishPurchase
-    Click Button    id=publishPurchase
-    sleep    2
+    Publish tender
 
 aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
