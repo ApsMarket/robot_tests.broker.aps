@@ -7,6 +7,7 @@ Resource          ../../op_robot_tests/tests_files/resource.robot
 Resource          Locators.robot
 Library           DateTime
 Library           conv_timeDate.py
+Resource          aps_keywords.robot
 
 *** Keywords ***
 Get Field item.description
@@ -54,3 +55,17 @@ Get Field Date
     ${startDate}=    Get Text    ${id}
     ${startDate}    Replace String    ${startDate}    ${SPACE}    T
     Return From Keyword    ${startDate}
+
+Set Field tenderPeriod.endDate
+    [Arguments]    ${value}
+    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    ${date_time_ten_end}=    Get Substring    ${value}    \    -3
+    Log To Console    ${date_time_ten_end}
+    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    sleep    2
+    Click Element    id=createOrUpdatePurchase
+
+Set Field
+    [Arguments]    ${id}    ${value}
+    Wait Until Element Is Enabled    ${id}
+    Input Text    ${id}    ${value}

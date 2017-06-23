@@ -399,8 +399,8 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}    5
+    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}    5
     Wait Until Element Is Enabled    id=movePurchaseView
     Execute Javascript    window.scroll(0, -1500)
     Click Button    id=movePurchaseView
@@ -415,7 +415,7 @@ Publish tender
     Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
-    sleep    5
+    sleep    2
     Log To Console    publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
@@ -722,15 +722,6 @@ Select Doc For Lot
     ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
     Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
-
-Set Field tenderPeriod.endDate
-    [Arguments]    ${value}
-    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    ${date_time_ten_end}=    Get Substring    ${value}    \    -3
-    Log To Console    ${date_time_ten_end}
-    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    ${locator_bidDate_end}
-    Click Element    id=createOrUpdatePurchase
 
 Set Region
     [Arguments]    ${region}    ${item_no}
