@@ -119,7 +119,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
     Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
-    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Convert to Boolean    ${locator_purchaseIsVAT_viewer}
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Convert to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=purchaseDirectoryCauseDescription
     Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    ${locator_purchaseCauseDescr}
     Run Keyword And Return If    '${arguments[1]}'=='value.currency'    Get Field Text    ${locator_purchaseCurrency_viewer}

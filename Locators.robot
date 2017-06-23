@@ -107,4 +107,4 @@ ${locator_add_doc_ng}    id=addDocumentProcuringParticipantNegotiation_
 ${locator_cause_descr_viewer}    id=purchaseDirectoryCauseDescription
 ${locator_purchaseCauseDescr}    id=purchaseCauseDescription
 ${locator_purchaseCurrency_viewer}    id=purchaseCurrency
-${locator_purchaseIsVAT_viewer}    id=purchaseIsVAT
+${locator_purchaseIsVAT_viewer}    id=purchaseIsVAT@isvat

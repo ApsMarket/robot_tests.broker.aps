@@ -68,6 +68,7 @@ Convert to Boolean
     ${path}=    Set Variable    ${id}
     Wait Until Element Is Visible    ${path}
     ${r}=    Get Text    ${path}
-    ${r}=    Remove String    ${r}    ${SPACE}
-    ${r}=    Convert To Boolean    ${r}
-    Return From Keyword    ${r}
+    Comment    ${r}=    Remove String    ${r}    ${SPACE}
+    Comment    ${r}=    Convert To Boolean    ${r}
+    Return From Keyword If    '${r}'=='з ПДВ'    ${True}
+    Return From Keyword If    '${r}'!='з ПДВ'    ${False}
