@@ -29,9 +29,6 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Log To Console    111111
-    Log To Console    ${arguments}
-    Log To Console    22222
     Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName    Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region    мун. Кишинeв
@@ -47,6 +44,8 @@ aps.Підготувати дані для оголошення тендера
     ${item}=    Get From List    ${items}    0
     : FOR    ${en}    IN    @{items}
     \    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
+    \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
+    \    Run Keyword If    ('${is_dkpp}'=='PASS')&('${en.additionalClassifications.id}'=='7242.1')    Set To Dictionary    ${en.additionalClassifications.id}    7242
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -92,6 +91,7 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
+    Publish tender
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -109,13 +109,11 @@ aps.Отримати інформацію із тендера
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     Prepare View    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field tenderPeriod.startDate
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field tenderPeriod.endDate
-    Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text
-    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
-    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'
+    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    ${arguments[1]}
     [Return]    ${field_value}
 
 Задати питання
@@ -284,6 +282,7 @@ aps.Завантажити документ в лот
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${file}    Lot    ${lot_id}
+    Publish tender
 
 aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}

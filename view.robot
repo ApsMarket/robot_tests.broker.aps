@@ -40,8 +40,7 @@ Prepare View
     Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
 
 Get Field feature.title
-    [Arguments]    ${username}    ${id}    ${ua_id}
-    Prepare View    ${username}    ${ua_id}
+    [Arguments]    ${id}
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
