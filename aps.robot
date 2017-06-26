@@ -268,11 +268,12 @@ aps.Отримати інформацію із лоту
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
     Prepare View    ${username}    ${arguments[0]}
+    sleep    2
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
     Click Element    id=features
-    Execute Javascript    window.scroll(0, 2000)
+    Execute Javascript    window.scroll(0, 50)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
