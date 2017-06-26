@@ -42,6 +42,8 @@ aps.Підготувати дані для оголошення тендера
     \    ...    7242
     \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='17.12.77-80.00'    Set To Dictionary    ${en.additionalClassifications.id}
     \    ...    17.12
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7212.1'    Set To Dictionary    ${en.additionalClassifications.id}
+    \    ...    17.12
     \    Comment
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
@@ -105,7 +107,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
-    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
+    Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
+    Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     [Return]    ${field_value}
 
 Задати питання

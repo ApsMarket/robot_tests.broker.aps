@@ -48,7 +48,7 @@ Get Field feature.title
     ${d}=    Set Variable    ${id}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_0_0')]//div[contains(text(),'${d}')]
+    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_${id}')]/
 
 Get Field Date
     [Arguments]    ${id}
@@ -59,13 +59,14 @@ Get Field Date
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    ${date_time_ten_end}=    Get Substring    ${value}    \    -3
+    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}    \    -3
     Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    sleep    2
     Click Element    id=createOrUpdatePurchase
 
 Set Field
-    [Arguments]    ${id}    ${value}
-    Wait Until Element Is Enabled    ${id}
-    Input Text    ${id}    ${value}
+    [Arguments]    ${_id}    ${value}
+    Wait Until Element Is Enabled    ${_id}
+    ${eee}=    Convert Float To String    ${value}
+    Input Text    ${_id}    ${eee}
+    Click Element    ${_id}
