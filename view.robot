@@ -47,7 +47,7 @@ Get Field feature.title
     ${d}=    Set Variable    ${id}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
-    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_${id}')]/
+    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_${id}')]
 
 Get Field Date
     [Arguments]    ${id}
