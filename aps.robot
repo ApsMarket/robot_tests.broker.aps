@@ -273,7 +273,7 @@ aps.Отримати інформацію із нецінового показн
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
     Click Element    id=features
-    Execute Javascript    window.scroll(0, 50)
+    Comment    Execute Javascript    window.scroll(0, 50)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
@@ -301,3 +301,6 @@ aps.Змінити лот
     Click Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
     Run Keyword If    '${field_name}'=='value.amount'    Set Field    id=lotBudget_1    ${field_value}
     Publish tender
+
+aps.Додати неціновий показник на предмет
+    [Arguments]    ${username}    @{arguments}

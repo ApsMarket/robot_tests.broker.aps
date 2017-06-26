@@ -404,12 +404,13 @@ Publish tender
     Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}    5
     Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}    5
     Execute Javascript    window.scroll(0, -1500)
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     Click Button    id=movePurchaseView
-    Log To Console    завершити редагування
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
     ${id}=    Get Location
@@ -417,8 +418,8 @@ Publish tender
     sleep    2
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
-    Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
     sleep    2
     Log To Console    publish tender ${tender_UID}
