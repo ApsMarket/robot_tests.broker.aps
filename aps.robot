@@ -304,6 +304,21 @@ aps.Змінити лот
 
 aps.Додати неціновий показник на предмет
     [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Wait Until Page Contains Element    id=features-tab
+    Click Element    id=features-tab
+    Wait Until Page Contains Element    id=add_features1
+    Click Button    id=add_features1
+    Wait Until Page Contains Element    id=updateFeature_1_0
+    ${fi}=    Set Variable    ${arguments[1]}
+    ${fi.item_id}=    Set Variable    ${arguments[2]}
+    Add Feature    ${fi.item_id}    1    0
+    Execute Javascript    window.scroll(0, 1000)
+    Publish tender
 
 aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}

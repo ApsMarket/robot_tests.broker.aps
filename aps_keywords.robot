@@ -549,6 +549,7 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
+    Log To Console    ${fi}
     Wait Until Element Is Visible    id=add_features${lid}
     Wait Until Element Is Enabled    id=add_features${lid}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
@@ -560,7 +561,9 @@ Add Feature
     Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
-    Run Keyword If    '${fi.featureOf}'=='item'    Select Item Param    ${fi.relatedItem}
+    ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    item_id
+    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]'=='FAILED')    Select Item Param    ${fi.relatedItem}
+    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]'=='PASS')    Select Item Param Label    ${fi.item_id}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
@@ -660,3 +663,12 @@ Select Doc For Lot
 Set Region
     [Arguments]    ${region}    ${item_no}
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+
+Select Item Param Label
+    [Arguments]    ${relatedItem}
+    Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
+    Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
+    Click Element    xpath=//label[@for='featureOf_1_0']
+    Wait Until Page Contains Element    id=featureItem_1_0
+    Wait Until Element Is Enabled    id=featureItem_1_0
+    Select From List By Label    id=featureItem_1_0    ${relatedItem}
