@@ -304,3 +304,6 @@ aps.Змінити лот
 
 aps.Додати неціновий показник на предмет
     [Arguments]    ${username}    @{arguments}
+
+aps.Видалити неціновий показник
+    [Arguments]    ${username}    @{arguments}
