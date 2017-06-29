@@ -402,10 +402,9 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}    5
-    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}    5
-    Execute Javascript    window.scroll(0, -1500)
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
+    sleep    2
+    Execute Javascript    window.scroll(0, -1500)
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
@@ -456,11 +455,10 @@ Add Lot
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
     Execute Javascript    window.scroll(1000, 1000)
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
-    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]    30
+    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Log To Console    finish lot ${d}
 
 Fill Date
@@ -550,10 +548,8 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    Wait Until Element Is Visible    id=add_features${lid}
-    Wait Until Element Is Enabled    id=add_features${lid}
+    Wait Until Element Is Enabled    id=add_features${lid}    50
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
-    sleep    2
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -564,8 +560,8 @@ Add Feature
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
     ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    item_id
-    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]}'=='FAIL')    Select Item Param    ${fi.relatedItem}
-    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]'=='PASS')    Select Item Param Label    ${fi.item_id}
+    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]}'=='FAIL'    Select Item Param    ${fi.relatedItem}
+    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]'}=='PASS'    Select Item Param Label    ${fi.item_id}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
@@ -669,6 +665,7 @@ Set Region
 
 Select Item Param Label
     [Arguments]    ${relatedItem}
+    Log To Console    ad item param \ ${relatedItem}
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']

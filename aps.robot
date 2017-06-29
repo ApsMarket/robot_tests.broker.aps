@@ -99,7 +99,9 @@ aps.Пошук тендера по ідентифікатору
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
+    Log To Console    11111
     Prepare View    ${username}    ${arguments[0]}
+    Log To Console    22222
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
@@ -118,6 +120,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
     Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
+    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
+    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     [Return]    ${field_value}
 
 Задати питання
@@ -273,7 +277,7 @@ aps.Отримати інформацію із нецінового показн
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
     Click Element    id=features
-    Execute Javascript    window.scroll(0, 50)
+    Execute Javascript    window.scroll(0, 250)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
