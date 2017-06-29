@@ -273,7 +273,7 @@ aps.Отримати інформацію із нецінового показн
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
     Click Element    id=features
-    Comment    Execute Javascript    window.scroll(0, 50)
+    Execute Javascript    window.scroll(0, 50)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
@@ -311,12 +311,9 @@ aps.Додати неціновий показник на предмет
     Wait Until Page Contains Element    id=save_changes
     Wait Until Page Contains Element    id=features-tab
     Click Element    id=features-tab
-    Wait Until Page Contains Element    id=add_features1
-    Click Button    id=add_features1
-    Wait Until Page Contains Element    id=updateFeature_1_0
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
-    Add Feature    ${fi.item_id}    1    0
+    Add Feature    ${fi}    1    0
     Execute Javascript    window.scroll(0, 1000)
     Publish tender
 

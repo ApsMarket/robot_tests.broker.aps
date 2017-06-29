@@ -290,9 +290,10 @@ Search tender
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    id=butSimpleSearch
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    20
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    40
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -404,7 +405,7 @@ Publish tender
     Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}    5
     Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}    5
     Execute Javascript    window.scroll(0, -1500)
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
@@ -436,10 +437,10 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Wait Until Page Contains Element    ${locator_multilot_new}    30
+    Wait Until Page Contains Element    ${locator_multilot_new}    60
     Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
-    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Wait Until Page Contains Element    ${locator_multilot_title}${d}    30
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
     Input Text    id=lotDescription_${d}    ${lot.description}
@@ -459,7 +460,7 @@ Add Lot
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]    30
     Log To Console    finish lot ${d}
 
 Fill Date
@@ -549,20 +550,21 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    Log To Console    ${fi}
     Wait Until Element Is Visible    id=add_features${lid}
     Wait Until Element Is Enabled    id=add_features${lid}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
     sleep    2
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
+    ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    title
+    Run Keyword If    '${status[0]}'=='FAIL'    Input Text    id=featureTitle_${lid}_${pid}    itle
+    Run Keyword If    '${status[0]}'=='PASS'    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
     ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    item_id
-    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]'=='FAILED')    Select Item Param    ${fi.relatedItem}
+    Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]}'=='FAIL')    Select Item Param    ${fi.relatedItem}
     Run Keyword If    ('${fi.featureOf}'=='item')&('${status[0]'=='PASS')    Select Item Param Label    ${fi.item_id}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
@@ -644,6 +646,7 @@ Publish tender/negotiation
 
 Select Item Param
     [Arguments]    ${relatedItem}
+    Log To Console    select item paramw string:${relatedItem}
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
