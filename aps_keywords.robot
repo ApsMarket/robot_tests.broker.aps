@@ -75,7 +75,7 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}    10    1
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    aniwait
     Wait Until Element Is Enabled    id=next_step    30
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
@@ -148,10 +148,9 @@ Add Item
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    aniwait
     Wait Until Element Is Enabled    id=select_regions${d}
     Set Region    ${item.deliveryAddress.region}    ${d}
-    Execute Javascript    window.scroll(1000, 1000)
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
     Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
     #Koordinate
@@ -163,8 +162,7 @@ Add Item
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     Run Keyword If    '${MODE}'=='openeu'    Add Item Eng    ${item}    ${d}
     #Клик кнопку "Створити"
-    Execute Javascript    window.scroll(1000, 1000)
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
+    aniwait
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
     Log To Console    finish item ${d}
