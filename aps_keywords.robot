@@ -107,11 +107,9 @@ date_Time
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     aniwait
-    sleep    2
     #Клик доб позицию
-    Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
-    Click Button    ${locator_add_item_button}${d_lot}
-    Wait Until Element Is Enabled    ${locator_item_description}${d}    50
+    Full Click    ${locator_add_item_button}${d_lot}
+    Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
     Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
@@ -129,21 +127,19 @@ Add Item
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    Full Click    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
     Log To Console    cpv ${cpv}
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]    10
     #Срок поставки (начальная дата)
     ${date_time}=    dt    ${item.deliveryDate.startDate}
     Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
     #Срок поставки (конечная дата)
     ${date_time}=    dt    ${item.deliveryDate.endDate}
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
-    Execute Javascript    window.scroll(0, 1000)
     Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
@@ -151,7 +147,6 @@ Add Item
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
     Wait Until Element Is Enabled    id=select_regions${d}
     Set Region    ${item.deliveryAddress.region}    ${d}
-    Execute Javascript    window.scroll(1000, 1000)
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
     Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
     #Koordinate
@@ -163,7 +158,6 @@ Add Item
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     Run Keyword If    '${MODE}'=='openeu'    Add Item Eng    ${item}    ${d}
     #Клик кнопку "Створити"
-    Execute Javascript    window.scroll(1000, 1000)
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Click Button    ${locator_button_create_item}${d}
@@ -180,7 +174,6 @@ Info Below
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
-    Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
@@ -271,10 +264,10 @@ Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
+    aniwait
     Wait Until Page Contains Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_add_ documents}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]
+    aniwait
     Click Element    ${locator_add_ documents}
     Wait Until Element Is Enabled    ${locator_documents}
     Click Element    ${locator_documents}
@@ -301,9 +294,7 @@ Search tender
     aniwait
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Log To Console    bbbb111
     aniwait
-    Log To Console    bbbb222
     ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
     Run Keyword If    '${msg[0]}'=='FAIL'    Capture Page Screenshot    fail_click_link.png
 
@@ -338,8 +329,6 @@ Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
     Run Keyword If    ${log_enabled}    Log To Console    start add item negotiation
     #Клик доб позицию
-    Comment    Wait Until Element Is Enabled    ${locator_items}    35
-    Comment    Click Element    ${locator_items}
     sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}    30
     Click Button    ${locator_add_item_button}${w}
@@ -389,12 +378,10 @@ Add item negotiate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
     Run Keyword If    ${log_enabled}    Log To Console    Срок поставки (конечная дата) ${date_time}
-    Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}${q}    ${country}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор страны ${country}
-    Execute Javascript    window.scroll(1000, 1000)
     #Выбор региона
     sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
@@ -444,13 +431,11 @@ Publish tender
     Wait Until Element Is Enabled    ${locator_publish_tender}
     ${id}=    Get Location
     Log To Console    ${id}
-    sleep    2
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     aniwait
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
-    sleep    2
     Log To Console    publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
@@ -573,12 +558,8 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    Wait Until Element Is Enabled    id=add_features${lid}    50
     aniwait
-    Log To Console    3333
-    Wait Until Element Is Visible    id=add_features${lid}    50
-    Click Button    id=add_features${lid}
-    Log To Console    4444
+    Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
@@ -593,11 +574,9 @@ Add Feature
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    #Log To Console    val = \ ${val}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
-    \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
 
@@ -716,3 +695,10 @@ Select Item Param Label
 
 aniwait
     Wait For Condition    return $(".page-loader").css("display")=="none"    120
+
+Full Click
+    [Arguments]    ${lc}
+    Wait Until Page Contains Element    ${lc}    60
+    Wait Until Element Is Visible    ${lc}    60
+    Wait Until Element Is Enabled    ${lc}    60
+    Click Element    ${lc}
