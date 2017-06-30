@@ -24,6 +24,7 @@ ${dkkp_id}        ${EMPTY}
 
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
+    Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
     Wait Until Element Is Visible    ${locator_button_create}    15
     Click Button    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_create_negotiation}    15
@@ -34,11 +35,12 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
-    ${item}=    Get From List    ${ttt}    1
-    Add item negotiate    ${item}    01    0
+    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    Comment    ${item}=    Get From List    ${ttt}    1
+    Comment    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
     ${tender_UID}=    Publish tender/negotiation
+    Run Keyword If    ${log_enabled}    Log To Console    End negotiation
     [Return]    ${tender_UID}
 
 Открытые торги с публикацией на укр
@@ -216,35 +218,44 @@ Info Below
 
 Info Negotiate
     [Arguments]    ${tender_data}
+    Run Keyword If    ${log_enabled}    Log To Console    start info negotiation
     #Ввод названия закупки
     ${title}=    Get From Dictionary    ${tender_data.data}    title
     Press Key    ${locator_tenderTitle}    ${title}
+    Run Keyword If    ${log_enabled}    Log To Console    Ввод названия закупки ${title}
     #Примечания
     ${description}=    Get From Dictionary    ${tender_data.data}    description
     Press Key    ${locator_description}    ${description}
+    Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
     Click Element    ${locator_directory_cause}
     ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=html/body
+    Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
     ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
     Press Key    ${locator_cause_description}    ${cause_description}
+    Run Keyword If    ${log_enabled}    Log To Console    Обоснование \ ${cause_description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор НДС ${PDV}
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
     Press Key    ${locator_currency}    ${currency}
+    Run Keyword If    ${log_enabled}    Log To Console    Валюта ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
     ${text}=    Convert Float To String    ${budget}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
+    Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
     Click Button    ${locator_next_step}
+    Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
 
 Login
     [Arguments]    ${user}
@@ -325,25 +336,30 @@ Info OpenUA
 
 Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
+    Run Keyword If    ${log_enabled}    Log To Console    start add item negotiation
     #Клик доб позицию
     Comment    Wait Until Element Is Enabled    ${locator_items}    35
     Comment    Click Element    ${locator_items}
     sleep    3
-    Wait Until Element Is Enabled    ${locator_add_item_button}${w}
+    Wait Until Element Is Enabled    ${locator_add_item_button}${w}    30
     Click Button    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
+    Run Keyword If    ${log_enabled}    Log To Console    Click add item
     #Название предмета закупки
     ${add_classif}=    Get From Dictionary    ${item}    description
     Press Key    ${locator_item_description}${q}    ${add_classif}
+    Run Keyword If    ${log_enabled}    Log To Console    Название предмета закупки ${add_classif}
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${q}
     Input Text    ${locator_Quantity}${q}    ${editItemQuant}
+    Run Keyword If    ${log_enabled}    Log To Console    Количество товара ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${q}
     ${code}=    Get From Dictionary    ${item.unit}    code
     Select From List By Value    ${locator_code}${q}    ${code}
     ${name}=    Get From Dictionary    ${item.unit}    name
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор ед измерения ${code} ${name}
     #Выбор ДК
     Click Button    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
@@ -352,6 +368,7 @@ Add item negotiate
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Wait Until Element Is Enabled    ${locator_add_classfier}
     Click Button    ${locator_add_classfier}
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор ДК ${cpv}
     #Выбор др ДК
     sleep    1
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
@@ -360,46 +377,59 @@ Add item negotiate
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор др ДК ${is_dkpp}
     #Срок поставки (начальная дата)
     sleep    10
     ${delivery_Date_start}=    Get From Dictionary    ${item.deliveryDate}    startDate
     ${date_time}=    dt    ${delivery_Date_start}
     Fill Date    ${locator_date_delivery_start}${q}    ${date_time}
+    Run Keyword If    ${log_enabled}    Log To Console    Срок поставки (начальная дата) ${date_time}
     #Срок поставки (конечная дата)
     ${delivery_Date}=    Get From Dictionary    ${item.deliveryDate}    endDate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
+    Run Keyword If    ${log_enabled}    Log To Console    Срок поставки (конечная дата) ${date_time}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}${q}    ${country}
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор страны ${country}
     Execute Javascript    window.scroll(1000, 1000)
     #Выбор региона
     sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
-    Select From List By Label    ${locator_SelectRegion}${q}    ${region}
+    Set Region    ${region}    ${q}
+    Comment    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions00')).scope(); autotestmodel.procurementSubject.procurementSubject.region=autotestmodel.procurementSubject.procurementSubject.region; autotestmodel.procurementSubject.procurementSubject.region={id:0,name:'${region}',initName:'${region}'};
+    Comment    Comment    Select From List By Label    ${locator_SelectRegion}${q}    ${region}
+    Run Keyword If    ${log_enabled}    Log To Console    Выбор региона ${region}
     #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
     Press Key    ${locator_postal_code}${q}    ${post_code}
+    Run Keyword If    ${log_enabled}    Log To Console    Индекс ${post_code}
     ${locality}=    Get From Dictionary    ${item.deliveryAddress}    locality
     Press Key    ${locator_locality}${q}    ${locality}
+    Run Keyword If    ${log_enabled}    Log To Console    Насел пункт ${locality}
     ${street}=    Get From Dictionary    ${item.deliveryAddress}    streetAddress
     Press Key    ${locator_street}${q}    ${street}
+    Run Keyword If    ${log_enabled}    Log To Console    Адрес ${street}
     sleep    3
     Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
     Press Key    ${locator_deliveryLocation_latitude}${q}    ${deliveryLocation_latitude}
+    Run Keyword If    ${log_enabled}    Log To Console    Широта ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
     ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
+    Run Keyword If    ${log_enabled}    Log To Console    Долгота ${deliveryLocation_longitude}
     Execute Javascript    window.scroll(1000, 1000)
     sleep    2
     #Клик кнопку "Створити"
     Click Button    ${locator_button_create_item}${q}
     sleep    2
+    Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
 Publish tender
     aniwait
@@ -616,10 +646,14 @@ Add participant into negotiate
     [Arguments]    ${tender_data}
 
 Publish tender/negotiation
-    Log To Console    start punlish tender
-    Wait Until Page Contains Element    ${locator_toast_container}
-    Click Button    ${locator_toast_close}
-    Wait Until Element Is Enabled    ${locator_finish_edit}
+    Run Keyword If    ${log_enabled}    Log To Console    start publish tender
+    Log To Console    start publish tender
+    Comment    Wait Until Page Contains Element    ${locator_toast_container}
+    Comment    Click Button    ${locator_toast_close}
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    sleep    10
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Wait Until Element Is Enabled    ${locator_finish_edit}    30
     Click Button    ${locator_finish_edit}
     Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
     Wait Until Element Is Enabled    id=publishNegotiationAutoTest
@@ -627,16 +661,19 @@ Publish tender/negotiation
     Execute Javascript    $("#publishNegotiationAutoTest").click()
     ${url}=    Get Location
     Log To Console    ${url}
-    Wait Until Page Contains Element    ${locator_UID}    40
-    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
-    Log To Console    finish punlish tender ${tender_UID}
+    sleep    5
+    Comment    Wait Until Page Contains Element    id=purchaseProzorroId    50
+    Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
+    Wait Until Element Is Visible    id=purchaseProzorroId    90
+    ${tender_UID}=    Get Text    id=purchaseProzorroId
+    Log To Console    finish publish tender ${tender_UID}
     Reload Page
     Return From Keyword    ${tender_UID}
+    Run Keyword If    ${log_enabled}    Log To Console    end publish tender
     [Return]    ${tender_UID}
 
 Select Item Param
     [Arguments]    ${relatedItem}
-    Log To Console    select item paramw string:${relatedItem}
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
@@ -652,6 +689,14 @@ Select Doc For Lot
     ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
     Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
+
+Set Field tenderPeriod.endDate
+    [Arguments]    ${value}
+    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    Log To Console    ${date_time_ten_end}
+    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    Click Element    ${locator_bidDate_end}
+    Click Element    id=createOrUpdatePurchase
 
 Set Region
     [Arguments]    ${region}    ${item_no}

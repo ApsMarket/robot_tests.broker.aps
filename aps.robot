@@ -13,11 +13,13 @@ Resource          view.robot
 *** Variables ***
 ${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
+${log_enabled}    ${EMPTY}
 
 *** Keywords ***
 Підготувати клієнт для користувача
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
+    Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     Set Window Position    @{user.position}
@@ -53,7 +55,7 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Log To Console    MODE=${MODE}
+    Run Keyword If    ${log_enabled}    Log To Console    MODE=${MODE}
     Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
@@ -72,7 +74,8 @@ aps.Внести зміни в тендер
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
-    Publish tender
+    Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
+    Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
 aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
@@ -83,7 +86,8 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
-    Publish tender
+    Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
+    Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
@@ -241,8 +245,11 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Visible    ${locator_save_participant}
     Click Button    ${locator_save_participant}
     #Add doc
-    Wait Until Page Contains Element    ${locator_add_doc_ng}
-    Choose File    ${locator_add_doc_ng}    ${filepath}
+    Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
+    Comment    Wait Until Page Contains Element    xpath=.//*[@id='uploadFile']
+    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/file-category-upload/div/div/div/div[1]/label
+    sleep    10
+    Choose File    xpath=.//*[@id='uploadFile']    ${filepath}
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}

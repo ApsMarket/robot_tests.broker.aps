@@ -63,7 +63,7 @@ ${locator_select_directory_causes}    xpath=.//*[@ng-bind='directoryCause.cause'
 ${locator_cause_description}    id=cause_description
 ${locator_multilot}    xpath=.//*[@id='is_multilot']/div[1]/div[2]/div
 ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purchase_1
-${locator_UID}    xpath=//span[@class="text-muted ng-binding"]
+${locator_UID}    id=purchaseProzorroId
 ${locator_click_logo}    xpath=.//*[@id='logo']/a/span/img
 ${locator_btn_edit_tender}    id=purchaseEdit
 ${locator_questions}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div[2]/div/ul/li[2]/a[@href="#questions"]
