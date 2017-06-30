@@ -49,14 +49,14 @@ ${dkkp_id}        ${EMPTY}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Wait Until Element Is Enabled    id=next_step    50
+    aniwait
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
     Wait Until Element Is Enabled    id=next_step    30
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    aniwait
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Execute Javascript    window.scroll(0, 500)
@@ -107,7 +107,7 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    aniwait
     sleep    2
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
@@ -137,7 +137,7 @@ Add Item
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]    5
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${date_time}=    dt    ${item.deliveryDate.startDate}
     Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
@@ -307,6 +307,7 @@ Info OpenUA
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
     Execute Javascript    window.scroll(1000, 1000)
+    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
@@ -402,14 +403,14 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
+    aniwait
     sleep    2
     Execute Javascript    window.scroll(0, -1500)
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    aniwait
     Click Button    id=movePurchaseView
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
@@ -419,7 +420,7 @@ Publish tender
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
     Wait Until Element Is Visible    id=purchaseProzorroId    90
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    aniwait
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
     sleep    2
     Log To Console    publish tender ${tender_UID}
@@ -549,19 +550,17 @@ Add Item Eng
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Enabled    id=add_features${lid}    50
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
+    aniwait
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
-    ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    title
-    Run Keyword If    '${status[0]}'=='FAIL'    Input Text    id=featureTitle_${lid}_${pid}    itle
-    Run Keyword If    '${status[0]}'=='PASS'    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
+    Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
     Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
     ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    item_id
     Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]}'=='FAIL'    Select Item Param    ${fi.relatedItem}
-    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]'}=='PASS'    Select Item Param Label    ${fi.item_id}
+    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]}'=='PASS'    Select Item Param Label    ${fi.item_id}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
@@ -666,9 +665,15 @@ Set Region
 Select Item Param Label
     [Arguments]    ${relatedItem}
     Log To Console    ad item param \ ${relatedItem}
+    Execute Javascript    window.scroll(0, -80)
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Page Contains Element    id=featureItem_1_0
     Wait Until Element Is Enabled    id=featureItem_1_0
-    Select From List By Label    id=featureItem_1_0    ${relatedItem}
+    ${lb}=    Get Element Attribute    xpath=//select[@id='featureItem_1_0']/option[contains(@label,'${relatedItem}')]@label
+    Log To Console    ${lb}
+    Select From List By Label    id=featureItem_1_0    ${lb}
+
+aniwait
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50

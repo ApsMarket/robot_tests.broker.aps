@@ -99,9 +99,7 @@ aps.Пошук тендера по ідентифікатору
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-    Log To Console    11111
     Prepare View    ${username}    ${arguments[0]}
-    Log To Console    22222
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
@@ -276,8 +274,8 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Click Element    id=features
-    Execute Javascript    window.scroll(0, 250)
+    Comment    Click Element    id=features
+    Execute Javascript    window.scroll(0, 500)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
@@ -318,7 +316,7 @@ aps.Додати неціновий показник на предмет
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
-    Execute Javascript    window.scroll(0, 1000)
+    Execute Javascript    window.scroll(0, -1000)
     Publish tender
 
 aps.Видалити неціновий показник
