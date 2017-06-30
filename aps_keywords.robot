@@ -287,11 +287,14 @@ Search tender
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    id=butSimpleSearch
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
+    aniwait
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    40
-    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
+    Log To Console    bbbb111
+    aniwait
+    Log To Console    bbbb222
+    ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
+    Run Keyword If    '${msg[0]}'=='FAIL'    Capture Page Screenshot    fail_click_link.png
 
 Info OpenUA
     [Arguments]    ${tender}
@@ -542,7 +545,10 @@ Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     Wait Until Element Is Enabled    id=add_features${lid}    50
     aniwait
+    Log To Console    3333
+    Wait Until Element Is Visible    id=add_features${lid}    50
     Click Button    id=add_features${lid}
+    Log To Console    4444
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
     Input Text    id=featureTitle_${lid}_${pid}    ${fi.title}
@@ -664,4 +670,4 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
+    Wait For Condition    return $(".page-loader").css("display")=="none"    120
