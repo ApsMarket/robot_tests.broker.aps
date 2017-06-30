@@ -249,7 +249,7 @@ aps.Створити постачальника, додати документа
     Comment    Wait Until Page Contains Element    xpath=.//*[@id='uploadFile']
     Comment    Wait Until Element Is Enabled    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/file-category-upload/div/div/div/div[1]/label
     sleep    10
-    Choose File    xpath=.//*[@id='uploadFile']    ${filepath}
+    Choose File    id=uploadFile219    ${filepath}
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}

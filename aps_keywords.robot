@@ -646,10 +646,10 @@ Publish tender/negotiation
     Comment    Click Button    ${locator_toast_close}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     sleep    10
-    Wait Until Page Contains Element    ${locator_finish_edit}
-    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Comment    Wait Until Page Contains Element    ${locator_finish_edit}
+    Comment    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Comment    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    90
     Wait Until Element Is Enabled    id=publishNegotiationAutoTest
     sleep    3
     Execute Javascript    $("#publishNegotiationAutoTest").click()
