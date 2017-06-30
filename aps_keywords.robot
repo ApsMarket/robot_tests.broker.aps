@@ -59,11 +59,8 @@ ${dkkp_id}        ${EMPTY}
     aniwait
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
-    Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
-    Execute Javascript    window.scroll(0, 1000)
     Add Feature    ${tender.data.features[2]}    1    0
-    Execute Javascript    window.scroll(0, 1000)
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -306,7 +303,6 @@ Info OpenUA
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
-    Execute Javascript    window.scroll(1000, 1000)
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
@@ -405,7 +401,6 @@ Add item negotiate
 Publish tender
     aniwait
     sleep    2
-    Execute Javascript    window.scroll(0, -1500)
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
@@ -455,7 +450,6 @@ Add Lot
     Press Key    id=lotMinStep_${d}    ${text}
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
-    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
@@ -497,7 +491,6 @@ Info OpenEng
     #Выбор многолотовости
     Wait Until Element Is Enabled    ${locator_multilot_enabler}
     Click Element    ${locator_multilot_enabler}
-    Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
@@ -508,7 +501,6 @@ Info OpenEng
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
     Click Button    ${locator_button_next_step}
     Log To Console    finish openEng info
@@ -530,7 +522,6 @@ Info OpenEng
     Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${w}    ////13
     #Input Text    id=lotGuarantee_${w}
-    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
@@ -570,7 +561,6 @@ Add Feature
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
-    \    Execute Javascript    window.scroll(1000, 1000)
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
@@ -591,7 +581,6 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
-    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
@@ -665,7 +654,6 @@ Set Region
 Select Item Param Label
     [Arguments]    ${relatedItem}
     Log To Console    ad item param \ ${relatedItem}
-    Execute Javascript    window.scroll(0, -80)
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
