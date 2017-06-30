@@ -49,21 +49,18 @@ ${dkkp_id}        ${EMPTY}
     Click Link    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    Wait Until Element Is Enabled    id=next_step    50
+    aniwait
     Click Button    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
     Wait Until Element Is Enabled    id=next_step    30
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
+    aniwait
     Click Button    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
-    Execute Javascript    window.scroll(0, 500)
     Add Feature    ${tender.data.features[0]}    1    0
-    Execute Javascript    window.scroll(0, 1000)
     Add Feature    ${tender.data.features[2]}    1    0
-    Execute Javascript    window.scroll(0, 1000)
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -107,7 +104,7 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    10
+    aniwait
     sleep    2
     #Клик доб позицию
     Wait Until Element Is Enabled    ${locator_add_item_button}${d_lot}    50
@@ -137,7 +134,7 @@ Add Item
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]    5
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class="modal-backdrop fade"]
     #Срок поставки (начальная дата)
     ${date_time}=    dt    ${item.deliveryDate.startDate}
     Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
@@ -290,9 +287,10 @@ Search tender
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
     Wait Until Element Is Enabled    id=butSimpleSearch
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     Click Element    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    20
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=//div[@class='page-loader animated fadeIn']    40
     Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
 
 Info OpenUA
@@ -305,7 +303,7 @@ Info OpenUA
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
-    Execute Javascript    window.scroll(1000, 1000)
+    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
@@ -401,15 +399,14 @@ Add item negotiate
     sleep    2
 
 Publish tender
-    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}    5
-    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}    5
-    Execute Javascript    window.scroll(0, -1500)
+    aniwait
+    sleep    2
+    Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
+    aniwait
     Click Button    id=movePurchaseView
-    Log To Console    завершити редагування
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
     ${id}=    Get Location
@@ -417,8 +414,8 @@ Publish tender
     sleep    2
     Click Button    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
-    Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
+    aniwait
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
     sleep    2
     Log To Console    publish tender ${tender_UID}
@@ -435,10 +432,10 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Wait Until Page Contains Element    ${locator_multilot_new}    30
+    Wait Until Page Contains Element    ${locator_multilot_new}    60
     Wait Until Element Is Enabled    ${locator_multilot_new}    30
     Click Button    ${locator_multilot_new}
-    Wait Until Page Contains Element    ${locator_multilot_title}${d}
+    Wait Until Page Contains Element    ${locator_multilot_title}${d}    30
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
     Input Text    id=lotDescription_${d}    ${lot.description}
@@ -453,12 +450,10 @@ Add Lot
     Press Key    id=lotMinStep_${d}    ${text}
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
-    Execute Javascript    window.scroll(1000, 1000)
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
-    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Log To Console    finish lot ${d}
 
 Fill Date
@@ -496,7 +491,6 @@ Info OpenEng
     #Выбор многолотовости
     Wait Until Element Is Enabled    ${locator_multilot_enabler}
     Click Element    ${locator_multilot_enabler}
-    Execute Javascript    window.scroll(1000, 1000)
     #Валюта
     Wait Until Element Is Enabled    ${locator_currency}    15
     Click Element    ${locator_currency}
@@ -507,7 +501,6 @@ Info OpenEng
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Execute Javascript    window.scroll(1000, 1000)
     Wait Until Element Is Enabled    ${locator_button_next_step}    20
     Click Button    ${locator_button_next_step}
     Log To Console    finish openEng info
@@ -529,7 +522,6 @@ Info OpenEng
     Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${w}    ////13
     #Input Text    id=lotGuarantee_${w}
-    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
@@ -548,10 +540,8 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    Wait Until Element Is Visible    id=add_features${lid}
-    Wait Until Element Is Enabled    id=add_features${lid}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']
-    sleep    2
+    Wait Until Element Is Enabled    id=add_features${lid}    50
+    aniwait
     Click Button    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -559,7 +549,9 @@ Add Feature
     Run Keyword If    '${MODE}'=='openeu'    Input Text    id=featureTitle_En_${lid}_${pid}    ${fi.title_en}
     Input Text    id=featureDescription_${lid}_${pid}    ${fi.description}
     # Position nec
-    Run Keyword If    '${fi.featureOf}'=='item'    Select Item Param    ${fi.relatedItem}
+    ${status}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${fi}    item_id
+    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]}'=='FAIL'    Select Item Param    ${fi.relatedItem}
+    Run Keyword If    '${fi.featureOf}'=='item'    Run Keyword If    '${status[0]}'=='PASS'    Select Item Param Label    ${fi.item_id}
     #Enum_0_1
     Set Suite Variable    ${enid}    ${0}
     ${enums}=    Get From Dictionary    ${fi}    enum
@@ -569,7 +561,6 @@ Add Feature
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
-    \    Execute Javascript    window.scroll(1000, 1000)
     \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
@@ -590,7 +581,6 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
-    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
@@ -640,6 +630,7 @@ Publish tender/negotiation
 
 Select Item Param
     [Arguments]    ${relatedItem}
+    Log To Console    select item paramw string:${relatedItem}
     Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
     Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
     Click Element    xpath=//label[@for='featureOf_1_0']
@@ -659,3 +650,18 @@ Select Doc For Lot
 Set Region
     [Arguments]    ${region}    ${item_no}
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+
+Select Item Param Label
+    [Arguments]    ${relatedItem}
+    Log To Console    ad item param \ ${relatedItem}
+    Wait Until Page Contains Element    xpath=//label[@for='featureOf_1_0']
+    Wait Until Element Is Visible    xpath=//label[@for='featureOf_1_0']
+    Click Element    xpath=//label[@for='featureOf_1_0']
+    Wait Until Page Contains Element    id=featureItem_1_0
+    Wait Until Element Is Enabled    id=featureItem_1_0
+    ${lb}=    Get Element Attribute    xpath=//select[@id='featureItem_1_0']/option[contains(@label,'${relatedItem}')]@label
+    Log To Console    ${lb}
+    Select From List By Label    id=featureItem_1_0    ${lb}
+
+aniwait
+    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    50
