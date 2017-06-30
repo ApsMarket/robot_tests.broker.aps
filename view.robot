@@ -71,3 +71,12 @@ Set Field
     ${eee}=    Convert Float To String    ${value}
     Input Text    ${_id}    ${eee}
     Click Element    ${_id}
+
+Conv to Boolean
+    [Arguments]    ${id}
+    ${path}=    Set Variable    ${id}
+    Wait Until Element Is Visible    ${path}
+    ${r}=    Get Text    ${path}
+    ${r}=    Remove String    ${r}    ${SPACE}
+    ${r}=    Convert To Boolean    ${r}
+    Return From Keyword    ${r}

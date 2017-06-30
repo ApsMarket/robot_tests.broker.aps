@@ -86,6 +86,10 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
+    aniwait
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Click Button    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -112,7 +116,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
     Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
-    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Convert to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Conv to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
     Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=purchaseDirectoryCauseDescription
     Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    ${locator_purchaseCauseDescr}
@@ -246,10 +250,10 @@ aps.Створити постачальника, додати документа
     Click Button    ${locator_save_participant}
     #Add doc
     Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
-    Comment    Wait Until Page Contains Element    xpath=.//*[@id='uploadFile']
-    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/file-category-upload/div/div/div/div[1]/label
+    Comment    Wait Until Page Contains Element    id=uploadFile247
+    Wait Until Element Is Enabled    xpath=.//*[@id='uploadFile247']
     sleep    10
-    Choose File    id=uploadFile219    ${filepath}
+    Choose File    xpath=.//*[@id='uploadFile247']    ${filepath}
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}

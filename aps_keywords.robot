@@ -39,6 +39,9 @@ ${dkkp_id}        ${EMPTY}
     Comment    ${item}=    Get From List    ${ttt}    1
     Comment    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Click Button    ${locator_finish_edit}
     ${tender_UID}=    Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    End negotiation
     [Return]    ${tender_UID}
