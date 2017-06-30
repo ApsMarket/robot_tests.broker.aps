@@ -110,3 +110,6 @@ ${locator_purchaseCurrency_viewer}    id=purchaseCurrency
 ${locator_purchaseIsVAT_viewer}    id=purchaseIsVAT@isvat
 ${locator_purchaseAddressCountryName_viewer}    id=purchaseAddressCountryName
 ${locator_purchaseAddressLocality_viewer}    id=purchaseAddressLocality
+${locator_makeProposition}    id=do-proposition-tab    # id=do-proposition-tab
+${locator_newProp_amount}    id=lotAmount_
+${locator_questionTender}    id=questions-tab
