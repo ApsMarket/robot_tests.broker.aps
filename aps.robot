@@ -93,7 +93,6 @@ aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
     Go To    ${USERS.users['${username}'].homepage}
-    Log To Console    1111111
     Search tender    ${username}    ${tender_uaid}
 
 Оновити сторінку з тендером
@@ -123,6 +122,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
     Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
+    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
+    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     [Return]    ${field_value}
 
 Задати питання
@@ -280,8 +281,8 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Click Element    id=features
-    Comment    Execute Javascript    window.scroll(0, 50)
+    Comment    Click Element    id=features
+    Execute Javascript    window.scroll(0, 500)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
@@ -311,4 +312,19 @@ aps.Змінити лот
     Publish tender
 
 aps.Додати неціновий показник на предмет
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Wait Until Page Contains Element    id=features-tab
+    Click Element    id=features-tab
+    ${fi}=    Set Variable    ${arguments[1]}
+    ${fi.item_id}=    Set Variable    ${arguments[2]}
+    Add Feature    ${fi}    1    0
+    Execute Javascript    window.scroll(0, -1000)
+    Publish tender
+
+aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}
