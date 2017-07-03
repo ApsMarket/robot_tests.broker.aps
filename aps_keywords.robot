@@ -81,7 +81,6 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
-    Execute Javascript    window.scroll(-1000, -1000)
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер

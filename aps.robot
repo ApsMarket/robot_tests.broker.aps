@@ -131,6 +131,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field Text
     [Return]    ${field_value}
 
 Задати питання
