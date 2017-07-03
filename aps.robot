@@ -339,6 +339,9 @@ aps.Видалити неціновий показник
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
-    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../../../div/a[@ng-click='deleteModalFeature(lotPurchasePlan, features)']
+    Log To Console    id=features-tab
+    Log To Console    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
+    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
+    Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
+    Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
     Publish tender
-    S

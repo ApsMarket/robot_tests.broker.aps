@@ -291,9 +291,9 @@ Search tender
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
-    Wait Until Element Is Enabled    id=butSimpleSearch
+    Execute Javascript    window.scroll(0,-1000)
     aniwait
-    Click Element    id=butSimpleSearch
+    Full Click    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     aniwait
     ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
@@ -426,14 +426,11 @@ Publish tender
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    Wait Until Element Is Enabled    id=movePurchaseView
     aniwait
-    Click Button    id=movePurchaseView
-    Wait Until Page Contains Element    ${locator_publish_tender}    50
-    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Full Click    id=movePurchaseView
     ${id}=    Get Location
     Log To Console    ${id}
-    Click Button    ${locator_publish_tender}
+    Full Click    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     aniwait
@@ -603,7 +600,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    #Log To Console    id=featureEnumValue_${end}
+    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -704,4 +701,6 @@ Full Click
     Wait Until Page Contains Element    ${lc}    60
     Wait Until Element Is Visible    ${lc}    60
     Wait Until Element Is Enabled    ${lc}    60
+    aniwait
     Click Element    ${lc}
+    aniwait
