@@ -22,6 +22,13 @@ ${log_enabled}    ${EMPTY}
     Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
+    Comment    ${pref}=    Create Dictionary    profile.default_content_setting_values.notifications=2    credentials_enable_service=false    profile.password_manager_enabled=false
+    Comment    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
+    Comment    Call Method    ${chrome options}    add_argument    --force-login-manager-in-tests
+    Comment    Call Method    ${chrome options}    add_argument    --disable-extensions
+    Comment    Call Method    ${chrome options}    add_experimental_option    prefs    ${pref}
+    Comment    Create Webdriver    Chrome    my_alias    chrome_options=${chrome options}
+    Comment    Go To    ${user.homepage}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -329,13 +336,20 @@ aps.Додати неціновий показник на предмет
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
-    Wait Until Page Contains Element    id=features-tab
-    Click Element    id=features-tab
+    Full Click    id=features-tab
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
-    Execute Javascript    window.scroll(0, -1000)
     Publish tender
 
 aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${id}=    Get Location
+    ${id}=    Fetch From Right    ${id}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Wait Until Page Contains Element    id=save_changes
+    Full Click    id=features-tab
+    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../../../div/a[@ng-click='deleteModalFeature(lotPurchasePlan, features)']
+    Publish tender
+    S
