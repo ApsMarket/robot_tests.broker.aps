@@ -106,7 +106,6 @@ date_Time
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     aniwait
-    sleep    2
     #Клик доб позицию
     sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
@@ -292,9 +291,9 @@ Search tender
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
     Input Text    ${locator_input_search}    ${tender_uaid}
-    Wait Until Element Is Enabled    id=butSimpleSearch
+    Execute Javascript    window.scroll(0,-1000)
     aniwait
-    Click Element    id=butSimpleSearch
+    Full Click    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     aniwait
     ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
@@ -332,8 +331,6 @@ Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
     Run Keyword If    ${log_enabled}    Log To Console    start add item negotiation
     #Клик доб позицию
-    Comment    Wait Until Element Is Enabled    ${locator_items}    35
-    Comment    Click Element    ${locator_items}
     sleep    3
     Wait Until Element Is Enabled    ${locator_add_item_button}${w}    30
     Click Button    ${locator_add_item_button}${w}
@@ -383,12 +380,10 @@ Add item negotiate
     ${date_time}=    dt    ${delivery_Date}
     Fill Date    ${locator_date_delivery_end}${q}    ${date_time}
     Run Keyword If    ${log_enabled}    Log To Console    Срок поставки (конечная дата) ${date_time}
-    Execute Javascript    window.scroll(1000, 1000)
     #Выбор страны
     ${country}=    Get From Dictionary    ${item.deliveryAddress}    countryName
     Select From List By Label    ${locator_country_id}${q}    ${country}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор страны ${country}
-    Execute Javascript    window.scroll(1000, 1000)
     #Выбор региона
     sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
@@ -431,20 +426,15 @@ Publish tender
     Click Element    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    Wait Until Element Is Enabled    id=movePurchaseView
     aniwait
-    Click Button    id=movePurchaseView
-    Wait Until Page Contains Element    ${locator_publish_tender}    50
-    Wait Until Element Is Enabled    ${locator_publish_tender}
+    Full Click    id=movePurchaseView
     ${id}=    Get Location
     Log To Console    ${id}
-    sleep    2
-    Click Button    ${locator_publish_tender}
+    Full Click    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     aniwait
     ${tender_UID}=    Get Text    xpath=//span[@id='purchaseProzorroId']
-    sleep    2
     Log To Console    publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
@@ -567,7 +557,6 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    Wait Until Element Is Enabled    id=add_features${lid}    50
     aniwait
     sleep    3
     Full Click    id=add_features${lid}
@@ -585,11 +574,9 @@ Add Feature
     ${enums}=    Get From Dictionary    ${fi}    enum
     : FOR    ${enum}    IN    @{enums}
     \    ${val}=    Evaluate    int(${enum.value}*${100})
-    \    #Log To Console    val = \ ${val}
     \    Run Keyword If    ${val}>0    Add Enum    ${enum}    ${lid}_${pid}
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
-    \    #Input Text    id=featureEnumDescription_${lid}_0_1    ${enum.}
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
     Click Button    id=updateFeature_${lid}_${pid}
 
@@ -613,7 +600,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    #Log To Console    id=featureEnumValue_${end}
+    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -714,4 +701,6 @@ Full Click
     Wait Until Page Contains Element    ${lc}    60
     Wait Until Element Is Visible    ${lc}    60
     Wait Until Element Is Enabled    ${lc}    60
+    aniwait
     Click Element    ${lc}
+    aniwait
