@@ -53,13 +53,13 @@ ${dkkp_id}        ${EMPTY}
     Add Lot    1    ${tender.data.lots[0]}
     Wait Until Element Is Enabled    id=next_step    50
     aniwait
-    Click Button    id=next_step
+    Click Element    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
     Wait Until Element Is Enabled    id=next_step    30
     aniwait
-    Click Button    id=next_step
+    Click Element    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
@@ -108,6 +108,7 @@ Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     aniwait
     #Клик доб позицию
+    sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
@@ -116,13 +117,13 @@ Add Item
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
-    Press Key    ${locator_Quantity}${d}    '${editItemQuant}'
+    Input Text    ${locator_Quantity}${d}    ${editItemQuant}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${d}
     Select From List By Value    ${locator_code}${d}    ${item.unit.code}
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
-    Click Button    ${locator_button_add_cpv}
+    Full Click    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
@@ -140,7 +141,7 @@ Add Item
     #Срок поставки (конечная дата)
     ${date_time}=    dt    ${item.deliveryDate.endDate}
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
-    Click Element    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
+    Full Click    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
@@ -160,7 +161,7 @@ Add Item
     #Клик кнопку "Створити"
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
     Wait Until Element Is Enabled    ${locator_button_create_item}${d}
-    Click Button    ${locator_button_create_item}${d}
+    Full Click    ${locator_button_create_item}${d}
     Log To Console    finish item ${d}
 
 Info Below
@@ -314,8 +315,9 @@ Info OpenUA
     Click Element    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
+    Click Element    ${locator_currency}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
-    Run Keyword If    ${NUMBER_OF_LOTS}>0    Click Element    ${locator_multilot_enabler}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
@@ -559,6 +561,7 @@ Add Item Eng
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
     aniwait
+    sleep    3
     Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
