@@ -117,7 +117,7 @@ Add Item
     Wait Until Element Is Enabled    ${locator_item_description}${d}    50
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
-    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
+    Comment    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}

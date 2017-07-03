@@ -40,12 +40,8 @@ aps.Підготувати дані для оголошення тендера
     : FOR    ${en}    IN    @{items}
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7242.1'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    7242
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='17.12.77-80.00'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    17.12
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7212.1'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    17.12
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications.id}
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
     \    Comment
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
@@ -251,9 +247,9 @@ aps.Створити постачальника, додати документа
     #Add doc
     Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
     Comment    Wait Until Page Contains Element    id=uploadFile247
-    Wait Until Element Is Enabled    xpath=.//*[@id='uploadFile247']
+    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
     sleep    10
-    Choose File    xpath=.//*[@id='uploadFile247']    ${filepath}
+    Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
