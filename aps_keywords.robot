@@ -81,7 +81,6 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
-    Execute Javascript    window.scroll(-1000, -1000)
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
@@ -437,6 +436,7 @@ Publish tender
     Run Keyword And Ignore Error    Click Button    id=save_changes
     Wait Until Element Is Enabled    id=movePurchaseView
     aniwait
+    sleep    100
     Click Button    id=movePurchaseView
     Wait Until Page Contains Element    ${locator_publish_tender}    50
     Wait Until Element Is Enabled    ${locator_publish_tender}
@@ -455,11 +455,15 @@ Publish tender
 
 Add question
     [Arguments]    ${tender_data}
+    Wait Until Element Is Visible    ${locator_question_to}
     Select From List By Label    ${locator_question_to}    0
     ${title}=    Get From Dictionary    ${tender_data.data}    title
     Press Key    ${locator_question_title}    ${title}
     ${description}=    Get From Dictionary    ${tender_data.data}    description
     Press Key    ${locator_description_question}    ${description}
+    Wait Until Element Is Visible    ${locator_confirm_question}
+    Click Button    ${locator_confirm_question}
+    aniwait
 
 Add Lot
     [Arguments]    ${d}    ${lot}

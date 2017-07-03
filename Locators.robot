@@ -113,3 +113,4 @@ ${locator_purchaseAddressLocality_viewer}    id=purchaseAddressLocality
 ${locator_makeProposition}    id=do-proposition-tab    # id=do-proposition-tab
 ${locator_newProp_amount}    id=lotAmount_
 ${locator_questionTender}    id=questions-tab
+${locator_confirm_question}    id=confirm_creationForm
