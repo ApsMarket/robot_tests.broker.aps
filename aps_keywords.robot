@@ -35,9 +35,9 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
-    Comment    ${item}=    Get From List    ${ttt}    1
-    Comment    Add item negotiate    ${item}    01    0
+    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    ${item}=    Get From List    ${ttt}    1
+    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
     Wait Until Page Contains Element    ${locator_finish_edit}
     Wait Until Element Is Enabled    ${locator_finish_edit}    30

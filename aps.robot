@@ -131,6 +131,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     [Return]    ${field_value}
 
 Задати питання
@@ -210,6 +213,7 @@ aps.Створити постачальника, додати документа
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}
+    Click Element    ${locator_awardEligible}
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -257,6 +261,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
     sleep    10
     Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
+    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-valid ng-empty ng-touched'][contains(@id,'fileCategory')]    0
+    Click Button    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
