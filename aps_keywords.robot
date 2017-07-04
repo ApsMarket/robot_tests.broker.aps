@@ -25,23 +25,19 @@ ${dkkp_id}        ${EMPTY}
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
     Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
-    Wait Until Element Is Visible    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_create_negotiation}    15
-    Click Link    ${locator_create_negotiation}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_create_negotiation}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Negotiate    ${tender_data}
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
-    Wait Until Page Contains Element    ${locator_finish_edit}
-    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Click Button    ${locator_finish_edit}
+    Full Click    ${locator_finish_edit}
     ${tender_UID}=    Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    End negotiation
     [Return]    ${tender_UID}
@@ -113,7 +109,7 @@ Add Item
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
-    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
+    Run Keyword And Ignore Error    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -148,7 +144,6 @@ Add Item
     aniwait
     Wait Until Element Is Enabled    id=select_regions${d}
     Set Region    ${item.deliveryAddress.region}    ${d}
-    Execute Javascript    window.scroll(1000, 1000)
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
     Press Key    ${locator_locality}${d}    ${item.deliveryAddress.locality}
     #Koordinate
@@ -224,7 +219,7 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Click Element    ${locator_directory_cause}
+    Full Click    ${locator_directory_cause}
     ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=html/body
@@ -333,8 +328,7 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    start add item negotiation
     #Клик доб позицию
     sleep    3
-    Wait Until Element Is Enabled    ${locator_add_item_button}${w}    30
-    Click Button    ${locator_add_item_button}${w}
+    Full Click    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
     Run Keyword If    ${log_enabled}    Log To Console    Click add item
     #Название предмета закупки
@@ -417,7 +411,7 @@ Add item negotiate
     Execute Javascript    window.scroll(1000, 1000)
     sleep    2
     #Клик кнопку "Створити"
-    Click Button    ${locator_button_create_item}${q}
+    Full Click    ${locator_button_create_item}${q}
     sleep    2
     Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
@@ -539,6 +533,7 @@ Info OpenEng
     Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
     Full Click    ${locator_next_step}
@@ -641,8 +636,9 @@ Publish tender/negotiation
     Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     ${tender_UID}=    Get Text    id=purchaseProzorroId
+    ${tender_GUID}=    Get Text    id=purchaseGuid
+    Execute Javascript    $.get('http://apiprozorro.azurewebsites.net/api/sync/purchases/${tender_GUID}')
     Log To Console    finish publish tender ${tender_UID}
-    Reload Page
     Return From Keyword    ${tender_UID}
     Run Keyword If    ${log_enabled}    Log To Console    end publish tender
     [Return]    ${tender_UID}
@@ -694,9 +690,14 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
+    Log To Console    BF ${lc}
     Wait Until Page Contains Element    ${lc}    60
+    Log To Console    PAGE ${lc}
     Wait Until Element Is Visible    ${lc}    60
+    Log To Console    visible ${lc}
     Wait Until Element Is Enabled    ${lc}    60
+    Log To Console    enabled ${lc}
     aniwait
     Click Element    ${lc}
+    Log To Console    click ${lc}
     aniwait

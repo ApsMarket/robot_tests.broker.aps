@@ -22,13 +22,6 @@ ${log_enabled}    ${EMPTY}
     Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
-    Comment    ${pref}=    Create Dictionary    profile.default_content_setting_values.notifications=2    credentials_enable_service=false    profile.password_manager_enabled=false
-    Comment    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
-    Comment    Call Method    ${chrome options}    add_argument    --force-login-manager-in-tests
-    Comment    Call Method    ${chrome options}    add_argument    --disable-extensions
-    Comment    Call Method    ${chrome options}    add_experimental_option    prefs    ${pref}
-    Comment    Create Webdriver    Chrome    my_alias    chrome_options=${chrome options}
-    Comment    Go To    ${user.homepage}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -48,8 +41,7 @@ aps.Підготувати дані для оголошення тендера
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
     \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications.id}
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
-    \    Comment
+    \    Comment    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -272,7 +264,7 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
     sleep    10
     Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
-    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-valid ng-empty ng-touched'][contains(@id,'fileCategory')]    0
+    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-valid ng-empty ng-touched'][contains(@id,'fileCategory')]    1
     Click Button    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
