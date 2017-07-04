@@ -62,13 +62,11 @@ ${dkkp_id}        ${EMPTY}
 Открытые торги с публикацией на англ
     [Arguments]    ${tender}
     Full Click    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_biddingEng_create}    15
-    Click Link    ${locator_biddingEng_create}
+    Full Click    ${locator_biddingEng_create}
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}    10    1
-    aniwait
     Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
@@ -299,23 +297,20 @@ Info OpenUA
     Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='true'    Click Element    ${locator_pdv}
+    Log To Console    '${PDV}'=='true'
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
+    Full Click    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
     Click Element    ${locator_currency}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
-    Wait Until Element Is Enabled    ${locator_button_next_step}    20
-    Click Button    ${locator_button_next_step}
     Log To Console    finish openUa info
 
 Add item negotiate
@@ -487,14 +482,11 @@ Info OpenEng
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
-    ${descr}=    Get From Dictionary    ${tender.data}    title
-    Input Text    ${locator_tenderTitle}    ${descr}
-    Wait Until Page Contains Element    ${locator_titleEng}
-    ${descrEng}=    Get From Dictionary    ${tender.data}    title_en
-    Input Text    ${locator_titleEng}    ${descrEng}
+    Input Text    ${locator_tenderTitle}    ${tender.data.title}
+    Input Text    ${locator_titleEng}    ${tender.data.title_en}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Выбор многолотовости
     Full Click    ${locator_multilot_enabler}
     #Валюта
@@ -502,11 +494,11 @@ Info OpenEng
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
     Press Key    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    sleep    5
+    Full Click    id=createOrUpdatePurchase
     Full Click    ${locator_next_step}
     Log To Console    finish openEng info
     #Добавление лота
@@ -518,12 +510,11 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_multilot_title}${w}
     Wait Until Element Is Enabled    ${locator_multilot_title}${w}
     Input Text    ${locator_multilot_title}${w}    ${lot.title}
-    ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
-    Press Key    ${locator_lotTitleEng}${w}    ${lot.title_en}
+    Input Text    ${locator_lotTitleEng}${w}    ${lot.title_en}
     Input Text    id=lotDescription_${w}    ${lot.description}
-    Input Text    id=lotBudget_${w}    '${lot.value.amount}'
-    Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
-    Press Key    id=lotMinStep_${w}    ////13
+    Input Text    id=lotBudget_${w}    ${lot.value.amount}
+    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
+    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
     Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
@@ -543,7 +534,6 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    aniwait
     sleep    3
     Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
