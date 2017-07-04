@@ -45,7 +45,6 @@ ${dkkp_id}        ${EMPTY}
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
     Full Click    ${locator_button_create}
-    \    \    15
     Full Click    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
     Full Click    id=next_step
