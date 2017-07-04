@@ -48,21 +48,16 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
-    Wait Until Element Is Enabled    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
-    Click Link    ${locator_biddingUkr_create}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
+    Full Click    id=next_step
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step    50
-    aniwait
-    Click Element    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
+    Full Click    id=next_step
     Add Item    ${item}    10    1
-    Wait Until Element Is Enabled    id=next_step    30
-    aniwait
-    Click Element    id=next_step
+    Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
@@ -111,12 +106,11 @@ Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     aniwait
     #Клик доб позицию
-    sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
-    Comment    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
+    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
@@ -266,25 +260,17 @@ Login
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    aniwait
-    Wait Until Page Contains Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    aniwait
-    Click Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    Click Element    ${locator_category}
-    Wait Until Page Contains Element    ${locator_category}
-    Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Value    ${locator_category}    biddingDocuments
-    Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Full Click    ${locator_documents}
+    Full Click    ${locator_add_ documents}
+    Full Click    ${locator_documents}
+    Full Click    id=categorySelect
+    Select From List By Value    id=categorySelect    biddingDocuments
+    Click Element    id=documentOfSelect
+    Select From List By Value    id=documentOfSelect    ${to}
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
-    Wait Until Page Contains Element    ${locator_download}
-    Choose File    ${locator_download}    ${filepath}
-    Click Button    ${locator_save_document}
+    Wait Until Page Contains Element    id=fileDownload
+    Choose File    id=fileDownload    ${filepath}
+    Click Button    id=save_file
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
@@ -452,11 +438,8 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Wait Until Page Contains Element    ${locator_multilot_new}    60
-    Wait Until Element Is Enabled    ${locator_multilot_new}    30
-    Click Button    ${locator_multilot_new}
-    Wait Until Page Contains Element    ${locator_multilot_title}${d}    30
-    Wait Until Element Is Enabled    ${locator_multilot_title}${d}
+    Full Click    ${locator_multilot_new}
+    Full Click    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
     Input Text    id=lotDescription_${d}    ${lot.description}
     Execute Javascript    angular.element(document.getElementById('divLotControllerEdit')).scope().lotPurchasePlan.guid='${lot.id}'
@@ -470,10 +453,9 @@ Add Lot
     Press Key    id=lotMinStep_${d}    ${text}
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
-    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
-    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
+    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Log To Console    finish lot ${d}
 
 Fill Date
@@ -603,7 +585,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
+    Comment    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -672,14 +654,6 @@ Select Doc For Lot
     Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
 
-Set Field tenderPeriod.endDate
-    [Arguments]    ${value}
-    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Log To Console    ${date_time_ten_end}
-    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    ${locator_bidDate_end}
-    Click Element    id=createOrUpdatePurchase
-
 Set Region
     [Arguments]    ${region}    ${item_no}
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
@@ -701,9 +675,14 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
+    Log To Console    BF ${lc}
     Wait Until Page Contains Element    ${lc}    60
+    Log To Console    PAGE ${lc}
     Wait Until Element Is Visible    ${lc}    60
+    Log To Console    visible ${lc}
     Wait Until Element Is Enabled    ${lc}    60
+    Log To Console    enabled ${lc}
     aniwait
     Click Element    ${lc}
+    Log To Console    click ${lc}
     aniwait

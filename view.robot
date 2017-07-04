@@ -62,6 +62,7 @@ Set Field tenderPeriod.endDate
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
     ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}    \    -3
     Log To Console    ${date_time_ten_end}
+    Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
 
