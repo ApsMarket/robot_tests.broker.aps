@@ -41,7 +41,7 @@ aps.Підготувати дані для оголошення тендера
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
     \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications.id}
-    \    Comment    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}=7242
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
