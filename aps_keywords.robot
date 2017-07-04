@@ -25,23 +25,19 @@ ${dkkp_id}        ${EMPTY}
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
     Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
-    Wait Until Element Is Visible    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_create_negotiation}    15
-    Click Link    ${locator_create_negotiation}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_create_negotiation}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Negotiate    ${tender_data}
     ${trtte}=    Get From Dictionary    ${tender_data}    data
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
-    Wait Until Page Contains Element    ${locator_finish_edit}
-    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Click Button    ${locator_finish_edit}
+    Full Click    ${locator_finish_edit}
     ${tender_UID}=    Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    End negotiation
     [Return]    ${tender_UID}
@@ -226,7 +222,7 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Click Element    ${locator_directory_cause}
+    Full Click    ${locator_directory_cause}
     ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=html/body
@@ -251,7 +247,7 @@ Info Negotiate
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
-    Click Button    ${locator_next_step}
+    Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
 
 Login
@@ -335,8 +331,7 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    start add item negotiation
     #Клик доб позицию
     sleep    3
-    Wait Until Element Is Enabled    ${locator_add_item_button}${w}    30
-    Click Button    ${locator_add_item_button}${w}
+    Full Click    ${locator_add_item_button}${w}
     Wait Until Element Is Enabled    ${locator_item_description}${q}
     Run Keyword If    ${log_enabled}    Log To Console    Click add item
     #Название предмета закупки
@@ -419,7 +414,7 @@ Add item negotiate
     Execute Javascript    window.scroll(1000, 1000)
     sleep    2
     #Клик кнопку "Створити"
-    Click Button    ${locator_button_create_item}${q}
+    Full Click    ${locator_button_create_item}${q}
     sleep    2
     Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
@@ -648,8 +643,9 @@ Publish tender/negotiation
     Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     ${tender_UID}=    Get Text    id=purchaseProzorroId
+    ${tender_GUID}=    Get Text    id=purchaseGuid
+    Execute Javascript    $.get('http://apiprozorro.azurewebsites.net/api/sync/purchases/${tender_GUID}')
     Log To Console    finish publish tender ${tender_UID}
-    Reload Page
     Return From Keyword    ${tender_UID}
     Run Keyword If    ${log_enabled}    Log To Console    end publish tender
     [Return]    ${tender_UID}
