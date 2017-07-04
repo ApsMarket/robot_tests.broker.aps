@@ -44,21 +44,16 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
-    Wait Until Element Is Enabled    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
-    Click Link    ${locator_biddingUkr_create}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
+    Full Click    id=next_step
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step    50
-    aniwait
-    Click Element    id=next_step
+    Full Click    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
-    Wait Until Element Is Enabled    id=next_step    30
-    aniwait
-    Click Element    id=next_step
+    Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
