@@ -518,8 +518,9 @@ Info OpenEng
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Wait Until Element Is Enabled    ${locator_button_next_step}    20
-    Click Button    ${locator_button_next_step}
+    sleep    10
+    Wait Until Element Is Enabled    ${locator_next_step}    20
+    Click Button    ${locator_next_step}
     Log To Console    finish openEng info
     #Добавление лота
     Wait Until Page Contains Element    ${locator_multilot_new}
