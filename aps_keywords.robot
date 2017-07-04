@@ -116,7 +116,7 @@ Add Item
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
-    Comment    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
+    Run Keyword And Ignore Error    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
     ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
