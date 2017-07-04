@@ -35,10 +35,13 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
-    Comment    ${item}=    Get From List    ${ttt}    1
-    Comment    Add item negotiate    ${item}    01    0
+    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
+    ${item}=    Get From List    ${ttt}    1
+    Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Click Button    ${locator_finish_edit}
     ${tender_UID}=    Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    End negotiation
     [Return]    ${tender_UID}
@@ -67,8 +70,7 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на англ
     [Arguments]    ${tender}
-    Wait Until Element Is Enabled    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
+    Full Click    ${locator_button_create}
     Wait Until Element Is Enabled    ${locator_biddingEng_create}    15
     Click Link    ${locator_biddingEng_create}
     Info OpenEng    ${tender}
@@ -76,8 +78,7 @@ ${dkkp_id}        ${EMPTY}
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}    10    1
     aniwait
-    Wait Until Element Is Enabled    id=next_step    30
-    Click Button    id=next_step
+    Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
@@ -506,11 +507,9 @@ Info OpenEng
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Click Element    ${locator_pdv}
     #Выбор многолотовости
-    Wait Until Element Is Enabled    ${locator_multilot_enabler}
-    Click Element    ${locator_multilot_enabler}
+    Full Click    ${locator_multilot_enabler}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
+    Full Click    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
     Press Key    ${locator_currency}    ${currency}
@@ -518,14 +517,11 @@ Info OpenEng
     ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
     ${date_time_ten_end}=    dt    ${tender_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    sleep    10
-    Wait Until Element Is Enabled    ${locator_next_step}    20
-    Click Button    ${locator_next_step}
+    sleep    5
+    Full Click    ${locator_next_step}
     Log To Console    finish openEng info
     #Добавление лота
-    Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}    30
-    Click Button    ${locator_multilot_new}
+    Full Click    ${locator_multilot_new}
     ${w}=    Set Variable    1
     ${lot}=    Get From Dictionary    ${tender.data}    lots
     ${lot}=    Get From List    ${lot}    0
@@ -540,13 +536,12 @@ Info OpenEng
     Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
     Press Key    id=lotMinStep_${w}    ////13
     #Input Text    id=lotGuarantee_${w}
-    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
-    Click Button    ${locator_next_step}
+    Full Click    ${locator_next_step}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
@@ -632,10 +627,10 @@ Publish tender/negotiation
     Comment    Click Button    ${locator_toast_close}
     Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
     sleep    10
-    Wait Until Page Contains Element    ${locator_finish_edit}
-    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Click Button    ${locator_finish_edit}
-    Wait Until Page Contains Element    id=publishNegotiationAutoTest    30
+    Comment    Wait Until Page Contains Element    ${locator_finish_edit}
+    Comment    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Comment    Click Button    ${locator_finish_edit}
+    Wait Until Page Contains Element    id=publishNegotiationAutoTest    90
     Wait Until Element Is Enabled    id=publishNegotiationAutoTest
     sleep    3
     Execute Javascript    $("#publishNegotiationAutoTest").click()

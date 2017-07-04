@@ -47,12 +47,8 @@ aps.Підготувати дані для оголошення тендера
     : FOR    ${en}    IN    @{items}
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7242.1'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    7242
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='17.12.77-80.00'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    17.12
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Run Keyword If    '${en.additionalClassifications[0].id}'=='7212.1'    Set To Dictionary    ${en.additionalClassifications.id}
-    \    ...    17.12
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications.id}
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
     \    Comment
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
@@ -93,6 +89,10 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${id}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
+    aniwait
+    Wait Until Page Contains Element    ${locator_finish_edit}
+    Wait Until Element Is Enabled    ${locator_finish_edit}    30
+    Click Button    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -119,7 +119,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
     Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
-    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Convert to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Conv to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
     Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=purchaseDirectoryCauseDescription
     Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    ${locator_purchaseCauseDescr}
@@ -131,7 +131,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     [Return]    ${field_value}
 
 Задати питання
@@ -222,6 +224,7 @@ aps.Створити постачальника, додати документа
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}
+    Click Element    ${locator_awardEligible}
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -265,10 +268,12 @@ aps.Створити постачальника, додати документа
     Click Button    ${locator_save_participant}
     #Add doc
     Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
-    Comment    Wait Until Page Contains Element    xpath=.//*[@id='uploadFile']
-    Comment    Wait Until Element Is Enabled    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/file-category-upload/div/div/div/div[1]/label
+    Comment    Wait Until Page Contains Element    id=uploadFile247
+    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
     sleep    10
-    Choose File    xpath=.//*[@id='uploadFile']    ${filepath}
+    Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
+    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-valid ng-empty ng-touched'][contains(@id,'fileCategory')]    0
+    Click Button    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}

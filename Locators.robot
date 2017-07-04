@@ -88,7 +88,7 @@ ${locator_directory_cause}    xpath=.//*[@id='select_directory_causes']/div[1]/s
 ${locator_participant}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div/div/md-content/md-tabs/md-tabs-wrapper/md-tabs-canvas/md-pagination-wrapper/md-tab-item[3]/a
 ${locator_add_participant}    id=addProcuringParticipant0
 ${locator_amount}    id=awardAmount_0_0
-${locator_check_participant}    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+${locator_check_participant}    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[1]/label
 ${locator_code_edrpou}    id=procuringParticipantEdrpou_0_0
 ${locator_reestr}    id=procuringParticipantScheme_0_0
 ${locator_legalName}    id=procuringParticipantLegalName_0_0
@@ -110,7 +110,4 @@ ${locator_purchaseCurrency_viewer}    id=purchaseCurrency
 ${locator_purchaseIsVAT_viewer}    id=purchaseIsVAT@isvat
 ${locator_purchaseAddressCountryName_viewer}    id=purchaseAddressCountryName
 ${locator_purchaseAddressLocality_viewer}    id=purchaseAddressLocality
-${locator_makeProposition}    id=do-proposition-tab    # id=do-proposition-tab
-${locator_newProp_amount}    id=lotAmount_
-${locator_questionTender}    id=questions-tab
-${locator_confirm_question}    id=confirm_creationForm
+${locator_awardEligible}    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
