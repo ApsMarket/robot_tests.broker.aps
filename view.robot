@@ -34,6 +34,7 @@ Get Field Text
 
 Prepare View
     [Arguments]    ${username}    ${argument}
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${argument}
     ${is_tender_open}=    Set Variable    000
     ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${argument}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}

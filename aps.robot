@@ -131,8 +131,9 @@ aps.Отримати інформацію із тендера
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_questions}
-    Click Element    ${locator_questions}
+    Wait Until Element Is Enabled    ${locator_questionTender}
+    Click Element    ${locator_questionTender}
+    Wait Until Element Is Visible    ${locator_add_discussion}
     Click Button    ${locator_add_discussion}
     Add question    ${question}
 
@@ -143,6 +144,16 @@ aps.Отримати інформацію із тендера
 Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}
     [Documentation]    Створює нову ставку в тендері tender_uaid
+    Search tender    ${username}    ${tender_uaid}
+    Wait Until Element Is Visible    ${locator_makeProposition}
+    Click Element    ${locator_makeProposition}
+    Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
+    Click Element    xpath=.//*[@id='bidlots']/div/div
+    Wait Until Element Is Enabled    ${locator_newProp_amount}
+    Input Text    ${locator_newProp_amount}    66557
+    Click Element    id=isSelfQualified_
+    Wait Until Element Is Visible    id=isSelfEligible_
+    Click Element    id=isSelfEligible_
     [Return]    Дані про подану ставку для можливості її подальшої зміни або скасування
 
 Змінити цінову пропозицію
