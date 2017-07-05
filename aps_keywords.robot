@@ -470,6 +470,7 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Input Text    ${locator_tenderTitle}    ${tender.data.title}
     Input Text    ${locator_titleEng}    ${tender.data.title_en}
+    Input Text    id=description    Звідси кантурь майстерія попомуштрувати відволожувати облудність мандрика попутник варт ласкавий недоношениця дітки утворний.
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
@@ -513,11 +514,12 @@ Info OpenEng
     Comment    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
     Full Click    xpath=.//*[@id='divLotControllerEdit']/div/div/div/div[9]/div/button[1]
-    Comment    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Log To Console    finish lot ${w}
     #нажатие след.шаг
+    sleep    3000
     Full Click    ${locator_next_step}
 
 Add Item Eng
