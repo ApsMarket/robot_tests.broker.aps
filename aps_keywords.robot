@@ -100,18 +100,15 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    aniwait
     #Клик доб позицию
-    sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
     Run Keyword And Ignore Error    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
-    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
-    Input Text    ${locator_Quantity}${d}    ${editItemQuant}
+    Input Text    ${locator_Quantity}${d}    ${item.quantity}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${d}
     Select From List By Value    ${locator_code}${d}    ${item.unit.code}
@@ -119,12 +116,10 @@ Add Item
     #Выбор ДК
     Full Click    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
-    ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Press Key    ${locator_cpv_search}    ${cpv}
+    Press Key    ${locator_cpv_search}    ${item.classification.id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Full Click    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
-    Log To Console    cpv ${cpv}
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
@@ -139,7 +134,7 @@ Add Item
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    aniwait
     Wait Until Element Is Enabled    id=select_regions${d}
     Set Region    ${item.deliveryAddress.region}    ${d}
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
@@ -153,8 +148,6 @@ Add Item
     Press Key    ${locator_deliveryLocation_longitude}${d}    ${deliveryLocation_longitude}
     Run Keyword If    '${MODE}'=='openeu'    Add Item Eng    ${item}    ${d}
     #Клик кнопку "Створити"
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    5
-    Wait Until Element Is Enabled    ${locator_button_create_item}${d}
     Full Click    ${locator_button_create_item}${d}
     Log To Console    finish item ${d}
 
@@ -257,25 +250,27 @@ Login
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    aniwait
-    Wait Until Page Contains Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    aniwait
-    Click Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    Click Element    ${locator_category}
-    Wait Until Page Contains Element    ${locator_category}
-    Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Value    ${locator_category}    biddingDocuments
-    Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Full Click    id=documents-tab
+    Log To Console    111
+    Full Click    id=upload_document
+    Log To Console    222
+    Full Click    id=categorySelect
+    Log To Console    333
+    Select From List By Value    id=categorySelect    biddingDocuments
+    Log To Console    4444
+    Full Click    id=documentOfSelect
+    Log To Console    555
+    Select From List By Value    id=documentOfSelect    ${to}
+    Log To Console    666
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
-    Wait Until Page Contains Element    ${locator_download}
-    Choose File    ${locator_download}    ${filepath}
-    Click Button    ${locator_save_document}
+    Log To Console    777
+    Wait Until Page Contains Element    id=button_attach_document    60
+    Log To Console    78888999
+    Wait Until Element Is Enabled    id=button_attach_document    60
+    Log To Console    888
+    Choose File    id=fileInput    ${filepath}
+    Log To Console    999
+    Full Click    id=save_file
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
@@ -470,6 +465,7 @@ Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
+    sleep    2
     Execute Javascript    ${ddd}
 
 Set Tender Budget
@@ -550,8 +546,6 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
-    aniwait
-    sleep    3
     Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
     #Param0
@@ -571,7 +565,7 @@ Add Feature
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
-    Click Button    id=updateFeature_${lid}_${pid}
+    Full Click    id=updateFeature_${lid}_${pid}
 
 Set DKKP
     Log To Console    ${dkkp_id}
@@ -589,11 +583,10 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
-    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    Full Click    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -656,11 +649,10 @@ Select Item Param
 
 Select Doc For Lot
     [Arguments]    ${arg}
-    Click Element    xpath=//select[@name='DocumentOf']
+    Full Click    xpath=//select[@name='DocumentOf']
     Wait Until Page Contains Element    id=documentOfLotSelect    30
-    Wait Until Element Is Enabled    id=documentOfLotSelect
+    Wait Until Element Is Enabled    id=documentOfLotSelect    30
     ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
-    Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
 
 Set Region
@@ -684,14 +676,9 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
-    Log To Console    BF ${lc}
     Wait Until Page Contains Element    ${lc}    60
-    Log To Console    PAGE ${lc}
     Wait Until Element Is Visible    ${lc}    60
-    Log To Console    visible ${lc}
     Wait Until Element Is Enabled    ${lc}    60
-    Log To Console    enabled ${lc}
     aniwait
     Click Element    ${lc}
-    Log To Console    click ${lc}
     aniwait
