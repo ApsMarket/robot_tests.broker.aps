@@ -244,10 +244,11 @@ Load document
     Log To Console    111
     Full Click    id=upload_document
     Log To Console    222
+    Execute Javascript    window.scroll(0,-1000)
     Full Click    id=categorySelect
-    Select From List By Value    id=categorySelect
+    Execute Javascript    window.scroll(0,-1000)
+    Select From List By Value    id=categorySelect    biddingDocuments
     Log To Console    333
-    \    \    biddingDocuments
     Execute Javascript    window.scroll(0,-1000)
     Log To Console    4444
     Full Click    id=documentOfSelect
@@ -653,11 +654,16 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    ${status}=    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Wait For Condition    return $(".page-loader").css("display")=="none"    120
+    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
+    Comment    Run Keyword If    '${status}'=='True'    sleep    3
+    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
+    Comment    Run Keyword If    '${status}'=='True'    sleep    3
+    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
+    Comment    Run Keyword If    '${status}'=='True'    sleep    3
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
+    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    120
 
 Full Click
     [Arguments]    ${lc}
