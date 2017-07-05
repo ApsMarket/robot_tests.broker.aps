@@ -33,7 +33,6 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
@@ -71,14 +70,13 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
+    Execute Javascript    window.scroll(-1000, -1000)
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
-    Wait Until Element Is Visible    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
-    Click Link    ${locator_create_dop_zak}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
@@ -151,48 +149,38 @@ Add Item
 Info Below
     [Arguments]    ${tender_data}
     #Ввод названия тендера
-    ${title}=    Get From Dictionary    ${tender_data.data}    title
-    Input Text    ${locator_tenderTitle}    ${title}
+    Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
-    ${descr}=    Get From Dictionary    ${tender_data.data}    description
-    Input Text    ${locator_description}    ${descr}
+    Input Text    ${locator_description}    ${tender_data.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
-    ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
+    Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
     #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
-    ${text}=    Convert Float To String    ${budget}
+    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender_data.data.minimalStep}    amount
-    ${text_ms}=    Convert Float To String    ${min_step}
+    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
     sleep    10
     #Период уточнений нач дата
-    ${enquiry_start}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    startDate
-    ${date_time_enq_st}=    dt    ${enquiry_start}
+    ${date_time_enq_st}=    dt    ${tender_data.data.enquiryPeriod.startDate}
     #Период уточнений кон дата
-    ${enquiry end}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    endDate
-    ${date_time_enq_end}=    dt    ${enquiry end}
+    ${date_time_enq_end}=    dt    ${tender_data.data.enquiryPeriod.endDate}
     #Период приема предложений (нач дата)
-    ${tender_start}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    startDate
-    ${date_time_ten_st}=    dt    ${tender_start}
+    ${date_time_ten_st}=    dt    ${tender_data.data.tenderPeriod.startDate}
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender_data.data.tenderPeriod.endDate}
     Fill Date    ${locator_discussionDate_start}    ${date_time_enq_st}
     Fill Date    ${locator_discussionDate_end}    ${date_time_enq_end}
     Fill Date    ${locator_bidDate_start}    ${date_time_ten_st}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
-    Click Button    ${locator_button_next_step}
+    Full Click    ${locator_button_next_step}
 
 Info Negotiate
     [Arguments]    ${tender_data}
@@ -225,6 +213,7 @@ Info Negotiate
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
     Press Key    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
     Run Keyword If    ${log_enabled}    Log To Console    Валюта ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
@@ -232,7 +221,7 @@ Info Negotiate
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
-    Click Button    ${locator_next_step}
+    Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
 
 Login
@@ -339,8 +328,7 @@ Add item negotiate
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    Full Click    ${locator_add_classfier}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор ДК ${cpv}
     #Выбор др ДК
     sleep    1
@@ -532,6 +520,7 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
+    aniwait
     sleep    3
     Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
@@ -574,6 +563,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
+    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -600,13 +590,7 @@ Add participant into negotiate
 Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    start publish tender
     Log To Console    start publish tender
-    Comment    Wait Until Page Contains Element    ${locator_toast_container}
-    Comment    Click Button    ${locator_toast_close}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
-    sleep    10
-    Comment    Wait Until Page Contains Element    ${locator_finish_edit}
-    Comment    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Comment    Click Button    ${locator_finish_edit}
+    aniwait
     Wait Until Page Contains Element    id=publishNegotiationAutoTest    90
     Wait Until Element Is Enabled    id=publishNegotiationAutoTest
     sleep    3
