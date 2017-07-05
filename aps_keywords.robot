@@ -480,7 +480,7 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Input Text    ${locator_tenderTitle}    ${tender.data.title}
     Input Text    ${locator_titleEng}    ${tender.data.title_en}
-    Input Text    id=description    Звідси кантурь майстерія попомуштрувати відволожувати облудність мандрика попутник варт ласкавий недоношениця дітки утворний.
+    Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
@@ -529,7 +529,6 @@ Info OpenEng
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Log To Console    finish lot ${w}
     #нажатие след.шаг
-    sleep    3000
     Full Click    ${locator_next_step}
 
 Add Item Eng
