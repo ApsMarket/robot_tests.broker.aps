@@ -504,19 +504,18 @@ Info OpenEng
     Press Key    id=lotBudget_${w}    ${text}
     Comment    Convert Float To String    ${lot.value.amount}
     Comment    Input Text    id=lotBudget_${w}    ${lot.value.amount}
-    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
-    Input Text    id=lotMinStep_${w}    00
-    ${text_ms}=    Convert Float To String    ${lot.minimalStep.amount}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
-    Comment    ${minStep}=    Get From Dictionary    ${lot.minimalStep.amount}    00
     Comment    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
     Comment    Input Text    id=lotMinStep_${w}    00
+    ${minStep}=    Get From Dictionary    ${lot.minimalStep}    amount
+    ${text_ms}=    Convert Float To String    ${lot.minimalStep.amount}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    id=lotMinStep_${w}    ${text_ms}
+    Comment    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
-    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Full Click    xpath=.//*[@id='divLotControllerEdit']/div/div/div/div[9]/div/button[1]
+    Comment    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
     Full Click    ${locator_next_step}
