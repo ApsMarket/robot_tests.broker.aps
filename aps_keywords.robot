@@ -120,9 +120,13 @@ Add Item
     #Срок поставки (начальная дата)
     ${date_time}=    dt    ${item.deliveryDate.startDate}
     Fill Date    ${locator_date_delivery_start}${d}    ${date_time}
+    Click Element    ${locator_date_delivery_start}${d}
+    Click Element    ${locator_Quantity}${d}
     #Срок поставки (конечная дата)
     ${date_time}=    dt    ${item.deliveryDate.endDate}
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
+    Click Element    ${locator_date_delivery_end}${d}
+    Click Element    ${locator_Quantity}${d}
     Full Click    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
@@ -241,8 +245,10 @@ Load document
     Full Click    id=upload_document
     Log To Console    222
     Full Click    id=categorySelect
+    Select From List By Value    id=categorySelect
     Log To Console    333
-    Select From List By Value    id=categorySelect    biddingDocuments
+    \    \    biddingDocuments
+    Execute Javascript    window.scroll(0,-1000)
     Log To Console    4444
     Full Click    id=documentOfSelect
     Log To Console    555
@@ -271,6 +277,8 @@ Search tender
     Full Click    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     aniwait
+    ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
+    Run Keyword If    '${msg[0]}'=='FAIL'    Capture Page Screenshot    fail_click_link.png
 
 Info OpenUA
     [Arguments]    ${tender}
@@ -283,8 +291,7 @@ Info OpenUA
     Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Run Keyword If    '${PDV}'=='true'    Click Element    ${locator_pdv}
-    Log To Console    '${PDV}'=='true'
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Full Click    ${locator_currency}
@@ -295,8 +302,10 @@ Info OpenUA
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
     ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
+    Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    id=createOrUpdatePurchase
+    Full Click    ${locator_bidDate_end}
+    Full Click    id=createOrUpdatePurchase
     Log To Console    finish openUa info
 
 Add item negotiate
@@ -447,6 +456,7 @@ Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
+    Comment    Log To Console    SetDateTimePickerValue(\'${id}\',\'${value}\');
     sleep    2
     Execute Javascript    ${ddd}
 
@@ -655,9 +665,9 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    ${status}=    Run Keyword And Ignore Error    Execute Javascript    $
+    ${status}=    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
     Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    $
+    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
     Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
     Wait For Condition    return $(".page-loader").css("display")=="none"    120
 
