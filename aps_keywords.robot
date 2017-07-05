@@ -512,7 +512,12 @@ Info OpenEng
     Input Text    ${locator_multilot_title}${w}    ${lot.title}
     Input Text    ${locator_lotTitleEng}${w}    ${lot.title_en}
     Input Text    id=lotDescription_${w}    ${lot.description}
-    Input Text    id=lotBudget_${w}    ${lot.value.amount}
+    ${budget}=    Get From Dictionary    ${lot.value}    amount
+    ${text}=    Convert Float To String    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    ${locator_budget}    ${text}
+    Comment    Convert Float To String    ${lot.value.amount}
+    Comment    Input Text    id=lotBudget_${w}    ${lot.value.amount}
     Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
     Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
