@@ -271,12 +271,12 @@ Search tender
     Full Click    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     aniwait
-    ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
-    Run Keyword If    '${msg[0]}'=='FAIL'    Capture Page Screenshot    fail_click_link.png
 
 Info OpenUA
     [Arguments]    ${tender}
     #Ввод названия закупки
+    ${status}=    Run Keyword And Ignore Error    Execute Javascript    $
+    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
     Wait Until Page Contains Element    ${locator_tenderTitle}
     ${descr}=    Get From Dictionary    ${tender.data}    title
     Input Text    ${locator_tenderTitle}    ${descr}
@@ -654,6 +654,10 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
+    ${status}=    Run Keyword And Ignore Error    Execute Javascript    $
+    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
+    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    $
+    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
     Wait For Condition    return $(".page-loader").css("display")=="none"    120
 
 Full Click
