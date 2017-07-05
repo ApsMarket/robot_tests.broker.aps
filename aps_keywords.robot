@@ -243,6 +243,7 @@ Load document
     Full Click    id=categorySelect
     Log To Console    333
     Select From List By Value    id=categorySelect    biddingDocuments
+    Execute Javascript    window.scroll(0,-1000)
     Log To Console    4444
     Full Click    id=documentOfSelect
     Log To Console    555
@@ -271,6 +272,8 @@ Search tender
     Full Click    id=butSimpleSearch
     Wait Until Page Contains Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a    50
     aniwait
+    ${msg}=    Run Keyword And Ignore Error    Click Element    xpath=//span[@class="hidden"][text()="${tender_uaid}"]/../a
+    Run Keyword If    '${msg[0]}'=='FAIL'    Capture Page Screenshot    fail_click_link.png
 
 Info OpenUA
     [Arguments]    ${tender}
@@ -283,8 +286,7 @@ Info OpenUA
     Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Run Keyword If    '${PDV}'=='true'    Click Element    ${locator_pdv}
-    Log To Console    '${PDV}'=='true'
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Full Click    ${locator_currency}
