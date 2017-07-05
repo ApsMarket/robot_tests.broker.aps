@@ -22,13 +22,6 @@ ${log_enabled}    ${EMPTY}
     Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
-    Comment    ${pref}=    Create Dictionary    profile.default_content_setting_values.notifications=2    credentials_enable_service=false    profile.password_manager_enabled=false
-    Comment    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys
-    Comment    Call Method    ${chrome options}    add_argument    --force-login-manager-in-tests
-    Comment    Call Method    ${chrome options}    add_argument    --disable-extensions
-    Comment    Call Method    ${chrome options}    add_experimental_option    prefs    ${pref}
-    Comment    Create Webdriver    Chrome    my_alias    chrome_options=${chrome options}
-    Comment    Go To    ${user.homepage}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -38,7 +31,7 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Set To Dictionary    ${tender_data.data.procuringEntity}    name    Апс солюшн
+    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
@@ -47,9 +40,8 @@ aps.Підготувати дані для оголошення тендера
     : FOR    ${en}    IN    @{items}
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications.id}
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications.id}    7242
-    \    Comment
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications[0].id}
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications[0].id}=7242
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -140,8 +132,9 @@ aps.Отримати інформацію із тендера
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_questions}
-    Click Element    ${locator_questions}
+    Wait Until Element Is Enabled    ${locator_questionTender}
+    Click Element    ${locator_questionTender}
+    Wait Until Element Is Visible    ${locator_add_discussion}
     Click Button    ${locator_add_discussion}
     Add question    ${question}
 
@@ -152,6 +145,16 @@ aps.Отримати інформацію із тендера
 Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}
     [Documentation]    Створює нову ставку в тендері tender_uaid
+    Search tender    ${username}    ${tender_uaid}
+    Wait Until Element Is Visible    ${locator_makeProposition}
+    Click Element    ${locator_makeProposition}
+    Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
+    Click Element    xpath=.//*[@id='bidlots']/div/div
+    Wait Until Element Is Enabled    ${locator_newProp_amount}
+    Input Text    ${locator_newProp_amount}    66557
+    Click Element    id=isSelfQualified_
+    Wait Until Element Is Visible    id=isSelfEligible_
+    Click Element    id=isSelfEligible_
     [Return]    Дані про подану ставку для можливості її подальшої зміни або скасування
 
 Змінити цінову пропозицію

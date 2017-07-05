@@ -43,21 +43,16 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на укр
     [Arguments]    ${tender}
-    Wait Until Element Is Enabled    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_biddingUkr_create}    15
-    Click Link    ${locator_biddingUkr_create}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_biddingUkr_create}
     Info OpenUA    ${tender}
+    Full Click    id=next_step
     Add Lot    1    ${tender.data.lots[0]}
-    Wait Until Element Is Enabled    id=next_step    50
-    aniwait
-    Click Element    id=next_step
+    Full Click    id=next_step
     ${items}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Get From List    ${items}    0
     Add Item    ${item}    10    1
-    Wait Until Element Is Enabled    id=next_step    30
-    aniwait
-    Click Element    id=next_step
+    Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
@@ -65,17 +60,13 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на англ
     [Arguments]    ${tender}
-    Wait Until Element Is Enabled    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_biddingEng_create}    15
-    Click Link    ${locator_biddingEng_create}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_biddingEng_create}
     Info OpenEng    ${tender}
     ${ttt}=    Get From Dictionary    ${tender.data}    items
     ${item}=    Set Variable    ${ttt[0]}
     Add Item    ${item}    10    1
-    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    20
-    Wait Until Element Is Enabled    id=next_step    30
-    Click Button    id=next_step
+    Full Click    id=next_step
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
@@ -102,18 +93,15 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    aniwait
     #Клик доб позицию
-    sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
     Run Keyword And Ignore Error    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
-    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
-    Input Text    ${locator_Quantity}${d}    ${editItemQuant}
+    Input Text    ${locator_Quantity}${d}    ${item.quantity}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${d}
     Select From List By Value    ${locator_code}${d}    ${item.unit.code}
@@ -121,12 +109,10 @@ Add Item
     #Выбор ДК
     Full Click    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
-    ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Press Key    ${locator_cpv_search}    ${cpv}
+    Press Key    ${locator_cpv_search}    ${item.classification.id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Full Click    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
-    Log To Console    cpv ${cpv}
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
@@ -141,7 +127,7 @@ Add Item
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class="page-loader animated fadeIn"]    5
+    aniwait
     Wait Until Element Is Enabled    id=select_regions${d}
     Set Region    ${item.deliveryAddress.region}    ${d}
     Press Key    ${locator_street}${d}    ${item.deliveryAddress.streetAddress}
@@ -250,25 +236,27 @@ Login
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    aniwait
-    Wait Until Page Contains Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    aniwait
-    Click Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    Click Element    ${locator_category}
-    Wait Until Page Contains Element    ${locator_category}
-    Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Value    ${locator_category}    biddingDocuments
-    Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Full Click    id=documents-tab
+    Log To Console    111
+    Full Click    id=upload_document
+    Log To Console    222
+    Full Click    id=categorySelect
+    Log To Console    333
+    Select From List By Value    id=categorySelect    biddingDocuments
+    Log To Console    4444
+    Full Click    id=documentOfSelect
+    Log To Console    555
+    Select From List By Value    id=documentOfSelect    ${to}
+    Log To Console    666
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
-    Wait Until Page Contains Element    ${locator_download}
-    Choose File    ${locator_download}    ${filepath}
-    Click Button    ${locator_save_document}
+    Log To Console    777
+    Wait Until Page Contains Element    id=button_attach_document    60
+    Log To Console    78888999
+    Wait Until Element Is Enabled    id=button_attach_document    60
+    Log To Console    888
+    Choose File    id=fileInput    ${filepath}
+    Log To Console    999
+    Full Click    id=save_file
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
@@ -295,23 +283,20 @@ Info OpenUA
     Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='true'    Click Element    ${locator_pdv}
+    Log To Console    '${PDV}'=='true'
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
+    Full Click    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
     Click Element    ${locator_currency}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
-    Wait Until Element Is Enabled    ${locator_button_next_step}    20
-    Click Button    ${locator_button_next_step}
     Log To Console    finish openUa info
 
 Add item negotiate
@@ -462,6 +447,7 @@ Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
+    sleep    2
     Execute Javascript    ${ddd}
 
 Set Tender Budget
@@ -482,34 +468,27 @@ Info OpenEng
     Log To Console    start openEng info
     #Ввод названия закупки
     Wait Until Page Contains Element    ${locator_tenderTitle}
-    ${descr}=    Get From Dictionary    ${tender.data}    title
-    Input Text    ${locator_tenderTitle}    ${descr}
-    Wait Until Page Contains Element    ${locator_titleEng}
-    ${descrEng}=    Get From Dictionary    ${tender.data}    title_en
-    Input Text    ${locator_titleEng}    ${descrEng}
+    Input Text    ${locator_tenderTitle}    ${tender.data.title}
+    Input Text    ${locator_titleEng}    ${tender.data.title_en}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Выбор многолотовости
-    Wait Until Element Is Enabled    ${locator_multilot_enabler}
-    Click Element    ${locator_multilot_enabler}
+    Full Click    ${locator_multilot_enabler}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
+    Full Click    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
     Select From List By Label    ${locator_currency}    ${tender.data.value.currency}
     Press Key    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Wait Until Element Is Enabled    ${locator_button_next_step}    20
-    Click Button    ${locator_button_next_step}
+    Full Click    id=createOrUpdatePurchase
+    Full Click    ${locator_next_step}
     Log To Console    finish openEng info
     #Добавление лота
-    Wait Until Page Contains Element    ${locator_multilot_new}
-    Wait Until Element Is Enabled    ${locator_multilot_new}    30
-    Click Button    ${locator_multilot_new}
+    Full Click    ${locator_multilot_new}
     ${w}=    Set Variable    1
     ${lot}=    Get From Dictionary    ${tender.data}    lots
     ${lot}=    Get From List    ${lot}    0
@@ -517,20 +496,19 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_multilot_title}${w}
     Wait Until Element Is Enabled    ${locator_multilot_title}${w}
     Input Text    ${locator_multilot_title}${w}    ${lot.title}
-    ${lot.title_en}=    Get From Dictionary    ${tender.data}    title_en
-    Press Key    ${locator_lotTitleEng}${w}    ${lot.title_en}
+    Input Text    ${locator_lotTitleEng}${w}    ${lot.title_en}
     Input Text    id=lotDescription_${w}    ${lot.description}
-    Input Text    id=lotBudget_${w}    '${lot.value.amount}'
-    Press Key    id=lotMinStep_${w}    '${lot.minimalStep.amount}'
-    Press Key    id=lotMinStep_${w}    ////13
+    Input Text    id=lotBudget_${w}    ${lot.value.amount}
+    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
+    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
-    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
-    Click Button    ${locator_next_step}
+    Full Click    ${locator_next_step}
 
 Add Item Eng
     [Arguments]    ${item}    ${d}
@@ -563,7 +541,7 @@ Add Feature
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
-    Click Button    id=updateFeature_${lid}_${pid}
+    Full Click    id=updateFeature_${lid}_${pid}
 
 Set DKKP
     Log To Console    ${dkkp_id}
@@ -581,7 +559,7 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
-    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    Full Click    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
@@ -619,6 +597,7 @@ Publish tender/negotiation
     Execute Javascript    $("#publishNegotiationAutoTest").click()
     ${url}=    Get Location
     Log To Console    ${url}
+    sleep    5
     Comment    Wait Until Page Contains Element    id=purchaseProzorroId    50
     Comment    ${tender_UID}=    Execute Javascript    var model=angular.element(document.getElementById('purchse-controller')).scope(); return model.$$childHead.purchase.purchase.prozorroId
     Wait Until Element Is Visible    id=purchaseProzorroId    90
@@ -641,20 +620,11 @@ Select Item Param
 
 Select Doc For Lot
     [Arguments]    ${arg}
-    Click Element    xpath=//select[@name='DocumentOf']
+    Full Click    xpath=//select[@name='DocumentOf']
     Wait Until Page Contains Element    id=documentOfLotSelect    30
-    Wait Until Element Is Enabled    id=documentOfLotSelect
+    Wait Until Element Is Enabled    id=documentOfLotSelect    30
     ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
-    Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
-
-Set Field tenderPeriod.endDate
-    [Arguments]    ${value}
-    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Log To Console    ${date_time_ten_end}
-    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    ${locator_bidDate_end}
-    Click Element    id=createOrUpdatePurchase
 
 Set Region
     [Arguments]    ${region}    ${item_no}

@@ -34,6 +34,7 @@ Get Field Text
 
 Prepare View
     [Arguments]    ${username}    ${argument}
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${argument}
     ${is_tender_open}=    Set Variable    000
     ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${argument}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
@@ -61,9 +62,9 @@ Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
     ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}    \    -3
-    Log To Console    ${date_time_ten_end}
+    Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    id=createOrUpdatePurchase
+    Full Click    id=createOrUpdatePurchase
 
 Set Field
     [Arguments]    ${_id}    ${value}
