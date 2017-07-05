@@ -61,9 +61,11 @@ Get Field Date
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}    \    -3
+    Comment    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}
+    Log To Console    ${date_time_ten_end}
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
+    Full Click    ${locator_bidDate_end}
     Full Click    id=createOrUpdatePurchase
 
 Set Field
