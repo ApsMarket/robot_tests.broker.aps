@@ -33,7 +33,6 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${trtte}    items
     ${item}=    Get From List    ${ttt}    0
     Add item negotiate    ${item}    00    0
-    Comment    Wait Until Element Is Visible    xpath=.//*[@id='add_procurement_subject0']
     ${item}=    Get From List    ${ttt}    1
     Add item negotiate    ${item}    01    0
     Execute Javascript    window.scroll(-1000, -1000)
@@ -71,14 +70,13 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
+    Execute Javascript    window.scroll(-1000, -1000)
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
-    Wait Until Element Is Visible    ${locator_button_create}    15
-    Click Button    ${locator_button_create}
-    Wait Until Element Is Enabled    ${locator_create_dop_zak}    15
-    Click Link    ${locator_create_dop_zak}
+    Full Click    ${locator_button_create}
+    Full Click    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Below    ${tender_data}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
@@ -95,18 +93,15 @@ date_Time
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
-    aniwait
     #Клик доб позицию
-    sleep    3
     Full Click    ${locator_add_item_button}${d_lot}
     Full Click    ${locator_item_description}${d}
     #Название предмета закупки
     Input Text    ${locator_item_description}${d}    ${item.description}
     Run Keyword And Ignore Error    Execute Javascript    angular.element(document.getElementById('divProcurementSubjectControllerEdit')).scope().procurementSubject.guid='${item.id}'
     #Количество товара
-    ${editItemQuant}=    Get From Dictionary    ${item}    quantity
     Wait Until Element Is Enabled    ${locator_Quantity}${d}
-    Input Text    ${locator_Quantity}${d}    ${editItemQuant}
+    Input Text    ${locator_Quantity}${d}    ${item.quantity}
     #Выбор ед измерения
     Wait Until Element Is Enabled    ${locator_code}${d}
     Select From List By Value    ${locator_code}${d}    ${item.unit.code}
@@ -114,12 +109,10 @@ Add Item
     #Выбор ДК
     Full Click    ${locator_button_add_cpv}
     Wait Until Element Is Enabled    ${locator_cpv_search}
-    ${cpv}=    Get From Dictionary    ${item.classification}    id
-    Press Key    ${locator_cpv_search}    ${cpv}
+    Press Key    ${locator_cpv_search}    ${item.classification.id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Full Click    ${locator_add_classfier}
     ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${item}    additionalClassifications
-    Log To Console    cpv ${cpv}
     Set Suite Variable    ${dkkp_id}    000
     Run Keyword If    '${is_dkpp[0]}'=='PASS'    Get OtherDK    ${item}
     Set DKKP
@@ -156,48 +149,38 @@ Add Item
 Info Below
     [Arguments]    ${tender_data}
     #Ввод названия тендера
-    ${title}=    Get From Dictionary    ${tender_data.data}    title
-    Input Text    ${locator_tenderTitle}    ${title}
+    Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
-    ${descr}=    Get From Dictionary    ${tender_data.data}    description
-    Input Text    ${locator_description}    ${descr}
+    Input Text    ${locator_description}    ${tender_data.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender_data.data.value}    valueAddedTaxIncluded
-    Click Element    ${locator_pdv}
+    Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
-    Click Element    ${locator_currency}
-    ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
+    Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
     #Ввод бюджета
-    ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
-    ${text}=    Convert Float To String    ${budget}
+    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     #Ввод мин шага
-    ${min_step}=    Get From Dictionary    ${tender_data.data.minimalStep}    amount
-    ${text_ms}=    Convert Float To String    ${min_step}
+    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
     sleep    10
     #Период уточнений нач дата
-    ${enquiry_start}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    startDate
-    ${date_time_enq_st}=    dt    ${enquiry_start}
+    ${date_time_enq_st}=    dt    ${tender_data.data.enquiryPeriod.startDate}
     #Период уточнений кон дата
-    ${enquiry end}=    Get From Dictionary    ${tender_data.data.enquiryPeriod}    endDate
-    ${date_time_enq_end}=    dt    ${enquiry end}
+    ${date_time_enq_end}=    dt    ${tender_data.data.enquiryPeriod.endDate}
     #Период приема предложений (нач дата)
-    ${tender_start}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    startDate
-    ${date_time_ten_st}=    dt    ${tender_start}
+    ${date_time_ten_st}=    dt    ${tender_data.data.tenderPeriod.startDate}
     #Период приема предложений (кон дата)
-    ${tender_end}=    Get From Dictionary    ${tender_data.data.tenderPeriod}    endDate
-    ${date_time_ten_end}=    dt    ${tender_end}
+    ${date_time_ten_end}=    dt    ${tender_data.data.tenderPeriod.endDate}
     Fill Date    ${locator_discussionDate_start}    ${date_time_enq_st}
     Fill Date    ${locator_discussionDate_end}    ${date_time_enq_end}
     Fill Date    ${locator_bidDate_start}    ${date_time_ten_st}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Click Element    id=createOrUpdatePurchase
-    Click Button    ${locator_button_next_step}
+    Full Click    ${locator_button_next_step}
 
 Info Negotiate
     [Arguments]    ${tender_data}
@@ -230,6 +213,7 @@ Info Negotiate
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
     Select From List By Label    ${locator_currency}    ${currency}
     Press Key    ${locator_currency}    ${currency}
+    Full Click    ${locator_currency}
     Run Keyword If    ${log_enabled}    Log To Console    Валюта ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
@@ -237,7 +221,7 @@ Info Negotiate
     ${text}=    String.Replace String    ${text}    .    ,
     Press Key    ${locator_budget}    ${text}
     Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
-    Click Button    ${locator_next_step}
+    Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
 
 Login
@@ -252,25 +236,27 @@ Login
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    aniwait
-    Wait Until Page Contains Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_add_ documents}
-    aniwait
-    Click Element    ${locator_add_ documents}
-    Wait Until Element Is Enabled    ${locator_documents}
-    Click Element    ${locator_documents}
-    Click Element    ${locator_category}
-    Wait Until Page Contains Element    ${locator_category}
-    Wait Until Element Is Enabled    ${locator_category}
-    Select From List By Value    ${locator_category}    biddingDocuments
-    Click Element    ${locator_add_documents_to}
-    Select From List By Value    ${locator_add_documents_to}    ${to}
+    Full Click    id=documents-tab
+    Log To Console    111
+    Full Click    id=upload_document
+    Log To Console    222
+    Full Click    id=categorySelect
+    Log To Console    333
+    Select From List By Value    id=categorySelect    biddingDocuments
+    Log To Console    4444
+    Full Click    id=documentOfSelect
+    Log To Console    555
+    Select From List By Value    id=documentOfSelect    ${to}
+    Log To Console    666
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
-    Wait Until Page Contains Element    ${locator_download}
-    Choose File    ${locator_download}    ${filepath}
-    Click Button    ${locator_save_document}
+    Log To Console    777
+    Wait Until Page Contains Element    id=button_attach_document    60
+    Log To Console    78888999
+    Wait Until Element Is Enabled    id=button_attach_document    60
+    Log To Console    888
+    Choose File    id=fileInput    ${filepath}
+    Log To Console    999
+    Full Click    id=save_file
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
@@ -342,8 +328,7 @@ Add item negotiate
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
-    Wait Until Element Is Enabled    ${locator_add_classfier}
-    Click Button    ${locator_add_classfier}
+    Full Click    ${locator_add_classfier}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор ДК ${cpv}
     #Выбор др ДК
     sleep    1
@@ -462,6 +447,7 @@ Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
+    sleep    2
     Execute Javascript    ${ddd}
 
 Set Tender Budget
@@ -539,6 +525,7 @@ Add Item Eng
 
 Add Feature
     [Arguments]    ${fi}    ${lid}    ${pid}
+    aniwait
     sleep    3
     Full Click    id=add_features${lid}
     Wait Until Element Is Enabled    id=featureTitle_${lid}_${pid}
@@ -559,7 +546,7 @@ Add Feature
     \    Run Keyword If    ${val}==0    Input Text    id=featureEnumTitle_${lid}_${pid}_0    ${enum.title}
     \    Run Keyword If    (${val}==0)&('${MODE}'=='openeu')    Input Text    id=featureEnumTitleEn_${lid}_${pid}_0    flowers
     Wait Until Element Is Enabled    id=updateFeature_${lid}_${pid}
-    Click Button    id=updateFeature_${lid}_${pid}
+    Full Click    id=updateFeature_${lid}_${pid}
 
 Set DKKP
     Log To Console    ${dkkp_id}
@@ -577,7 +564,7 @@ Set DKKP
 Add Enum
     [Arguments]    ${enum}    ${p}
     ${val}=    Evaluate    int(${enum.value}*${100})
-    Click Button    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
+    Full Click    xpath=//button[@ng-click="addFeatureEnum(lotPurchasePlan, features)"]
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
@@ -608,13 +595,7 @@ Add participant into negotiate
 Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    start publish tender
     Log To Console    start publish tender
-    Comment    Wait Until Page Contains Element    ${locator_toast_container}
-    Comment    Click Button    ${locator_toast_close}
-    Run Keyword And Ignore Error    Wait Until Element Is Not Visible    xpath=.//div[@class='page-loader animated fadeIn']    30
-    sleep    10
-    Comment    Wait Until Page Contains Element    ${locator_finish_edit}
-    Comment    Wait Until Element Is Enabled    ${locator_finish_edit}    30
-    Comment    Click Button    ${locator_finish_edit}
+    aniwait
     Wait Until Page Contains Element    id=publishNegotiationAutoTest    90
     Wait Until Element Is Enabled    id=publishNegotiationAutoTest
     sleep    3
@@ -644,20 +625,11 @@ Select Item Param
 
 Select Doc For Lot
     [Arguments]    ${arg}
-    Click Element    xpath=//select[@name='DocumentOf']
+    Full Click    xpath=//select[@name='DocumentOf']
     Wait Until Page Contains Element    id=documentOfLotSelect    30
-    Wait Until Element Is Enabled    id=documentOfLotSelect
+    Wait Until Element Is Enabled    id=documentOfLotSelect    30
     ${arg}=    Get Text    xpath=//option[contains(@label,'${arg}')]
-    Log To Console    value - ${arg}
     Select From List By Label    id=documentOfLotSelect    ${arg}
-
-Set Field tenderPeriod.endDate
-    [Arguments]    ${value}
-    ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Log To Console    ${date_time_ten_end}
-    Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    ${locator_bidDate_end}
-    Click Element    id=createOrUpdatePurchase
 
 Set Region
     [Arguments]    ${region}    ${item_no}
@@ -680,14 +652,9 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
-    Log To Console    BF ${lc}
     Wait Until Page Contains Element    ${lc}    60
-    Log To Console    PAGE ${lc}
     Wait Until Element Is Visible    ${lc}    60
-    Log To Console    visible ${lc}
     Wait Until Element Is Enabled    ${lc}    60
-    Log To Console    enabled ${lc}
     aniwait
     Click Element    ${lc}
-    Log To Console    click ${lc}
     aniwait

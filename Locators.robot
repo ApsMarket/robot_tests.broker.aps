@@ -44,13 +44,6 @@ ${locator_deliveryLocation_latitude}    id=latutide_
 ${locator_deliveryLocation_longitude}    id=longitude_
 ${locator_check_dk}    xpath=.//*[@id='tree']
 ${next_step}      id=next_step
-${locator_documents}    id=documents-tab    # .//*[@id='documentsTab']/a[@href='#documents']
-${locator_add_ documents}    id=upload_document
-${locator_category}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[1]/select
-${locator_add_documents_to}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[1]/div/div[2]/select
-${locator_download}    xpath=.//*[@id='button_attach_document']/input
-${locator_input_download}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[1]/div[2]/div/span/label[@class='btn btn-primary']
-${locator_save_document}    xpath=.//*[@id='documents']/div/div/div[2]/div/div[2]/button[1]    # кнопка "Зберегти"
 ${locator_next_step}    id=next_step
 ${locator_input_search}    id=findbykeywords
 ${locator_finish_edit}    id=movePurchaseView    # завешити редагування
