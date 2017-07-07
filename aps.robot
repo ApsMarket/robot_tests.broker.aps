@@ -356,3 +356,6 @@ aps.Видалити неціновий показник
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
     Publish tender
+
+aps.Підтвердити підписання контракту
+    [Arguments]    ${username}    @{arguments}
