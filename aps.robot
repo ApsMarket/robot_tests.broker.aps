@@ -41,8 +41,8 @@ aps.Підготувати дані для оголошення тендера
     \    Comment    Set To Dictionary    ${en.deliveryAddress}    region    м. Київ
     \    ${is_dkpp}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${en}    additionalClassifications
     \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Log To Console    ${en.additionalClassifications[0].id}
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications[0]}    classification=Монтажники електронного устаткування
-    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications[0]}    id=7242
+    \    Run Keyword If    ('${is_dkpp[0]}'=='PASS')    Set To Dictionary    ${en.additionalClassifications[0]}    id=7242    description=Монтажники електронного устаткування
+    \    ...    scheme=ДК003
     Set List Value    ${items}    0    ${item}
     Set To Dictionary    ${tender_data.data}    items    ${items}
     Return From Keyword    ${tender_data}
@@ -70,6 +70,7 @@ aps.Внести зміни в тендер
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
+    Run Keyword If    '${field_name}'=='description'    Set Field Text    id=description    ${field_value}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -355,3 +356,13 @@ aps.Видалити неціновий показник
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
     Publish tender
+
+aps.Створити вимогу про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
+    Full Click    id=claim-tab
+    Wait Until Element Is Enabled    id=add_claim
+    Full Click    id=add_claim
+    Comment    ${data}=    Get From Dictionary    ${arguments[0]}    data
+    Log To Console    ${arguments[1]}
+    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
+    Comment    Full Click    $('save-claim').click();
