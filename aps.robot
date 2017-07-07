@@ -80,9 +80,7 @@ aps.Завантажити документ
     Search tender    ${username}    ${tender_uaid}
     ${id}=    Get Location
     ${id}=    Fetch From Right    ${id}    /
-    Comment    ${go_to}=    String.Replace String    ${USERS.users['${username}'].homepage}/Edit/${id}    purchases    purchase
-    Go To    ${USERS.users['${username}'].homepage}/purchase/Edit/${id}
-    Log To Console    ${USERS.users['${username}'].homepage}/purchase/Edit/${id}
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Load document    ${filepath}    Tender    ${EMPTY}
     aniwait
     Wait Until Page Contains Element    ${locator_finish_edit}
@@ -129,6 +127,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
     Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     [Return]    ${field_value}
 
 Задати питання
@@ -203,7 +202,7 @@ aps.Створити постачальника, додати документа
     Search tender    ${username}    ${ua_id}
     ${id}=    Get Location
     ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/purchase/Edit/${id}
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Comment    Wait Until Page Contains Element    ${locator_btn_edit_tender}
     Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
     Comment    Click Button    ${locator_btn_edit_tender}
