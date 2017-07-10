@@ -56,6 +56,7 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
+    Full Click    id=movePurchaseView
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
@@ -71,6 +72,7 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
     Execute Javascript    window.scroll(-1000, -1000)
+    Full Click    id=movePurchaseView
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
@@ -82,6 +84,7 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
     Add Item    ${item}    00    0
+    Full Click    id=movePurchaseView
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -390,9 +393,9 @@ Add item negotiate
 
 Publish tender
     Comment    Full Click    id=basicInfo-tab
-    Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
+    Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes    5
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    Full Click    id=movePurchaseView
+    Comment    Run Keyword And Ignore Error
     ${id}=    Get Location
     Log To Console    ${id}
     Full Click    ${locator_publish_tender}
