@@ -229,6 +229,7 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
     Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
+    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
 
 Login
     [Arguments]    ${user}
@@ -325,7 +326,7 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Выбор ед измерения ${code} ${name}
     #Выбор ДК
     ${status}=    Run Keyword And Ignore Error    Click Button    ${locator_button_add_cpv}
-    Comment    Run Keyword If     '${status[0]}'=='FAIL'    sleep    5000
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
