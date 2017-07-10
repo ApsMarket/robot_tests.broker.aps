@@ -76,7 +76,10 @@ aps.Завантажити документ
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Full Click    id=purchaseEdit
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
+    Comment    Full Click    id=purchaseEdit
+    ${id}=    Fetch From Right    ${id}    /#
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Log To Console    locator-finish-edit
@@ -314,8 +317,8 @@ aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
     aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
     ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    ${id}=    Fetch From Right    ${id}    /#
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Wait Until Page Contains Element    id=save_changes
     Click Element    id=lots-tab
     Wait Until Page Contains Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
