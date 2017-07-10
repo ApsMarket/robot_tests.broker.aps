@@ -86,11 +86,11 @@ Conv to Boolean
     Return From Keyword    ${r}
 
 Set Field Text
-    [Arguments]    ${id}    ${text}
-    Wait Until Page Contains Element    ${id}
-    Wait Until Element Is Visible    ${id}
-    Wait Until Element Is Enabled    ${id}
-    Input Text    ${id}    ${text}
+    [Arguments]    ${idishka}    ${text}
+    Wait Until Page Contains Element    ${idishka}
+    Wait Until Element Is Visible    ${idishka}
+    Wait Until Element Is Enabled    ${idishka}
+    Input Text    ${idishka}    ${text}
 
 Get Field question.title
     [Arguments]    ${x}
