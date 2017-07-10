@@ -60,6 +60,7 @@ ${dkkp_id}        ${EMPTY}
 
 Открытые торги с публикацией на англ
     [Arguments]    ${tender}
+    Set Window Size    1400    8000
     Full Click    ${locator_button_create}
     Full Click    ${locator_biddingEng_create}
     Info OpenEng    ${tender}
@@ -244,12 +245,12 @@ Load document
     Log To Console    111
     Full Click    id=upload_document
     Log To Console    222
-    Execute Javascript    window.scroll(0,-1000)
+    Comment    Execute Javascript    window.scroll(0,-1000)
     Full Click    id=categorySelect
-    Execute Javascript    window.scroll(0,-1000)
+    Comment    Execute Javascript    window.scroll(0,-1000)
     Select From List By Value    id=categorySelect    biddingDocuments
     Log To Console    333
-    Execute Javascript    window.scroll(0,-1000)
+    Comment    Execute Javascript    window.scroll(0,-1000)
     Log To Console    4444
     Full Click    id=documentOfSelect
     Log To Console    555
@@ -586,7 +587,7 @@ Add Enum
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
     Log To Console    id=featureEnumValue_${end} - \ \ ${val}
-    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
+    Wait Until Page Contains Element    id=featureEnumValue_${end}    90
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
