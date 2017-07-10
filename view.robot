@@ -34,7 +34,8 @@ Get Field Text
 
 Prepare View
     [Arguments]    ${username}    ${argument}
-    Run Keyword If    '${role}'!='tender_owner'    Sync    ${argument}
+    Comment    Run Keyword If    '${role}'!='tender_owner'
+    Sync    ${argument}
     ${is_tender_open}=    Set Variable    000
     ${is_tender_open}=    Run Keyword And Ignore Error    Page Should Contain    ${argument}
     Run Keyword If    '${is_tender_open[0]}'=='FAIL'    Go To    ${USERS.users['${username}'].homepage}
@@ -90,3 +91,11 @@ Set Field Text
     Wait Until Element Is Visible    ${id}
     Wait Until Element Is Enabled    ${id}
     Input Text    ${id}    ${text}
+
+Get Field question.title
+    [Arguments]    ${x}
+    Full Click    id=questions-tab
+    Wait Until Page Contains    ${x}
+    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
+    Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
+    Return From Keyword    ${txt}

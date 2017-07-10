@@ -67,6 +67,7 @@ aps.Внести зміни в тендер
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
     Run Keyword If    '${field_name}'=='description'    Set Field Text    id=description    ${field_value}
+    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
@@ -116,7 +117,6 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
     Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
-    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
     Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
@@ -360,3 +360,12 @@ aps.Створити вимогу про виправлення умов зак�
     Log To Console    ${arguments[1]}
     Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
     Comment    Full Click    $('save-claim').click();
+
+aps.Отримати інформацію із запитання
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${guid}=    Get Text    id=purchaseGuid
+    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
+    ${guid}=    Get Field question.title    ${arguments[1]}
+    Return From Keyword    ${guid}
