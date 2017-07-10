@@ -76,10 +76,13 @@ aps.Завантажити документ
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
+    ${idd}=    Get Location
+    ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
+    Log To Console    ${idd}
+    ${id}=    Fetch From Right    ${idd}    /
+    Log To Console    ${id}
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Comment    Full Click    id=purchaseEdit
-    ${id}=    Fetch From Right    ${id}    /#
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Log To Console    locator-finish-edit
@@ -197,12 +200,10 @@ aps.Створити постачальника, додати документа
     Comment    ${username}=    Set Variable    aps_Owner
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
-    Comment    Wait Until Page Contains Element    ${locator_btn_edit_tender}
-    Comment    Wait Until Element Is Enabled    ${locator_btn_edit_tender}
-    Comment    Click Button    ${locator_btn_edit_tender}
+    ${idd}=    Get Location
+    ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
+    ${id}=    Fetch From Right    ${idd}    /
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Wait Until Element Is Enabled    ${locator_participant}
     Click Element    ${locator_participant}
     Wait Until Page Contains Element    ${locator_add_participant}
@@ -263,8 +264,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
     sleep    10
     Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
-    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-valid ng-empty ng-touched'][contains(@id,'fileCategory')]    1
-    Click Button    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
+    Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-untouched ng-valid ng-empty'][contains(@id,'fileCategory')]    1
+    Full Click    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
     Click Button    ${locator_finish_edit}
@@ -363,3 +364,5 @@ aps.Створити вимогу про виправлення умов зак�
     Log To Console    ${arguments[1]}
     Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
     Comment    Full Click    $('save-claim').click();
+
+aps.Підтвердити підписання контракту
