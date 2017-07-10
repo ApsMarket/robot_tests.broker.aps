@@ -70,6 +70,7 @@ aps.Внести зміни в тендер
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
+    Run Keyword If    '${field_name}'=='description'    Set Field Text    id=description    ${field_value}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -127,6 +128,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
     Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
+    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     [Return]    ${field_value}
 
 Задати питання
@@ -355,3 +357,13 @@ aps.Видалити неціновий показник
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
     Publish tender
+
+aps.Створити вимогу про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
+    Full Click    id=claim-tab
+    Wait Until Element Is Enabled    id=add_claim
+    Full Click    id=add_claim
+    Comment    ${data}=    Get From Dictionary    ${arguments[0]}    data
+    Log To Console    ${arguments[1]}
+    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
+    Comment    Full Click    $('save-claim').click();

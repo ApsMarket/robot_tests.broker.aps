@@ -466,6 +466,7 @@ Info OpenEng
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Input Text    ${locator_tenderTitle}    ${tender.data.title}
     Input Text    ${locator_titleEng}    ${tender.data.title_en}
+    Input Text    id=description    ${tender.data.description}
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
@@ -494,14 +495,24 @@ Info OpenEng
     Input Text    ${locator_multilot_title}${w}    ${lot.title}
     Input Text    ${locator_lotTitleEng}${w}    ${lot.title_en}
     Input Text    id=lotDescription_${w}    ${lot.description}
-    Input Text    id=lotBudget_${w}    ${lot.value.amount}
-    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
-    Input Text    id=lotMinStep_${w}    00
+    ${budget}=    Get From Dictionary    ${lot.value}    amount
+    ${text}=    Convert Float To String    ${budget}
+    ${text}=    String.Replace String    ${text}    .    ,
+    Press Key    id=lotBudget_${w}    ${text}
+    Comment    Convert Float To String    ${lot.value.amount}
+    Comment    Input Text    id=lotBudget_${w}    ${lot.value.amount}
+    Comment    Input Text    id=lotMinStep_${w}    ${lot.minimalStep.amount}
+    Comment    Input Text    id=lotMinStep_${w}    00
+    ${minStep}=    Get From Dictionary    ${lot.minimalStep}    amount
+    ${text_ms}=    Convert Float To String    ${lot.minimalStep.amount}
+    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Press Key    id=lotMinStep_${w}    ${text_ms}
+    Comment    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
+    Full Click    xpath=.//*[@id='divLotControllerEdit']/div/div/div/div[9]/div/button[1]
     Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
-    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
     Full Click    ${locator_next_step}
