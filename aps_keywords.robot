@@ -56,11 +56,11 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[1]}    0    0
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
+    Full Click    id=movePurchaseView
     Run Keyword And Return    Publish tender
 
 Открытые торги с публикацией на англ
     [Arguments]    ${tender}
-    Set Window Size    1400    8000
     Full Click    ${locator_button_create}
     Full Click    ${locator_biddingEng_create}
     Info OpenEng    ${tender}
@@ -72,6 +72,7 @@ ${dkkp_id}        ${EMPTY}
     Add Feature    ${tender.data.features[0]}    1    0
     Add Feature    ${tender.data.features[2]}    1    0
     Execute Javascript    window.scroll(-1000, -1000)
+    Full Click    id=movePurchaseView
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
@@ -83,6 +84,7 @@ ${dkkp_id}        ${EMPTY}
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
     Add Item    ${item}    00    0
+    Full Click    id=movePurchaseView
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
@@ -171,7 +173,6 @@ Info Below
     ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
     ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Press Key    ${locator_min_step}    ${text_ms}
-    sleep    10
     #Период уточнений нач дата
     ${date_time_enq_st}=    dt    ${tender_data.data.enquiryPeriod.startDate}
     #Период уточнений кон дата
@@ -184,7 +185,7 @@ Info Below
     Fill Date    ${locator_discussionDate_end}    ${date_time_enq_end}
     Fill Date    ${locator_bidDate_start}    ${date_time_ten_st}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
-    Click Element    id=createOrUpdatePurchase
+    Full Click    id=createOrUpdatePurchase
     Full Click    ${locator_button_next_step}
 
 Info Negotiate
@@ -242,16 +243,11 @@ Login
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
     Full Click    id=documents-tab
-    Log To Console    111
     Full Click    id=upload_document
-    Log To Console    222
-    Comment    Execute Javascript    window.scroll(0,-1000)
-    Full Click    id=categorySelect
-    Comment    Execute Javascript    window.scroll(0,-1000)
-    Select From List By Value    id=categorySelect    biddingDocuments
-    Log To Console    333
-    Comment    Execute Javascript    window.scroll(0,-1000)
-    Log To Console    4444
+    Wait Until Element Is Visible    id=categorySelect
+    Comment    Execute Javascript    $("md-tabs-wrapper").css({"margin-top":"300px"})
+    ${status}=    Run Keyword And Ignore Error    Select From List By Index    id=categorySelect    1
+    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Full Click    id=documentOfSelect
     Log To Console    555
     Select From List By Value    id=documentOfSelect    ${to}
@@ -402,13 +398,10 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
 Publish tender
-    aniwait
-    sleep    2
-    Click Element    id=basicInfo-tab
-    Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes
+    Comment    Full Click    id=basicInfo-tab
+    Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes    5
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    aniwait
-    Full Click    id=movePurchaseView
+    Comment    Run Keyword And Ignore Error
     ${id}=    Get Location
     Log To Console    ${id}
     Full Click    ${locator_publish_tender}
@@ -587,7 +580,7 @@ Add Enum
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
     Log To Console    id=featureEnumValue_${end} - \ \ ${val}
-    Wait Until Page Contains Element    id=featureEnumValue_${end}    90
+    Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
     Input Text    id=featureEnumTitle_${end}    ${enum.title}
@@ -596,8 +589,9 @@ Add Enum
 Sync
     [Arguments]    ${uaid}
     ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
-    Log To Console    Synk \ date=${off}&tenderId=${uaid}
-    Execute Javascript    $.get('../publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Log To Console    Synk \ \ return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Log To Console    ${guid}
     sleep    2
 
 Get OtherDK
