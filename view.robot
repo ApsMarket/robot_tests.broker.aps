@@ -83,3 +83,10 @@ Conv to Boolean
     ${r}=    Remove String    ${r}    ${SPACE}
     ${r}=    Convert To Boolean    ${r}
     Return From Keyword    ${r}
+
+Set Field Text
+    [Arguments]    ${id}    ${text}
+    Wait Until Page Contains Element    ${id}
+    Wait Until Element Is Visible    ${id}
+    Wait Until Element Is Enabled    ${id}
+    Input Text    ${id}    ${text}
