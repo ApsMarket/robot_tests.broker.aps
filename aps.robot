@@ -144,12 +144,11 @@ aps.Отримати інформацію із тендера
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
     [Documentation]    [Documentation] Відповідає на запитання question з ID question_id в тендері tender_uaid відповіддю answer_data
 
-Подати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}
+aps.Подати цінову пропозицію
+    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Visible    ${locator_makeProposition}
-    Click Element    ${locator_makeProposition}
+    Full Click    id=do-proposition-tab
     Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
     Click Element    xpath=.//*[@id='bidlots']/div/div
     Wait Until Element Is Enabled    ${locator_newProp_amount}
