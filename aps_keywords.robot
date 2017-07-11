@@ -331,7 +331,7 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Выбор ед измерения ${code} ${name}
     #Выбор ДК
     ${status}=    Run Keyword And Ignore Error    Click Button    ${locator_button_add_cpv}
-    Comment    Run Keyword If     '${status[0]}'=='FAIL'    sleep    5000
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
@@ -520,7 +520,7 @@ Info OpenEng
     Comment    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
     Full Click    xpath=.//*[@id='divLotControllerEdit']/div/div/div/div[9]/div/button[1]
-    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Comment    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
     Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
