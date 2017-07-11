@@ -67,6 +67,7 @@ aps.Внести зміни в тендер
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
     Run Keyword If    '${field_name}'=='description'    Set Field Text    id=description    ${field_value}
+    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
@@ -365,5 +366,29 @@ aps.Створити вимогу про виправлення умов зак�
     Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
     Comment    Full Click    $('save-claim').click();
 
+aps.Отримати інформацію із запитання
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${guid}=    Get Text    id=purchaseGuid
+    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
+    ${guid}=    Get Field question.title    ${arguments[1]}
+    Return From Keyword    ${guid}
+
 aps.Підтвердити підписання контракту
     [Arguments]    ${username}    ${command}    @{arguments}
+
+aps.Відповісти на запитання
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${guid}=    Get Text    id=purchaseGuid
+    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
+    Full Click    id=questions-tab
+    Wait Until Page Contains    ${arguments[2]}
+    Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='reply_answer']
+    Full Click    xpath=//textarea[@ng-model='element.answer']
+    Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
+    Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
+    Publish tender
+    Return From Keyword    ${guid}
