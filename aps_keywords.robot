@@ -416,7 +416,7 @@ Publish tender
 
 Add question
     [Arguments]    ${tender_data}
-    Select From List By Label    ${locator_question_to}    0
+    Select From List By Value    ${locator_question_to}    0
     ${title}=    Get From Dictionary    ${tender_data.data}    title
     Press Key    ${locator_question_title}    ${title}
     ${description}=    Get From Dictionary    ${tender_data.data}    description
