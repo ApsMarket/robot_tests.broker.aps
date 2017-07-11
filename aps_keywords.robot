@@ -204,7 +204,7 @@ Info Negotiate
     Full Click    ${locator_directory_cause}
     ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
     Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
-    Click Element    xpath=html/body
+    Comment    Click Element    xpath=html/body
     Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
     ${cause_description}=    Get From Dictionary    ${tender_data.data}    causeDescription
@@ -324,7 +324,8 @@ Add item negotiate
     ${name}=    Get From Dictionary    ${item.unit}    name
     Run Keyword If    ${log_enabled}    Log To Console    Выбор ед измерения ${code} ${name}
     #Выбор ДК
-    Click Button    ${locator_button_add_cpv}
+    ${status}=    Run Keyword And Ignore Error    Click Button    ${locator_button_add_cpv}
+    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Wait Until Element Is Enabled    ${locator_cpv_search}
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
@@ -513,9 +514,10 @@ Info OpenEng
     Comment    Input Text    id=lotMinStep_${w}    00
     #Input Text    id=lotGuarantee_${w}
     Full Click    xpath=.//*[@id='divLotControllerEdit']/div/div/div/div[9]/div/button[1]
-    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
+    Comment    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
     Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Wait Until Page Contains Element    xpath=.//*[@id='updateOrCreateLot_1']//a[@ng-click="editLot(lotPurchasePlan)"]
     Log To Console    finish lot ${w}
     #нажатие след.шаг
     Full Click    ${locator_next_step}
@@ -573,7 +575,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
+    Comment    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -582,7 +584,7 @@ Add Enum
 
 Sync
     [Arguments]    ${uaid}
-    ${off}=    Get Current Date    local    -5m    %Y-%m-%d %H:%M    true
+    ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
     Log To Console    Synk \ \ return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     Comment    Log To Console    ${guid}
