@@ -319,8 +319,8 @@ aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
     aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
     ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    ${id}=    Fetch From Right    ${id}    /#/info-purchase
+    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Wait Until Page Contains Element    id=save_changes
     Click Element    id=lots-tab
     Wait Until Page Contains Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
