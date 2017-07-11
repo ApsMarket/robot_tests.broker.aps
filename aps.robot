@@ -67,6 +67,7 @@ aps.Внести зміни в тендер
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
     Run Keyword If    '${field_name}'=='description'    Set Field Text    id=description    ${field_value}
+    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
@@ -386,7 +387,7 @@ aps.Відповісти на запитання
     Wait Until Page Contains    ${arguments[2]}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='reply_answer']
     Full Click    xpath=//textarea[@ng-model='element.answer']
-    Log To Console    ${arguments[1].data.answer}
     Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
+    Publish tender
     Return From Keyword    ${guid}
