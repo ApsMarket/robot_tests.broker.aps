@@ -86,7 +86,6 @@ aps.Завантажити документ
     Comment    Full Click    id=purchaseEdit
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
-    Log To Console    locator-finish-edit
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -322,6 +321,10 @@ aps.Змінити лот
     Full Click    id=lots-tab
     Full Click    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
     Run Keyword If    '${field_name}'=='value.amount'    Set Field    id=lotBudget_1    ${field_value}
+    Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Додати неціновий показник на предмет
