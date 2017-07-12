@@ -33,7 +33,7 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Set To Dictionary    ${tender_data.data.procuringEntity}    name=QA #1
+    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
@@ -392,6 +392,7 @@ aps.Підтвердити підписання контракту
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
+    Full Click    id=processing-tab
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
