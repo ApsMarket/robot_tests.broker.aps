@@ -258,7 +258,8 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
-    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
+    ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Wait Until Page Contains Element    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
@@ -582,12 +583,10 @@ Add Enum
     Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitleEn_${end}    flowers
 
 Sync
-    [Arguments]    ${uaid}
-    Comment    ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
-    ${off}=    Set Variable    ${EMPTY}
+    [Arguments]    ${uaid}    ${api}
+    Execute Javascript    $.get('${api}:92/api/sync/purchase/tenderID/tenderID=${uaid}');
     ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     Log Many    ${guid}
-    sleep    2
 
 Get OtherDK
     [Arguments]    ${item}
