@@ -32,7 +32,7 @@ aps.Підготувати дані для оголошення тендера
     Set Suite Variable    ${log_enabled}    ${False}
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Set To Dictionary    ${tender_data.data.procuringEntity}    name=QA #1
+    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
@@ -126,13 +126,10 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
-    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
-    Run Keyword And Return If    '${arguments[1]}'=='items[0].description'    Get Field Text    id=procurementSubjectDescription_1_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].description'    Get Field item.description    1_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].description'    Get Field Text    id=procurementSubjectDescription_1_0
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
-    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
-    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Text    id=Lot-1-MinStep
     [Return]    ${field_value}
 
 Задати питання
@@ -283,6 +280,8 @@ aps.Отримати інформацію із предмету
     Click Element    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field item.description    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
@@ -293,6 +292,9 @@ aps.Отримати інформацію із лоту
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.currency'    Get Field Text    id=Lot-1-Currency
 
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
