@@ -92,7 +92,7 @@ Set Field Text
 Get Field question.title
     [Arguments]    ${x}
     Full Click    id=questions-tab
-    Wait Until Page Contains    ${x}
+    Wait Until Page Contains    ${x}    60
     ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
     Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
     Return From Keyword    ${txt}

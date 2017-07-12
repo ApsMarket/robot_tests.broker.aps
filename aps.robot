@@ -14,12 +14,12 @@ Resource          view.robot
 ${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
 ${log_enabled}    ${EMPTY}
+${start_date}     ${EMPTY}
 
 *** Keywords ***
 Підготувати клієнт для користувача
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
-    Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     Set Window Position    @{user.position}
@@ -29,6 +29,7 @@ ${log_enabled}    ${EMPTY}
 aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
+    Set Suite Variable    ${log_enabled}    ${False}
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
