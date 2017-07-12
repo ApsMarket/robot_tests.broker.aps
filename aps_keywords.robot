@@ -250,17 +250,11 @@ Load document
     ${status}=    Run Keyword And Ignore Error    Select From List By Index    id=categorySelect    1
     Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Full Click    id=documentOfSelect
-    Log To Console    555
     Select From List By Value    id=documentOfSelect    ${to}
-    Log To Console    666
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
-    Log To Console    777
     Wait Until Page Contains Element    id=button_attach_document    60
-    Log To Console    78888999
     Wait Until Element Is Enabled    id=button_attach_document    60
-    Log To Console    888
     Choose File    id=fileInput    ${filepath}
-    Log To Console    999
     Full Click    id=save_file
 
 Search tender
@@ -405,7 +399,6 @@ Publish tender
     Run Keyword And Ignore Error    Click Button    id=save_changes
     Comment    Run Keyword And Ignore Error
     ${id}=    Get Location
-    Log To Console    ${id}
     Full Click    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
     Wait Until Element Is Visible    id=purchaseProzorroId    90
@@ -582,7 +575,7 @@ Add Enum
     ${enid_}=    Evaluate    ${enid}+${1}
     Set Suite Variable    ${enid}    ${enid_}
     ${end}=    Set Variable    ${p}_${enid}
-    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
+    Comment    Log To Console    id=featureEnumValue_${end} - \ \ ${val}
     Wait Until Page Contains Element    id=featureEnumValue_${end}    15
     Comment    Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitle_En${end}    ${enum.title_en}
     Input Text    id=featureEnumValue_${end}    ${val}
@@ -594,6 +587,7 @@ Sync
     ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
     Log To Console    Synk \ \ return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
     ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Comment    Log To Console    ${guid}
     sleep    2
 
 Get OtherDK

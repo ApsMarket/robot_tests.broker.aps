@@ -88,7 +88,6 @@ aps.Завантажити документ
     Comment    Full Click    id=purchaseEdit
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
-    Log To Console    locator-finish-edit
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
     Run Keyword If    '${MODE}'!='negotiation'    Publish tender
 
@@ -158,12 +157,11 @@ aps.Отримати інформацію із тендера
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
     [Documentation]    [Documentation] Відповідає на запитання question з ID question_id в тендері tender_uaid відповіддю answer_data
 
-Подати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}
+aps.Подати цінову пропозицію
+    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Visible    ${locator_makeProposition}
-    Click Element    ${locator_makeProposition}
+    Full Click    id=do-proposition-tab
     Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
     Click Element    xpath=.//*[@id='bidlots']/div/div
     Wait Until Element Is Enabled    ${locator_newProp_amount}
@@ -322,51 +320,52 @@ aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Full Click    id=purchaseEdit
     Load document    ${file}    Lot    ${lot_id}
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /#/info-purchase
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
+    Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
-    Click Element    id=lots-tab
-    Wait Until Page Contains Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
-    Click Element    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
+    Full Click    id=lots-tab
+    Full Click    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
     Run Keyword If    '${field_name}'=='value.amount'    Set Field    id=lotBudget_1    ${field_value}
+    Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Додати неціновий показник на предмет
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
-    Log To Console    id=features-tab
-    Log To Console    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
-    Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Створити вимогу про виправлення умов закупівлі
