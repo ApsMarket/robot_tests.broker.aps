@@ -31,7 +31,7 @@ aps.Підготувати дані для оголошення тендера
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Set To Dictionary    ${tender_data.data.procuringEntity}    name=QA #1
+    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
@@ -138,27 +138,25 @@ aps.Отримати інформацію із тендера
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    id=questions-tab
-    Click Element    id=questions-tab
+    Wait Until Element Is Enabled    ${locator_questionTender}
+    Click Element    ${locator_questionTender}
     Wait Until Element Is Visible    ${locator_add_discussion}
     Click Button    ${locator_add_discussion}
     Add question    ${question}
-    Click Button    id=confirm_creationForm
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
     [Documentation]    [Documentation] Відповідає на запитання question з ID question_id в тендері tender_uaid відповіддю answer_data
 
-Подати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}
+aps.Подати цінову пропозицію
+    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Visible    id=do-proposition-tab
-    Click Element    id=do-proposition-tab
+    Full Click    id=do-proposition-tab
     Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
     Click Element    xpath=.//*[@id='bidlots']/div/div
-    Wait Until Element Is Enabled    id=lotAmount_${m}
-    Input Text    id=lotAmount_${m}    66557
+    Wait Until Element Is Enabled    ${locator_newProp_amount}
+    Input Text    ${locator_newProp_amount}    66557
     Click Element    id=isSelfQualified_
     Wait Until Element Is Visible    id=isSelfEligible_
     Click Element    id=isSelfEligible_
@@ -320,40 +318,47 @@ aps.Завантажити документ в лот
 
 aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${ua_id}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=lots-tab
     Full Click    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
     Run Keyword If    '${field_name}'=='value.amount'    Set Field    id=lotBudget_1    ${field_value}
+    Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Додати неціновий показник на предмет
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${id}=    Get Location
-    ${id}=    Fetch From Right    ${id}    /
-    Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}
+    Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
     Log To Console    id=features-tab
     Log To Console    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
-    Comment    Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[@ng-click='editFeature(lotPurchasePlan, features)']
+    Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
     Publish tender
 
 aps.Створити вимогу про виправлення умов закупівлі
