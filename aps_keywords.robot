@@ -583,10 +583,10 @@ Add Enum
 
 Sync
     [Arguments]    ${uaid}
-    ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
-    Log To Console    Synk \ \ return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    Comment    Log To Console    ${guid}
+    Comment    ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
+    ${off}=    Set Variable    ${EMPTY}
+    ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Log Many    ${guid}
     sleep    2
 
 Get OtherDK
