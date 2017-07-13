@@ -127,9 +127,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].description'    Get Field item.description    1_0
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].description'    Get Field Text    id=procurementSubjectDescription_1_0
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
     [Return]    ${field_value}
 
 Задати питання
@@ -291,10 +290,16 @@ aps.Отримати інформацію із лоту
     Wait Until Element Is Enabled    id=view-lots
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
-    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
-    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
-    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.currency'    Get Field Text    id=Lot-1-Currency
+    Run Keyword And Return If    '${arguments[2]}'=='value.currency'    Get Field Text    id=Lot-1-Currency
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.currency'    Get Field Text    id=Lot-1-Currency
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
+    Run Keyword And Return If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
+    Run Keyword And Return If    '${arguments[2]}'=='minimalStep.currency'    Get Field Text    id=Lot-1-Currency
+    [Return]    ${field_value}
 
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
