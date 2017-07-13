@@ -300,7 +300,7 @@ aps.Отримати інформацію із лоту
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.currency'    Get Field Text    id=Lot-1-Currency
-    Run Keyword And Return If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    purchaseIsVAT@isvat
+    Run Keyword If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Tru PDV    purchaseIsVAT@isvat
     [Return]    ${field_value}
 
 aps.Отримати інформацію із нецінового показника
