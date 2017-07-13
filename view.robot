@@ -28,7 +28,7 @@ Get Field Amount
 
 Get Field Text
     [Arguments]    ${id}
-    Wait Until Element Is Visible    ${id}
+    Wait Until Element Is Enabled    ${id}
     ${r}=    Get Text    ${id}
     [Return]    ${r}
 

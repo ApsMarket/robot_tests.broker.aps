@@ -129,6 +129,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     [Return]    ${field_value}
 
 Задати питання
@@ -291,14 +292,12 @@ aps.Отримати інформацію із лоту
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
     Run Keyword And Return If    '${arguments[2]}'=='value.currency'    Get Field Text    id=Lot-1-Currency
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.currency'    Get Field Text    id=Lot-1-Currency
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].description'    Get Field Text    id=Lot-1-Description
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
-    Run Keyword And Return If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
+    Run Keyword And Return If    '${arguments[2]}'=='minimalStep.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.currency'    Get Field Text    id=Lot-1-Currency
+    Run Keyword And Return If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    purchaseIsVAT@isvat
     [Return]    ${field_value}
 
 aps.Отримати інформацію із нецінового показника
@@ -313,7 +312,10 @@ aps.Отримати інформацію із нецінового показн
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
     Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    id=Feature_1_0_Title
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Feature_1_0_Title
+    Run Keyword And Return If    '${arguments[2]}'=='features[0].title'    Get Field Text    id=Feature_1_0_Title
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
