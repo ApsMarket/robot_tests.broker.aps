@@ -152,7 +152,7 @@ aps.Задати запитання на тендер
 aps.Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
-    Search tender    ${username}    ${tender_uaid}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
     Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
     Click Element    xpath=.//*[@id='bidlots']/div/div
@@ -161,7 +161,6 @@ aps.Подати цінову пропозицію
     Click Element    id=isSelfQualified_
     Wait Until Element Is Visible    id=isSelfEligible_
     Click Element    id=isSelfEligible_
-    [Return]    Дані про подану ставку для можливості її подальшої зміни або скасування
 
 Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
