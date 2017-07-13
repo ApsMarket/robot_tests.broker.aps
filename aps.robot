@@ -130,17 +130,21 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
     Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     [Return]    ${field_value}
 
-Задати питання
+aps.Задати запитання на тендер
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_questionTender}
-    Click Element    ${locator_questionTender}
-    Wait Until Element Is Visible    ${locator_add_discussion}
-    Click Button    ${locator_add_discussion}
-    Add question    ${question}
+    Full Click    id=questions-tab
+    Full Click    id=add_discussion
+    Wait Until Page Contains Element    id=confirm_creationForm
+    Select From List By Value    name=OfOptions    0
+    Input Text    name=Title    ${question.data.title}
+    Input Text    name=Description    ${question.data.description}
+    Full Click    id=confirm_creationForm
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
@@ -149,7 +153,7 @@ aps.Отримати інформацію із тендера
 aps.Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
-    Search tender    ${username}    ${tender_uaid}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
     Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
     Click Element    xpath=.//*[@id='bidlots']/div/div
@@ -158,7 +162,6 @@ aps.Подати цінову пропозицію
     Click Element    id=isSelfQualified_
     Wait Until Element Is Visible    id=isSelfEligible_
     Click Element    id=isSelfEligible_
-    [Return]    Дані про подану ставку для можливості її подальшої зміни або скасування
 
 Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
@@ -362,8 +365,6 @@ aps.Видалити неціновий показник
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=features-tab
-    Log To Console    id=features-tab
-    Log To Console    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Full Click    id=basicInfo-tab

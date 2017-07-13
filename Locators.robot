@@ -59,11 +59,6 @@ ${locator_biddingUkr_create}    id=url_create_purchase_1    # id=url_create_purc
 ${locator_UID}    id=purchaseProzorroId
 ${locator_click_logo}    xpath=.//*[@id='logo']/a/span/img
 ${locator_btn_edit_tender}    id=purchaseEdit
-${locator_questions}    xpath=html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div[2]/div/ul/li[2]/a[@href="#questions"]
-${locator_add_discussion}    id=add_discussion
-${locator_question_to}    xpath=.//*[@id='questions']/div/div/div/div[2]/div[1]/div/select
-${locator_question_title}    xpath=.//*[@id='questions']/div/div/div[1]/div[2]/div[2]/div/input
-${locator_description_question}    xpath=.//*[@id='questions']/div/div/div[2]/div[2]/div[3]/div/textarea
 ${locator_search_type}    id=searchType
 ${locator_date_delivery_start}    id=delivery_start_    # Проверить id
 ${locator_check_gps}    id=is_delivary_
