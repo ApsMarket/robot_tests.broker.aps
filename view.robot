@@ -99,8 +99,7 @@ Get Field question.title
 
 Get Tender Status
     ${status}=    Execute Javascript    return $('#purchaseStatus').text()
-    Run Keyword And Return If    '${status}'=='1'    draft
-    Run Keyword And Return If    '${status}'=='2'    active.enquiries
-    Run Keyword And Return If    '${status}'=='3'    active.tendering
-    Run Keyword And Return If    '${status}'=='4'    active.auction
-    [Teardown]    ${prozorro_status}
+    Run Keyword If    '${status}'=='1'    Return From Keyword    draft
+    Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries
+    Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
+    Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction

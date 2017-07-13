@@ -132,13 +132,18 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     [Return]    ${field_value}
 
-Задати питання
+aps.Задати запитання на тендер
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     Full Click    id=questions-tab
     Full Click    id=add_discussion
-    Input Text    name=Title
+    Wait Until Page Contains Element    id=confirm_creationForm
+    Select From List By Value    name=OfOptions    0
+    Input Text    name=Title    ${question.data.title}
+    Input Text    name=Description    ${question.data.description}
+    Full Click    id=confirm_creationForm
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
