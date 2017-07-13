@@ -55,16 +55,16 @@ Get Field Date
     [Arguments]    ${id}
     ${startDate}=    Get Text    ${id}
     ${startDate}    Replace String    ${startDate}    ${SPACE}    T
+    ${tz}=    Get Local TZ
+    ${startDate}=    Set Variable    ${startDate}.000000+0${tz}:00
     Return From Keyword    ${startDate}
 
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Comment    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
-    sleep    5
 
 Set Field
     [Arguments]    ${_id}    ${value}
@@ -96,3 +96,11 @@ Get Field question.title
     ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
     Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
     Return From Keyword    ${txt}
+
+Get Tender Status
+    ${status}=    Execute Javascript    return $('#purchaseStatus').text()
+    Run Keyword And Return If    '${status}'=='1'    draft
+    Run Keyword And Return If    '${status}'=='2'    active.enquiries
+    Run Keyword And Return If    '${status}'=='3'    active.tendering
+    Run Keyword And Return If    '${status}'=='4'    active.auction
+    [Teardown]    ${prozorro_status}

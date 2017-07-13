@@ -408,14 +408,6 @@ Publish tender
     Return From Keyword    ${tender_UID}
     [Return]    ${tender_UID}
 
-Add question
-    [Arguments]    ${tender_data}
-    Select From List By Label    ${locator_question_to}    0
-    ${title}=    Get From Dictionary    ${tender_data.data}    title
-    Press Key    ${locator_question_title}    ${title}
-    ${description}=    Get From Dictionary    ${tender_data.data}    description
-    Press Key    ${locator_description_question}    ${description}
-
 Add Lot
     [Arguments]    ${d}    ${lot}
     Wait Until Page Contains Element    ${locator_multilot_new}    60

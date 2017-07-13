@@ -129,17 +129,16 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     [Return]    ${field_value}
 
 Задати питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_questionTender}
-    Click Element    ${locator_questionTender}
-    Wait Until Element Is Visible    ${locator_add_discussion}
-    Click Button    ${locator_add_discussion}
-    Add question    ${question}
+    Full Click    id=questions-tab
+    Full Click    id=add_discussion
+    Input Text    name=Title
 
 Відповісти на питання
     [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
