@@ -62,6 +62,7 @@ Get Field Date
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
+    ${date_time_ten_end}=    Fetch From Left    ${date_time_ten_end}    +0
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
@@ -94,7 +95,6 @@ Get Field question.title
     Full Click    id=questions-tab
     Wait Until Page Contains    ${x}    60
     ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
-    Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
     Return From Keyword    ${txt}
 
 Get Tender Status
@@ -103,3 +103,10 @@ Get Tender Status
     Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries
     Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
     Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
+
+Get Field question.answer
+    [Arguments]    ${www}
+    Full Click    id=questions-tab
+    Wait Until Page Contains    ${x}    60
+    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
+    Return From Keyword    ${txt}
