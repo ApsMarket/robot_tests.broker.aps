@@ -55,12 +55,14 @@ Get Field Date
     [Arguments]    ${id}
     ${startDate}=    Get Text    ${id}
     ${startDate}    Replace String    ${startDate}    ${SPACE}    T
+    ${tz}=    Get Local TZ
+    ${startDate}=    Set Variable    ${startDate}.000000+0${tz}:00
     Return From Keyword    ${startDate}
 
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Comment    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}
+    ${date_time_ten_end}=    Fetch From Left    ${date_time_ten_end}    +0
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
@@ -102,3 +104,16 @@ Get Tru PDV
     ${txt}=    Get Element Attribute    purchaseIsVAT@isvat
     Return From Keyword If    '${txt}'=='true'    ${True}
     Return From Keyword If    '${txt}'!='true'    ${False}
+Get Tender Status
+    ${status}=    Execute Javascript    return $('#purchaseStatus').text()
+    Run Keyword If    '${status}'=='1'    Return From Keyword    draft
+    Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries
+    Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
+    Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
+
+Get Field question.answer
+    [Arguments]    ${www}
+    Full Click    id=questions-tab
+    Wait Until Page Contains    ${x}    60
+    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
+    Return From Keyword    ${txt}

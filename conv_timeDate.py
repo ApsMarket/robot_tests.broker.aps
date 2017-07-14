@@ -1,5 +1,6 @@
 from datetime import datetime
 import time
+import urllib2
 
 
 def dt(var_date): 
@@ -23,3 +24,6 @@ def get_local_tz():
 
 def convert_float_to_string(number):
     return format(number, '.2f')
+
+def load_tender(url):
+    return urllib2.urlopen(url).read()

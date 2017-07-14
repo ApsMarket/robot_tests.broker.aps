@@ -96,6 +96,11 @@ aps.Пошук тендера по ідентифікатору
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
+    ${guid}=    Get Text    id=purchaseGuid
+    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    ${gege}=    Load Tender    ${api}:92/api/sync/purchases/${guid}
+    ${gege}=    Get Location
+    Log To Console    ${gege}
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -131,6 +136,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
     Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -197,11 +204,6 @@ aps.Отримати дані із тендера
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    Comment    ${supplier}=    Get From List    ${arguments}    2
-    Comment    ${username}=    Get From List    ${arguments}    0
-    Comment    ${filepath}=    Get From List    ${arguments}    3
-    Comment    ${ua_id}=    Get From List    ${arguments}    1
-    Comment    ${username}=    Set Variable    aps_Owner
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${idd}=    Get Location
@@ -388,17 +390,14 @@ aps.Отримати інформацію із запитання
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
-    ${guid}=    Get Field question.title    ${arguments[1]}
-    Return From Keyword    ${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field question.title    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field question.answer    ${arguments[1]}
 
 aps.Підтвердити підписання контракту
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${guid}=    Get Text    id=purchaseGuid
-    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=questions-tab
     Wait Until Page Contains    ${arguments[2]}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='reply_answer']
@@ -406,4 +405,11 @@ aps.Відповісти на запитання
     Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
     Publish tender
-    Return From Keyword    ${guid}
+
+aps.Отримати інформацію із документа
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=documents-tab
+
+aps.Отримати документ
+    [Arguments]    ${username}    @{arguments}
