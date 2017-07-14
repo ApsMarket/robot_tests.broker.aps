@@ -90,23 +90,17 @@ Set Field Text
     Wait Until Element Is Enabled    ${idishka}
     Input Text    ${idishka}    ${text}
 
-Get Field question.title
-    [Arguments]    ${x}
+Get Field Question
+    [Arguments]    ${x}    ${field}
     Full Click    id=questions-tab
     Wait Until Page Contains    ${x}    60
-    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
+    ${txt}=    Get Text    ${field}
     Return From Keyword    ${txt}
 
 Get Tender Status
+    Reload Page
     ${status}=    Execute Javascript    return $('#purchaseStatus').text()
     Run Keyword If    '${status}'=='1'    Return From Keyword    draft
     Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries
     Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
     Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
-
-Get Field question.answer
-    [Arguments]    ${www}
-    Full Click    id=questions-tab
-    Wait Until Page Contains    ${x}    60
-    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
-    Return From Keyword    ${txt}

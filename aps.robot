@@ -57,7 +57,6 @@ aps.Створити тендер
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
@@ -76,7 +75,6 @@ aps.Внести зміни в тендер
 aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
@@ -84,7 +82,6 @@ aps.Завантажити документ
     ${id}=    Fetch From Right    ${idd}    /
     Log To Console    ${id}
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
-    Comment    Full Click    id=purchaseEdit
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
@@ -93,13 +90,12 @@ aps.Завантажити документ
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    ${gege}=    Load Tender    ${api}:92/api/sync/purchases/${guid}
-    ${gege}=    Get Location
-    Log To Console    ${gege}
+    Load Tender    ${api}:92/api/sync/purchases/${guid}
+    sleep    2
+    Log To Console    ${api}:92/api/sync/purchases/${guid}
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -139,7 +135,6 @@ aps.Отримати інформацію із тендера
 aps.Задати запитання на тендер
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     Full Click    id=questions-tab
     Full Click    id=add_discussion
@@ -149,50 +144,20 @@ aps.Задати запитання на тендер
     Input Text    name=Description    ${question.data.description}
     Full Click    id=confirm_creationForm
 
-Відповісти на питання
-    [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
-    [Documentation]    [Documentation] Відповідає на запитання question з ID question_id в тендері tender_uaid відповіддю answer_data
-
 aps.Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
     [Documentation]    Створює нову ставку в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
-    Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
-    Click Element    xpath=.//*[@id='bidlots']/div/div
-    Wait Until Element Is Enabled    ${locator_newProp_amount}
-    Input Text    ${locator_newProp_amount}    66557
-    Click Element    id=isSelfQualified_
-    Wait Until Element Is Visible    id=isSelfEligible_
-    Click Element    id=isSelfEligible_
+    Wait Until Page Contains Element    id=bidAmount    60
+    Wait Until Element Is Enabled    id=bidAmount
+    ${text}=    Convert Float To String    ${bid.data.value.amount}
+    Input Text    id=bidAmount    ${text}
+    Full Click    id=submitBid
 
 Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
     [Documentation]    Змінює поле fieldname (сума, неціновий показник тощо) в раніше створеній ставці в тендері tender_uaid
-
-Скасувати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}
-    [Documentation]    Скасовує ставку bid в тендері tender_uaid
-
-Завантажити документ в ставку
-    [Arguments]    ${username}    ${filepath}    ${tender_uaid}
-    [Documentation]    Завантажує документ в ставку в тендері tender_uaid
-    [Return]    Результат завантаження – ідентифікатор / назва / тип документа / інші дані, потрібні для подальшої зміни документа в ставці
-
-Змінити документ в ставці
-    [Arguments]    ${username}    ${filepath}    ${bidid}    ${docid}
-    [Documentation]    Змінює документ з ідентифікатором docid в ставці bidid (у випадку однопредметного тендера bidid може бути порожім). Тут аргументfilepath – це шлях до файлу на диску
-    [Return]    Результат завантаження
-
-Отримати посилання на аукціон для глядача
-    [Arguments]    ${username}    ${tender_uaid}
-    [Documentation]    Отримує посилання на перегляд аукціону тендера tender_uaid в якості спостерігача
-    [Return]    URL сторінки аукціону
-
-Отримати посилання на аукціон для учасника
-    [Arguments]    ${username}    ${tender_uaid}
-    [Documentation]    Отримує посилання на участь в аукціоні тендера tender_uaid в якості учасника
-    [Return]    URL сторінки аукціону
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
@@ -200,7 +165,6 @@ aps.Отримати дані із тендера
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
@@ -308,7 +272,6 @@ aps.Отримати інформацію із нецінового показн
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     Full Click    id=purchaseEdit
     Load document    ${file}    Lot    ${lot_id}
@@ -371,11 +334,9 @@ aps.Створити вимогу про виправлення умов зак�
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${guid}=    Get Text    id=purchaseGuid
-    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field question.title    ${arguments[1]}
-    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field question.answer    ${arguments[1]}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Question    ${arguments[1]}    xpath=//div[@id='questionTitle_0'][contains(.,'${arguments[1]}')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[@id='questionDescription_0']
+    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[@id='questionAnswer_0']
 
 aps.Підтвердити підписання контракту
 
@@ -397,3 +358,9 @@ aps.Отримати інформацію із документа
 
 aps.Отримати документ
     [Arguments]    ${username}    @{arguments}
+
+aps.Отримати інформацію із пропозиції
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=do-proposition-tab
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount
