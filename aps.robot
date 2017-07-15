@@ -155,9 +155,16 @@ aps.Подати цінову пропозицію
     Input Text    id=bidAmount    ${text}
     Full Click    id=submitBid
 
-Змінити цінову пропозицію
+aps.Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
     [Documentation]    Змінює поле fieldname (сума, неціновий показник тощо) в раніше створеній ставці в тендері tender_uaid
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Full Click    id=do-proposition-tab
+    Wait Until Page Contains Element    id=bidAmount    60
+    Full Click    id=editButton
+    Wait Until Page Contains Element    id=submitBid
+    Wait Until Element Is Enabled    id=submitBid
+    Run Keyword And Return If    '${fieldname}'=='value.amount'    Set Field    id=bidAmount    ${fieldvalue}
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
@@ -363,4 +370,22 @@ aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
-    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
+
+aps.Завантажити документ в ставку
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[1]}
+    Full Click    id=do-proposition-tab
+    Full Click    id=editButton
+    Full Click    id=openDocuments_biddingDocuments
+    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
+    Full Click    id=submitBid
+
+aps.Змінити документ в ставці
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=do-proposition-tab
+    Full Click    id=editButton
+    Full Click    id=openDocuments_biddingDocuments
+    Choose File    xpath=//a[contains(@id,'docFileName')][contains(text(),'${arguments[2]}')]/../../../../..//input[contains(@id,replaceDoc)]/..    ${arguments[1]}
+    Full Click    id=submitBid
