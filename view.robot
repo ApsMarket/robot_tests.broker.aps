@@ -10,13 +10,6 @@ Library           conv_timeDate.py
 Resource          aps_keywords.robot
 
 *** Keywords ***
-Get Field item.description
-    [Arguments]    ${id}
-    ${path}=    Set Variable    xpath=//h4[@class='m-t-xxs m-b-sm procurementSubjectNameUa ng-binding'][contains(.,'${id}')]
-    Wait Until Element Is Visible    ${path}
-    ${r}=    Get Text    ${path}
-    Return From Keyword    ${r}
-
 Get Field Amount
     [Arguments]    ${id}
     ${path}=    Set Variable    ${id}

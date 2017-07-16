@@ -622,13 +622,13 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    120
+    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    40
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    60
-    Wait Until Element Is Visible    ${lc}    60
-    Wait Until Element Is Enabled    ${lc}    60
+    Wait Until Page Contains Element    ${lc}    20
+    Wait Until Element Is Visible    ${lc}    20
+    Wait Until Element Is Enabled    ${lc}    20
     aniwait
     Click Element    ${lc}
     aniwait

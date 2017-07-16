@@ -124,7 +124,6 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
     Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
-    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Log To Console    333333
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
@@ -248,10 +247,18 @@ aps.Створити постачальника, додати документа
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
     Prepare View    ${username}    ${arguments[0]}
-    Wait Until Element Is Enabled    id=procurement-subject-tab
-    Click Element    id=procurement-subject-tab
+    Full Click    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
-    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field item.description    ${arguments[1]}
+    ${item_path}=    Set Variable    xpath=//h4[contains(@id,'procurementSubjectDescription')][contains(.,\'${arguments[1]}\')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    ${item_path}
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.startDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryStart')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.endDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryEnd')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.id'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.description'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCpvTitle')]
+    Run Keyword And Return If    '${arguments[2]}'=='unit.name'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
+    Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
+    Run Keyword And Return If    '${arguments[2]}'=='quantity'    Get Field Amount    ${item_path}/../../..//span[contains(@id,'procurementSubjectQuantity')]
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
@@ -342,8 +349,8 @@ aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Question    ${arguments[1]}    xpath=//div[@id='questionTitle_0'][contains(.,'${arguments[1]}')]
-    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[@id='questionDescription_0']
-    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[@id='questionAnswer_0']
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[contains(@id,'questionDescription')]
+    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]//div[contains(@id,'questionAnswer')]
 
 aps.Підтвердити підписання контракту
 
@@ -365,6 +372,10 @@ aps.Отримати інформацію із документа
 
 aps.Отримати документ
     [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=documents-tab
+    Return From Keyword    asdfsdfas asdf asf asdf
+    #download file and return path for it
 
 aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
@@ -387,5 +398,15 @@ aps.Змінити документ в ставці
     Full Click    id=do-proposition-tab
     Full Click    id=editButton
     Full Click    id=openDocuments_biddingDocuments
-    Choose File    xpath=//a[contains(@id,'docFileName')][contains(text(),'${arguments[2]}')]/../../../../..//input[contains(@id,replaceDoc)]/..    ${arguments[1]}
+    Choose File    xpath=//a[contains(@id,'docFileName')][contains(text(),'${arguments[2]}')]/../../../../..//input[contains(@id,replaceDoc)]    ${arguments[1]}
     Full Click    id=submitBid
+
+aps.Отримати посилання на аукціон для учасника
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${rrr}=    Get Location
+    Log To Console    ${rrr}
+    ${rrr}=    Get Element Attribute    //a[contains(@href,'auction-sandbox')]@href
+    Log To Console    ${rrr}
+    Return From Keyword    ${rrr}
+    [Return]    ${rrr}
