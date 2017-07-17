@@ -10,13 +10,6 @@ Library           conv_timeDate.py
 Resource          aps_keywords.robot
 
 *** Keywords ***
-Get Field item.description
-    [Arguments]    ${id}
-    ${path}=    Set Variable    xpath=//h4[@class='m-t-xxs m-b-sm procurementSubjectNameUa ng-binding'][contains(.,'${id}')]
-    Wait Until Element Is Visible    ${path}
-    ${r}=    Get Text    ${path}
-    Return From Keyword    ${r}
-
 Get Field Amount
     [Arguments]    ${id}
     ${path}=    Set Variable    ${id}
@@ -66,7 +59,6 @@ Set Field tenderPeriod.endDate
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
-    sleep    5
 
 Set Field
     [Arguments]    ${_id}    ${value}
@@ -91,12 +83,11 @@ Set Field Text
     Wait Until Element Is Enabled    ${idishka}
     Input Text    ${idishka}    ${text}
 
-Get Field question.title
-    [Arguments]    ${x}
+Get Field Question
+    [Arguments]    ${x}    ${field}
     Full Click    id=questions-tab
     Wait Until Page Contains    ${x}    60
-    ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
-    Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
+    ${txt}=    Get Text    ${field}
     Return From Keyword    ${txt}
 
 Get Tru PDV
@@ -105,6 +96,7 @@ Get Tru PDV
     Return From Keyword If    '${txt}'=='true'    ${True}
     Return From Keyword If    '${txt}'!='true'    ${False}
 Get Tender Status
+    Reload Page
     ${status}=    Execute Javascript    return $('#purchaseStatus').text()
     Run Keyword If    '${status}'=='1'    Return From Keyword    draft
     Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries

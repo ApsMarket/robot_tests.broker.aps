@@ -15,13 +15,6 @@ ${locator_necTitle}    id=featureTitle_
 ${dkkp_id}        ${EMPTY}
 
 *** Keywords ***
-Открыть форму создания тендера
-    Comment    Go To    http://192.168.90.170/purchase/create/0
-    Wait Until Element Is Visible    ${locator_create_dop_zak}    8
-    Click Element    ${locator_create_dop_zak}
-
-Работа с жалобами
-
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
     Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
@@ -87,12 +80,6 @@ ${dkkp_id}        ${EMPTY}
     Full Click    id=movePurchaseView
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
-
-date_Time
-    [Arguments]    ${date}
-    ${DT}=    Convert Date    ${date}    date_format=
-    Return From Keyword    '${DT.day}'+'.'+'${DT.month}'+'.'+'${DT.year}'+' '+'${DT.hour}'+':'+'${DT.minute}'
-    [Return]    ${aps_date}
 
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
@@ -247,7 +234,6 @@ Load document
     Wait Until Element Is Visible    id=categorySelect
     Comment    Execute Javascript    $("md-tabs-wrapper").css({"margin-top":"300px"})
     ${status}=    Run Keyword And Ignore Error    Select From List By Index    id=categorySelect    1
-    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Full Click    id=documentOfSelect
     Select From List By Value    id=documentOfSelect    ${to}
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
@@ -258,6 +244,7 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
+    Go To    ${USERS.users['${username}'].homepage}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Wait Until Page Contains Element    ${locator_search_type}
@@ -394,10 +381,8 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
 Publish tender
-    Comment    Full Click    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes    5
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    Comment    Run Keyword And Ignore Error
     ${id}=    Get Location
     Full Click    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
@@ -418,9 +403,7 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Wait Until Page Contains Element    ${locator_multilot_new}    60
-    Wait Until Element Is Enabled    ${locator_multilot_new}    30
-    Click Button    ${locator_multilot_new}
+    Full Click    ${locator_multilot_new}
     Wait Until Page Contains Element    ${locator_multilot_title}${d}    30
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
@@ -436,17 +419,13 @@ Add Lot
     Press Key    id=lotMinStep_${d}    ${text}
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
-    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
-    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Log To Console    finish lot ${d}
 
 Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
-    Comment    Log To Console    SetDateTimePickerValue(\'${id}\',\'${value}\');
     sleep    2
     Execute Javascript    ${ddd}
 
@@ -595,9 +574,6 @@ Get OtherDK
     Log To Console    Other DK ${dkpp_id_local}
     Set Suite Variable    ${dkkp_id}    ${dkpp_id_local}
 
-Add participant into negotiate
-    [Arguments]    ${tender_data}
-
 Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    start publish tender
     Log To Console    start publish tender
@@ -654,22 +630,13 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    120
+    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    40
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    60
-    Wait Until Element Is Visible    ${lc}    60
-    Wait Until Element Is Enabled    ${lc}    60
+    Wait Until Page Contains Element    ${lc}    20
+    Wait Until Element Is Visible    ${lc}    20
+    Wait Until Element Is Enabled    ${lc}    20
     aniwait
     Click Element    ${lc}
     aniwait
