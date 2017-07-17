@@ -414,7 +414,7 @@ aps.Отримати посилання на аукціон для учасни�
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     ${rrr}=    Get Location
     Log To Console    ${rrr}
-    ${rrr}=    Get Element Attribute    //a[contains(@href,'auction-sandbox')]@href
+    ${rrr}=    Get Element Attribute    id=auctionUrl@href    #//a[contains(@href,'auction-sandbox')]@href
     Log To Console    ${rrr}
     Return From Keyword    ${rrr}
     [Return]    ${rrr}
