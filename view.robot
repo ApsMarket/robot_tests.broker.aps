@@ -37,11 +37,13 @@ Get Field feature.title
     [Arguments]    ${id}
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    sleep    3000
+    Wait Until Page Contains Element    id=Feature_1_0_Title    30
     Execute Javascript    window.scroll(0, 150)
     ${d}=    Set Variable    ${id}
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
-    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
     Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_${id}')]
 
 Get Field Date
@@ -95,6 +97,7 @@ Get Tru PDV
     ${txt}=    Get Element Attribute    purchaseIsVAT@isvat
     Return From Keyword If    '${txt}'=='true'    ${True}
     Return From Keyword If    '${txt}'!='true'    ${False}
+
 Get Tender Status
     Reload Page
     ${status}=    Execute Javascript    return $('#purchaseStatus').text()

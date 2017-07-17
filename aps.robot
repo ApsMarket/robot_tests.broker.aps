@@ -121,10 +121,10 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='value.currency'    Get Field Text    ${locator_purchaseCurrency_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.countryName'    Get Field Text    ${locator_purchaseAddressCountryName_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.locality'    Get Field Text    ${locator_purchaseAddressLocality_viewer}
-    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
-    Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
-    Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
-    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
@@ -283,16 +283,12 @@ aps.Отримати інформацію із лоту
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
     Prepare View    ${username}    ${arguments[0]}
-    sleep    2
-    Wait Until Element Is Enabled    id=features-tab
-    Click Element    id=features-tab
+    Full Click    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Comment    Click Element    id=features
     Execute Javascript    window.scroll(0, 500)
     ${d}=    Set Variable    ${arguments[1]}
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
-    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+    Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
