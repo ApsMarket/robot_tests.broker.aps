@@ -98,7 +98,7 @@ Add Item
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Full Click    ${locator_button_add_cpv}
-    Wait Until Element Is Enabled    ${locator_cpv_search}
+    Wait Until Element Is Visible    ${locator_cpv_search}    30
     Press Key    ${locator_cpv_search}    ${item.classification.id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Full Click    ${locator_add_classfier}
