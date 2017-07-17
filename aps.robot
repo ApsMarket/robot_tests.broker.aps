@@ -23,7 +23,7 @@ ${start_date}     ${EMPTY}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    ${prefs}    Create Dictionary    download.default_directory=/home/ova/robot_tests/test_output
+    ${prefs}    Create Dictionary    download.default_directory= ${OUTPUT_DIR}
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
@@ -264,6 +264,12 @@ aps.Отримати інформацію із предмету
     Run Keyword And Return If    '${arguments[2]}'=='unit.name'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
     Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitCode')]
     Run Keyword And Return If    '${arguments[2]}'=='quantity'    Get Field Amount    ${item_path}/../../..//span[contains(@id,'procurementSubjectQuantity')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryLocation.longitude'    Get Field Amount    ${item_path}/../../..//div[contains(@id,'procurementSubjectLongitude')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.countryName'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCounrtyName')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.postalCode'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectZipCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.region'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectRegionName')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.locality'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectLocality')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.streetAddress'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectStreet')]
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
@@ -414,7 +420,16 @@ aps.Отримати посилання на аукціон для учасни�
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     ${rrr}=    Get Location
     Log To Console    ${rrr}
-    ${rrr}=    Get Element Attribute    id=auctionUrl@href    #//a[contains(@href,'auction-sandbox')]@href
+    ${rrr}=    Get Element Attribute    id=purchaseUrlOwner@href    #//a[contains(@href,'auction-sandbox')]@href
     Log To Console    ${rrr}
     Return From Keyword    ${rrr}
     [Return]    ${rrr}
+
+aps.Отримати посилання на аукціон для глядача
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${rrr}=    Get Location
+    Log To Console    ${rrr}
+    ${rrr}=    Get Element Attribute    id=purchaseUrl@href    #//a[contains(@href,'auction-sandbox')]@href
+    Log To Console    ${rrr}
+    Return From Keyword    ${rrr}
