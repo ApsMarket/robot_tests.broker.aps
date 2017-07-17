@@ -21,7 +21,12 @@ ${start_date}     ${EMPTY}
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
-    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
+    Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    ${prefs}    Create Dictionary    download.default_directory=/home/ova/robot_tests/test_output
+    Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
+    Create Webdriver    Chrome    chrome_options=${chrome options}
+    Goto    ${user.homepage}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -253,11 +258,11 @@ aps.Отримати інформацію із предмету
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    ${item_path}
     Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.startDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryStart')]
     Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.endDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryEnd')]
-    Run Keyword And Return If    '${arguments[2]}'=='classification.scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvSheme')]
     Run Keyword And Return If    '${arguments[2]}'=='classification.id'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
     Run Keyword And Return If    '${arguments[2]}'=='classification.description'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCpvTitle')]
     Run Keyword And Return If    '${arguments[2]}'=='unit.name'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
-    Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
+    Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitCode')]
     Run Keyword And Return If    '${arguments[2]}'=='quantity'    Get Field Amount    ${item_path}/../../..//span[contains(@id,'procurementSubjectQuantity')]
 
 aps.Отримати інформацію із лоту
@@ -369,13 +374,16 @@ aps.Отримати інформацію із документа
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
 
 aps.Отримати документ
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
-    Return From Keyword    asdfsdfas asdf asf asdf
-    #download file and return path for it
+    ${title}    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+    Full Click    xpath=//a[contains(.,'${arguments[1]}')]/../../../../..//a[contains(@id,'strikeDocFileNameBut')]
+    sleep    3
+    Return From Keyword    ${title}
 
 aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
