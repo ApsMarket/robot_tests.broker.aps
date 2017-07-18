@@ -248,6 +248,7 @@ Search tender
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Wait Until Page Contains Element    ${locator_search_type}
+    Wait Until Element Is Visible    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}

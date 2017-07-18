@@ -23,7 +23,8 @@ ${start_date}     ${EMPTY}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    ${prefs}    Create Dictionary    download.default_directory= ${OUTPUT_DIR}
+    Log To Console    ${chrome options}
+    ${prefs}     Create Dictionary     prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
