@@ -157,7 +157,7 @@ aps.Подати цінову пропозицію
     Full Click    id=do-proposition-tab
     ${msg}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${bid.data}    lotValues
     Run Keyword If    '${msg[0]}'=='FAIL'    Add Bid Tender    ${bid.data.value.amount}
-    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}     ${to_id}    ${params}
+    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}    ${to_id}    ${params}
     Full Click    id=submitBid
 
 aps.Змінити цінову пропозицію
@@ -446,7 +446,5 @@ aps.Додати неціновий показник на лот
     ${fi}=    Set Variable    ${arguments[1]}
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
-    Full Click    id=updateFeature_${lid}_${pid}
-    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
