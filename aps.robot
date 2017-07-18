@@ -23,8 +23,7 @@ ${start_date}     ${EMPTY}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
     Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-    Log To Console    ${chrome options}
-    ${prefs}     Create Dictionary     prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
+    ${prefs}    Create Dictionary    prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
@@ -101,7 +100,6 @@ aps.Пошук тендера по ідентифікатору
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
     sleep    2
-    Log To Console    ${api}:92/api/sync/purchases/${guid}
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -153,14 +151,13 @@ aps.Задати запитання на тендер
     Full Click    id=confirm_creationForm
 
 aps.Подати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
+    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${to_id}    ${params}
     [Documentation]    Створює нову ставку в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
-    Wait Until Page Contains Element    id=bidAmount    60
-    Wait Until Element Is Enabled    id=bidAmount
-    ${text}=    Convert Float To String    ${bid.data.value.amount}
-    Input Text    id=bidAmount    ${text}
+    ${msg}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${bid.data}    lotValues
+    Run Keyword If    '${msg[0]}'=='FAIL'    Add Bid Tender    ${bid.data.value.amount}
+    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}     ${to_id}    ${params}
     Full Click    id=submitBid
 
 aps.Змінити цінову пропозицію
@@ -295,10 +292,9 @@ aps.Отримати інформацію із лоту
 
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
-    Prepare View    ${username}    ${arguments[0]}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Execute Javascript    window.scroll(0, 500)
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]

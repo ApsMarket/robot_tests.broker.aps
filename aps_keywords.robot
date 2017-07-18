@@ -247,6 +247,7 @@ Search tender
     Go To    ${USERS.users['${username}'].homepage}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
+    Execute Javascript    var model=angular.element(document.getElementById('findbykeywords')).scope(); model.autotestignoretestmode=true;
     Wait Until Page Contains Element    ${locator_search_type}
     Wait Until Element Is Visible    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
@@ -641,3 +642,25 @@ Full Click
     aniwait
     Click Element    ${lc}
     aniwait
+
+Add Bid Tender
+    [Arguments]    ${amount}
+    Wait Until Page Contains Element    id=bidAmount    60
+    Wait Until Element Is Enabled    id=bidAmount
+    ${text}=    Convert Float To String    ${amount}
+    Input Text    id=bidAmount    ${text}
+
+Add Bid Lot
+    [Arguments]    @{params}
+    ${to_id}=    Set Variable    ${params[1]}
+    Log To Console    ${to_id}
+    Full Click    //a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]
+    ${end}=    Get Element Attribute    xpath=//a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]@id
+    Log To Console    ${end}
+    ${end}=    Fetch From Right    ${end}    openLotForm
+    Log To Console    ${end}
+    Wait Until Page Contains Element    id=lotAmount${end}
+    ${amount}=    Convert Float To String    ${params[0].data.lotValues[0].value.amount}
+    Input Text    id=lotAmount${end}    ${amount}
+    Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
+    Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
