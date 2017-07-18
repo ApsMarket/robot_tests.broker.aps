@@ -24,7 +24,7 @@ ${start_date}     ${EMPTY}
     Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
     ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
     Log To Console    ${chrome options}
-    ${prefs}     Create Dictionary     prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
+    ${prefs}    Create Dictionary    prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
@@ -441,3 +441,16 @@ aps.Отримати посилання на аукціон для глядач�
     ${rrr}=    Get Element Attribute    id=purchaseUrl@href    #//a[contains(@href,'auction-sandbox')]@href
     Log To Console    ${rrr}
     Return From Keyword    ${rrr}
+
+aps.Додати неціновий показник на лот
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=purchaseEdit
+    Full Click    id=features-tab
+    ${fi}=    Set Variable    ${arguments[1]}
+    ${fi.item_id}=    Set Variable    ${arguments[2]}
+    Add Feature    ${fi}    1    0
+    Full Click    id=updateFeature_${lid}_${pid}
+    Full Click    id=save_changes
+    Full Click    id=movePurchaseView
+    Publish tender
