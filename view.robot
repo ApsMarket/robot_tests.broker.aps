@@ -10,13 +10,6 @@ Library           conv_timeDate.py
 Resource          aps_keywords.robot
 
 *** Keywords ***
-Get Field item.description
-    [Arguments]    ${id}
-    ${path}=    Set Variable    xpath=//h4[@class='m-t-xxs m-b-sm procurementSubjectNameUa ng-binding'][contains(.,'${id}')]
-    Wait Until Element Is Visible    ${path}
-    ${r}=    Get Text    ${path}
-    Return From Keyword    ${r}
-
 Get Field Amount
     [Arguments]    ${id}
     ${path}=    Set Variable    ${id}
@@ -28,7 +21,7 @@ Get Field Amount
 
 Get Field Text
     [Arguments]    ${id}
-    Wait Until Element Is Visible    ${id}
+    Wait Until Element Is Enabled    ${id}
     ${r}=    Get Text    ${id}
     [Return]    ${r}
 
@@ -44,27 +37,30 @@ Get Field feature.title
     [Arguments]    ${id}
     Wait Until Element Is Enabled    id=features-tab
     Click Element    id=features-tab
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    sleep    3000
+    Wait Until Page Contains Element    id=Feature_1_0_Title    30
     Execute Javascript    window.scroll(0, 150)
     ${d}=    Set Variable    ${id}
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
-    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
+    Comment    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
     Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature_${id}')]
 
 Get Field Date
     [Arguments]    ${id}
     ${startDate}=    Get Text    ${id}
     ${startDate}    Replace String    ${startDate}    ${SPACE}    T
+    ${tz}=    Get Local TZ
+    ${startDate}=    Set Variable    ${startDate}.000000+0${tz}:00
     Return From Keyword    ${startDate}
 
 Set Field tenderPeriod.endDate
     [Arguments]    ${value}
     ${date_time_ten_end}=    Replace String    ${value}    T    ${SPACE}
-    Comment    ${date_time_ten_end}=    Get Substring    ${date_time_ten_end}
+    ${date_time_ten_end}=    Fetch From Left    ${date_time_ten_end}    +0
     Wait Until Element Is Enabled    ${locator_bidDate_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
-    sleep    5
 
 Set Field
     [Arguments]    ${_id}    ${value}
@@ -89,10 +85,30 @@ Set Field Text
     Wait Until Element Is Enabled    ${idishka}
     Input Text    ${idishka}    ${text}
 
-Get Field question.title
-    [Arguments]    ${x}
+Get Field Question
+    [Arguments]    ${x}    ${field}
     Full Click    id=questions-tab
-    Wait Until Page Contains    ${x}
+    Wait Until Page Contains    ${x}    60
+    ${txt}=    Get Text    ${field}
+    Return From Keyword    ${txt}
+
+Get Tru PDV
+    [Arguments]    ${rrr}
+    ${txt}=    Get Element Attribute    purchaseIsVAT@isvat
+    Return From Keyword If    '${txt}'=='true'    ${True}
+    Return From Keyword If    '${txt}'!='true'    ${False}
+
+Get Tender Status
+    Reload Page
+    ${status}=    Execute Javascript    return $('#purchaseStatus').text()
+    Run Keyword If    '${status}'=='1'    Return From Keyword    draft
+    Run Keyword If    '${status}'=='2'    Return From Keyword    active.enquiries
+    Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
+    Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
+
+Get Field question.answer
+    [Arguments]    ${www}
+    Full Click    id=questions-tab
+    Wait Until Page Contains    ${x}    60
     ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
-    Comment    ${txt}=    Get Text    //div[contains(text(),'${x}')]/../../div/div[@ng-bind='element.description']
     Return From Keyword    ${txt}

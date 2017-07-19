@@ -14,6 +14,7 @@ Resource          view.robot
 ${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
 ${log_enabled}    ${EMPTY}
+${start_date}     ${EMPTY}
 
 *** Keywords ***
 Підготувати клієнт для користувача
@@ -21,21 +22,25 @@ ${log_enabled}    ${EMPTY}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     Set Suite Variable    ${log_enabled}    ${False}
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
-    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
+    Comment    Open Browser    ${user.homepage}    ${user.browser}    desired_capabilities=nativeEvents:false
+    ${chrome options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    ${prefs}    Create Dictionary    prompt_for_download=false    download.default_directory=${OUTPUT_DIR}    download.directory_update=True
+    Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
+    Create Webdriver    Chrome    chrome_options=${chrome options}
+    Goto    ${user.homepage}
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
-    Log To Console    '${role}'
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
-    Log To Console    122222222
 
 aps.Підготувати дані для оголошення тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Змінює деякі поля в tender_data (автоматично згенерованих даних для оголошення тендера) згідно з особливостями майданчика
+    Set Suite Variable    ${log_enabled}    ${False}
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
     Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=785445
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
@@ -96,6 +101,10 @@ aps.Пошук тендера по ідентифікатору
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
+    ${guid}=    Get Text    id=purchaseGuid
+    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Load Tender    ${api}:92/api/sync/purchases/${guid}
+    sleep    2
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -140,64 +149,46 @@ aps.Отримати інформацію із тендера
     Comment    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
-    Run Keyword And Return If    '${arguments[1]}'=='items[0].classification.scheme'    Get Field Text    xpath=.//*[@id='procurementSubject_0_0']/div/div/div[2]/div[2]/div/div[1]
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
     [Return]    ${field_value}
 
-Задати питання
+aps.Задати запитання на тендер
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
     Search tender    ${username}    ${tender_uaid}
-    Wait Until Element Is Enabled    ${locator_questionTender}
-    Click Element    ${locator_questionTender}
-    Wait Until Element Is Visible    ${locator_add_discussion}
-    Click Button    ${locator_add_discussion}
-    Add question    ${question}
-
-Відповісти на питання
-    [Arguments]    ${username}    ${tender_uaid}    ${question}    ${answer_data}    ${question_id}
-    [Documentation]    [Documentation] Відповідає на запитання question з ID question_id в тендері tender_uaid відповіддю answer_data
+    Full Click    id=questions-tab
+    Full Click    id=add_discussion
+    Wait Until Page Contains Element    id=confirm_creationForm
+    Select From List By Value    name=OfOptions    0
+    Input Text    name=Title    ${question.data.title}
+    Input Text    name=Description    ${question.data.description}
+    Full Click    id=confirm_creationForm
 
 aps.Подати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${x1}    ${x2}
+    [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${to_id}    ${params}
     [Documentation]    Створює нову ставку в тендері tender_uaid
-    Search tender    ${username}    ${tender_uaid}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
-    Wait Until Element Is Enabled    xpath=.//*[@id='bidlots']/div/div
-    Click Element    xpath=.//*[@id='bidlots']/div/div
-    Wait Until Element Is Enabled    ${locator_newProp_amount}
-    Input Text    ${locator_newProp_amount}    66557
-    Click Element    id=isSelfQualified_
-    Wait Until Element Is Visible    id=isSelfEligible_
-    Click Element    id=isSelfEligible_
-    [Return]    Дані про подану ставку для можливості її подальшої зміни або скасування
+    ${msg}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${bid.data}    lotValues
+    Run Keyword If    '${msg[0]}'=='FAIL'    Add Bid Tender    ${bid.data.value.amount}
+    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}     ${to_id}    ${params}
+    Full Click    id=submitBid
 
-Змінити цінову пропозицію
+aps.Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
     [Documentation]    Змінює поле fieldname (сума, неціновий показник тощо) в раніше створеній ставці в тендері tender_uaid
-
-Скасувати цінову пропозицію
-    [Arguments]    ${username}    ${tender_uaid}    ${bid}
-    [Documentation]    Скасовує ставку bid в тендері tender_uaid
-
-Завантажити документ в ставку
-    [Arguments]    ${username}    ${filepath}    ${tender_uaid}
-    [Documentation]    Завантажує документ в ставку в тендері tender_uaid
-    [Return]    Результат завантаження – ідентифікатор / назва / тип документа / інші дані, потрібні для подальшої зміни документа в ставці
-
-Змінити документ в ставці
-    [Arguments]    ${username}    ${filepath}    ${bidid}    ${docid}
-    [Documentation]    Змінює документ з ідентифікатором docid в ставці bidid (у випадку однопредметного тендера bidid може бути порожім). Тут аргументfilepath – це шлях до файлу на диску
-    [Return]    Результат завантаження
-
-Отримати посилання на аукціон для глядача
-    [Arguments]    ${username}    ${tender_uaid}
-    [Documentation]    Отримує посилання на перегляд аукціону тендера tender_uaid в якості спостерігача
-    [Return]    URL сторінки аукціону
-
-Отримати посилання на аукціон для учасника
-    [Arguments]    ${username}    ${tender_uaid}
-    [Documentation]    Отримує посилання на участь в аукціоні тендера tender_uaid в якості учасника
-    [Return]    URL сторінки аукціону
+    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Full Click    id=do-proposition-tab
+    Wait Until Page Contains Element    id=bidAmount    60
+    Full Click    id=editButton
+    Wait Until Page Contains Element    id=submitBid
+    Wait Until Element Is Enabled    id=submitBid
+    Run Keyword And Return If    '${fieldname}'=='value.amount'    Set Field    id=bidAmount    ${fieldvalue}
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
@@ -205,12 +196,6 @@ aps.Отримати дані із тендера
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    Comment    ${supplier}=    Get From List    ${arguments}    2
-    Comment    ${username}=    Get From List    ${arguments}    0
-    Comment    ${filepath}=    Get From List    ${arguments}    3
-    Comment    ${ua_id}=    Get From List    ${arguments}    1
-    Comment    ${username}=    Set Variable    aps_Owner
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
@@ -287,10 +272,28 @@ aps.Створити постачальника, додати документа
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
     Prepare View    ${username}    ${arguments[0]}
-    Wait Until Element Is Enabled    id=procurement-subject-tab
-    Click Element    id=procurement-subject-tab
+    Full Click    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
-    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field item.description    ${arguments[1]}
+    ${item_path}=    Set Variable    xpath=//h4[contains(@id,'procurementSubjectDescription')][contains(.,\'${arguments[1]}\')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    ${item_path}
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.startDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryStart')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.endDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryEnd')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvSheme')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.id'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.description'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCpvTitle')]
+    Run Keyword And Return If    '${arguments[2]}'=='unit.name'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
+    Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='quantity'    Get Field Amount    ${item_path}/../../..//span[contains(@id,'procurementSubjectQuantity')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryLocation.longitude'    Get Field Amount    ${item_path}/../../..//div[contains(@id,'procurementSubjectLongitude')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryLocation.latitude'    Get Field Amount    ${item_path}/../../..//div[contains(@id,'procurementSubjectLatitude')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.countryName'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCounrtyName')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.postalCode'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectZipCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.region'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectRegionName')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.locality'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectLocality')]
+    Run Keyword And Return If    '${arguments[2]}'=='deliveryAddress.streetAddress'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectStreet')]
+    Run Keyword And Return If    '${arguments[2]}'=='additionalClassifications[0].scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectOtherClassSheme')]
+    Run Keyword And Return If    '${arguments[2]}'==' additionalClassifications[0].id'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectOtherClassCode')]
+    Run Keyword And Return If    '${arguments[2]}'=='additionalClassifications[0].description'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectOtherClassTitle')]
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
@@ -300,25 +303,27 @@ aps.Отримати інформацію із лоту
     Wait Until Element Is Enabled    id=view-lots
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
     Run Keyword And Return If    '${arguments[2]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Run Keyword And Return If    '${arguments[2]}'=='value.currency'    Get Field Text    id=Lot-1-Currency
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
+    Run Keyword And Return If    '${arguments[2]}'=='minimalStep.valueAddedTaxIncluded'    Get Tru PDV    purchaseIsVAT@isvat
+    Run Keyword And Return If    '${arguments[2]}'=='minimalStep.currency'    Get Field Text    id=Lot-1-Currency
+    Run Keyword And Return If    '${arguments[2]}'=='value.valueAddedTaxIncluded'    Get Tru PDV    purchaseIsVAT@isvat
+    [Return]    ${field_value}
 
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
-    Prepare View    ${username}    ${arguments[0]}
-    sleep    2
-    Wait Until Element Is Enabled    id=features-tab
-    Click Element    id=features-tab
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=features-tab
     Wait Until Element Is Enabled    id=features
-    Comment    Click Element    id=features
-    Execute Javascript    window.scroll(0, 500)
     ${d}=    Set Variable    ${arguments[1]}
-    Wait Until Page Contains Element    id = updateOrCreateFeature_0_0    30
-    Wait Until Element Is Enabled    id = updateOrCreateFeature_0_0    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//form[contains(@id,'updateOrCreateFeature')]//div[contains(text(),'${d}')]
+    Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
-    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${ua_id}
     Full Click    id=purchaseEdit
     Load document    ${file}    Lot    ${lot_id}
@@ -381,11 +386,9 @@ aps.Створити вимогу про виправлення умов зак�
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${guid}=    Get Text    id=purchaseGuid
-    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
-    ${guid}=    Get Field question.title    ${arguments[1]}
-    Return From Keyword    ${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Question    ${arguments[1]}    xpath=//div[@id='questionTitle_0'][contains(.,'${arguments[1]}')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[contains(@id,'questionDescription')]
+    Run Keyword And Return If    '${arguments[2]}'=='answer'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]//div[contains(@id,'questionAnswer')]
 
 aps.Підтвердити підписання контракту
     [Arguments]    ${username}    ${command}    @{arguments}
@@ -398,9 +401,6 @@ aps.Підтвердити підписання контракту
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${guid}=    Get Text    id=purchaseGuid
-    ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=questions-tab
     Wait Until Page Contains    ${arguments[2]}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='reply_answer']
@@ -408,4 +408,61 @@ aps.Відповісти на запитання
     Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
     Publish tender
-    Return From Keyword    ${guid}
+
+aps.Отримати інформацію із документа
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=documents-tab
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+
+aps.Отримати документ
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=documents-tab
+    ${title}    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+    Full Click    xpath=//a[contains(.,'${arguments[1]}')]/../../../../..//a[contains(@id,'strikeDocFileNameBut')]
+    sleep    3
+    Return From Keyword    ${title}
+
+aps.Отримати інформацію із пропозиції
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=do-proposition-tab
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
+
+aps.Завантажити документ в ставку
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[1]}
+    Full Click    id=do-proposition-tab
+    Full Click    id=editButton
+    Full Click    id=openDocuments_biddingDocuments
+    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
+    Full Click    id=submitBid
+
+aps.Змінити документ в ставці
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=do-proposition-tab
+    Full Click    id=editButton
+    Full Click    id=openDocuments_biddingDocuments
+    Choose File    xpath=//a[contains(@id,'docFileName')][contains(text(),'${arguments[2]}')]/../../../../..//input[contains(@id,replaceDoc)]    ${arguments[1]}
+    Full Click    id=submitBid
+
+aps.Отримати посилання на аукціон для учасника
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${rrr}=    Get Location
+    Log To Console    ${rrr}
+    ${rrr}=    Get Element Attribute    id=purchaseUrlOwner@href    #//a[contains(@href,'auction-sandbox')]@href
+    Log To Console    ${rrr}
+    Return From Keyword    ${rrr}
+    [Return]    ${rrr}
+
+aps.Отримати посилання на аукціон для глядача
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${rrr}=    Get Location
+    Log To Console    ${rrr}
+    ${rrr}=    Get Element Attribute    id=purchaseUrl@href    #//a[contains(@href,'auction-sandbox')]@href
+    Log To Console    ${rrr}
+    Return From Keyword    ${rrr}

@@ -15,13 +15,6 @@ ${locator_necTitle}    id=featureTitle_
 ${dkkp_id}        ${EMPTY}
 
 *** Keywords ***
-Открыть форму создания тендера
-    Comment    Go To    http://192.168.90.170/purchase/create/0
-    Wait Until Element Is Visible    ${locator_create_dop_zak}    8
-    Click Element    ${locator_create_dop_zak}
-
-Работа с жалобами
-
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
     Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
@@ -88,12 +81,6 @@ ${dkkp_id}        ${EMPTY}
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
 
-date_Time
-    [Arguments]    ${date}
-    ${DT}=    Convert Date    ${date}    date_format=
-    Return From Keyword    '${DT.day}'+'.'+'${DT.month}'+'.'+'${DT.year}'+' '+'${DT.hour}'+':'+'${DT.minute}'
-    [Return]    ${aps_date}
-
 Add Item
     [Arguments]    ${item}    ${d}    ${d_lot}
     #Клик доб позицию
@@ -111,7 +98,7 @@ Add Item
     ${name}=    Get From Dictionary    ${item.unit}    name
     #Выбор ДК
     Full Click    ${locator_button_add_cpv}
-    Wait Until Element Is Enabled    ${locator_cpv_search}
+    Wait Until Element Is Visible    ${locator_cpv_search}    30
     Press Key    ${locator_cpv_search}    ${item.classification.id}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
     Full Click    ${locator_add_classfier}
@@ -248,7 +235,6 @@ Load document
     Wait Until Element Is Visible    id=categorySelect
     Comment    Execute Javascript    $("md-tabs-wrapper").css({"margin-top":"300px"})
     ${status}=    Run Keyword And Ignore Error    Select From List By Index    id=categorySelect    1
-    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
     Full Click    id=documentOfSelect
     Select From List By Value    id=documentOfSelect    ${to}
     Run Keyword If    '${to}'=='Lot'    Select Doc For Lot    ${to_name}
@@ -259,8 +245,12 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
-    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}
+    Go To    ${USERS.users['${username}'].homepage}
+    ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
+    Execute Javascript    var model=angular.element(document.getElementById('findbykeywords')).scope(); model.autotestignoretestmode=true;
     Wait Until Page Contains Element    ${locator_search_type}
+    Wait Until Element Is Visible    ${locator_search_type}
     Select From List By Value    ${locator_search_type}    1    #По Id
     Wait Until Page Contains Element    ${locator_input_search}
     Wait Until Element Is Enabled    ${locator_input_search}
@@ -295,11 +285,9 @@ Info OpenUA
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
     ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
-    Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    ${locator_bidDate_end}
     Full Click    id=createOrUpdatePurchase
-    Log To Console    finish openUa info
 
 Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
@@ -394,10 +382,8 @@ Add item negotiate
     Run Keyword If    ${log_enabled}    Log To Console    end add item negotiation
 
 Publish tender
-    Comment    Full Click    id=basicInfo-tab
     Run Keyword And Ignore Error    Wait Until Element Is Visible    id=save_changes    5
     Run Keyword And Ignore Error    Click Button    id=save_changes
-    Comment    Run Keyword And Ignore Error
     ${id}=    Get Location
     Full Click    ${locator_publish_tender}
     Wait Until Page Contains Element    id=purchaseProzorroId    50
@@ -410,7 +396,7 @@ Publish tender
 
 Add question
     [Arguments]    ${tender_data}
-    Select From List By Label    ${locator_question_to}    0
+    Select From List By Value    ${locator_question_to}    0
     ${title}=    Get From Dictionary    ${tender_data.data}    title
     Press Key    ${locator_question_title}    ${title}
     ${description}=    Get From Dictionary    ${tender_data.data}    description
@@ -418,9 +404,7 @@ Add question
 
 Add Lot
     [Arguments]    ${d}    ${lot}
-    Wait Until Page Contains Element    ${locator_multilot_new}    60
-    Wait Until Element Is Enabled    ${locator_multilot_new}    30
-    Click Button    ${locator_multilot_new}
+    Full Click    ${locator_multilot_new}
     Wait Until Page Contains Element    ${locator_multilot_title}${d}    30
     Wait Until Element Is Enabled    ${locator_multilot_title}${d}
     Input Text    ${locator_multilot_title}${d}    ${lot.title}
@@ -436,17 +420,13 @@ Add Lot
     Press Key    id=lotMinStep_${d}    ${text}
     Press Key    id=lotMinStep_${d}    00
     #Input Text    id=lotGuarantee_${d}
-    Wait Until Element Is Enabled    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]    30
-    Click Button    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
-    Comment    Run Keyword And Ignore Error    Wait Until Page Contains Element    ${locator_toast_container}
-    Comment    Run Keyword And Ignore Error    Click Button    ${locator_toast_close}
+    Full Click    xpath=.//*[@id='updateOrCreateLot_1']//button[@class="btn btn-success"]
     Log To Console    finish lot ${d}
 
 Fill Date
     [Arguments]    ${id}    ${value}
     ${id}    Replace String    ${id}    id=    ${EMPTY}
     ${ddd}=    Set Variable    SetDateTimePickerValue(\'${id}\',\'${value}\');
-    Comment    Log To Console    SetDateTimePickerValue(\'${id}\',\'${value}\');
     sleep    2
     Execute Javascript    ${ddd}
 
@@ -583,12 +563,10 @@ Add Enum
     Run Keyword And Return If    '${MODE}'=='openeu'    Input Text    id=featureEnumTitleEn_${end}    flowers
 
 Sync
-    [Arguments]    ${uaid}
-    ${off}=    Get Current Date    local    -10m    %Y-%m-%d %H:%M    true
-    Log To Console    Synk \ \ return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?date=${off}&tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    Comment    Log To Console    ${guid}
-    sleep    2
+    [Arguments]    ${uaid}    ${api}
+    Execute Javascript    $.get('${api}:92/api/sync/purchase/tenderID/tenderID=${uaid}');
+    ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
+    Log Many    ${guid}
 
 Get OtherDK
     [Arguments]    ${item}
@@ -596,9 +574,6 @@ Get OtherDK
     ${dkpp_id_local}=    Get From Dictionary    ${dkpp}    id
     Log To Console    Other DK ${dkpp_id_local}
     Set Suite Variable    ${dkkp_id}    ${dkpp_id_local}
-
-Add participant into negotiate
-    [Arguments]    ${tender_data}
 
 Publish tender/negotiation
     Run Keyword If    ${log_enabled}    Log To Console    start publish tender
@@ -656,22 +631,46 @@ Select Item Param Label
     Select From List By Label    id=featureItem_1_0    ${lb}
 
 aniwait
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    ${status}=    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status}'=='True'    sleep    3
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    Run Keyword And Ignore Error    Execute Javascript    return $(".page-loader").css("display")=="none"
-    Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5
-    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    120
+    Run Keyword And Ignore Error    Wait For Condition    return $(".page-loader").css("display")=="none"    40
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    60
-    Wait Until Element Is Visible    ${lc}    60
-    Wait Until Element Is Enabled    ${lc}    60
+    Wait Until Page Contains Element    ${lc}    20
+    Wait Until Element Is Visible    ${lc}    20
+    Wait Until Element Is Enabled    ${lc}    20
     aniwait
     Click Element    ${lc}
     aniwait
+
+Add Bid Tender
+    [Arguments]    ${amount}
+    Wait Until Page Contains Element    id=bidAmount    60
+    Wait Until Element Is Enabled    id=bidAmount
+    ${text}=    Convert Float To String    ${amount}
+    Input Text    id=bidAmount    ${text}
+
+Add Bid Lot
+    [Arguments]    @{params}
+    ${to_id}=    Set Variable    ${params[1]}
+    Log To Console    ${to_id}
+    Full Click    //a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]
+    ${end}=    Get Element Attribute    xpath=//a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]@id
+    Log To Console    ${end}
+    ${end}=    Fetch From Right    ${end}    openLotForm
+    Log To Console    ${end}
+    Wait Until Page Contains Element    id=lotAmount${end}
+    ${amount}=    Convert Float To String    ${params[0].data.lotValues[0].value.amount}
+    Input Text    id=lotAmount${end}    ${amount}
+    Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
+    Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
+    ${fiis}=    Set Variable    ${params[2]}
+    :FOR    ${fi}    IN    @{fiis}
+    \    ${code}=    Get Text    xpath=//h6[contains(text(),'${fi}')]/../h6[2]
+    \    ${value}=    Get Param By Id    ${code}    ${params[0].data.parameters}
+    \    Select From List By Value    xpath=//h6[contains(text(),'${fi}')]/../select    string:${value}
+
+Get Param By Id
+    [Arguments]    ${m}    ${p}
+    Log To Console    ${p}
+    :FOR    ${pp}    IN    @{p}
+    \    Return From Keyword If    '${pp['code']}'=='${m}'    ${pp['value']}
