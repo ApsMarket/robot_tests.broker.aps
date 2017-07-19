@@ -246,7 +246,9 @@ Search tender
     [Arguments]    ${username}    ${tender_uaid}
     Go To    ${USERS.users['${username}'].homepage}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
+    Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Comment    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Execute Javascript    var model=angular.element(document.getElementById('findbykeywords')).scope(); model.autotestignoretestmode=true;
     Wait Until Page Contains Element    ${locator_search_type}
     Wait Until Element Is Visible    ${locator_search_type}
@@ -274,7 +276,6 @@ Info OpenUA
     #Выбор НДС
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
-    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 1444
     #Валюта
     Full Click    ${locator_currency}
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
@@ -565,7 +566,7 @@ Sync
     [Arguments]    ${uaid}    ${api}
     Execute Javascript    $.get('${api}:92/api/sync/purchase/tenderID/tenderID=${uaid}');
     ${guid}=    Execute Javascript    return $.get('publish/SearchTenderById?tenderId=${uaid}&guid=ac8dd2f8-1039-4e27-8d98-3ef50a728ebf')
-    Log Many    ${guid}
+    Log To Console    $.get('${api}:92/api/sync/purchase/tenderID/tenderID=${uaid}');
 
 Get OtherDK
     [Arguments]    ${item}
@@ -647,29 +648,28 @@ Add Bid Tender
     Wait Until Element Is Enabled    id=bidAmount
     ${text}=    Convert Float To String    ${amount}
     Input Text    id=bidAmount    ${text}
+    Full Click    id=submitBid
 
 Add Bid Lot
     [Arguments]    @{params}
     ${to_id}=    Set Variable    ${params[1]}
-    Log To Console    ${to_id}
     Full Click    //a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]
     ${end}=    Get Element Attribute    xpath=//a[contains(@id,'openLotForm')][contains(text(),'${to_id[0]}')]@id
-    Log To Console    ${end}
     ${end}=    Fetch From Right    ${end}    openLotForm
-    Log To Console    ${end}
     Wait Until Page Contains Element    id=lotAmount${end}
     ${amount}=    Convert Float To String    ${params[0].data.lotValues[0].value.amount}
     Input Text    id=lotAmount${end}    ${amount}
     Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
     Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
     ${fiis}=    Set Variable    ${params[2]}
-    :FOR    ${fi}    IN    @{fiis}
+    : FOR    ${fi}    IN    @{fiis}
     \    ${code}=    Get Text    xpath=//h6[contains(text(),'${fi}')]/../h6[2]
     \    ${value}=    Get Param By Id    ${code}    ${params[0].data.parameters}
     \    Select From List By Value    xpath=//h6[contains(text(),'${fi}')]/../select    string:${value}
+    Comment    Input Text    id=lotSubInfo${end}    text
+    Full Click    id=lotSubmit${end}
 
 Get Param By Id
     [Arguments]    ${m}    ${p}
-    Log To Console    ${p}
-    :FOR    ${pp}    IN    @{p}
+    : FOR    ${pp}    IN    @{p}
     \    Return From Keyword If    '${pp['code']}'=='${m}'    ${pp['value']}
