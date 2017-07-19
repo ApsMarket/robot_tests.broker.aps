@@ -127,10 +127,6 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='value.currency'    Get Field Text    ${locator_purchaseCurrency_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.countryName'    Get Field Text    ${locator_purchaseAddressCountryName_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.locality'    Get Field Text    ${locator_purchaseAddressLocality_viewer}
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
