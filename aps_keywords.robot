@@ -284,11 +284,9 @@ Info OpenUA
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
     ${date_time_ten_end}=    dt    ${tender.data.tenderPeriod.endDate}
-    Log To Console    ${date_time_ten_end}
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    ${locator_bidDate_end}
     Full Click    id=createOrUpdatePurchase
-    Log To Console    finish openUa info
 
 Add item negotiate
     [Arguments]    ${item}    ${q}    ${w}
@@ -664,3 +662,14 @@ Add Bid Lot
     Input Text    id=lotAmount${end}    ${amount}
     Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
     Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
+    ${fiis}=    Set Variable    ${params[2]}
+    :FOR    ${fi}    IN    @{fiis}
+    \    ${code}=    Get Text    xpath=//h6[contains(text(),'${fi}')]/../h6[2]
+    \    ${value}=    Get Param By Id    ${code}    ${params[0].data.parameters}
+    \    Select From List By Value    xpath=//h6[contains(text(),'${fi}')]/../select    string:${value}
+
+Get Param By Id
+    [Arguments]    ${m}    ${p}
+    Log To Console    ${p}
+    :FOR    ${pp}    IN    @{p}
+    \    Return From Keyword If    '${pp['code']}'=='${m}'    ${pp['value']}
