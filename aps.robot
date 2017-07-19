@@ -298,6 +298,7 @@ aps.Отримати інформацію із нецінового показн
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=featureDescription_1_0
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
