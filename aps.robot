@@ -173,23 +173,30 @@ aps.Задати запитання на тендер
 aps.Подати цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${bid}    ${to_id}    ${params}
     [Documentation]    Створює нову ставку в тендері tender_uaid
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
     ${msg}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${bid.data}    lotValues
     Run Keyword If    '${msg[0]}'=='FAIL'    Add Bid Tender    ${bid.data.value.amount}
     Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}    ${to_id}    ${params}
+<<<<<<< HEAD
     Full Click    id=submitBid
+=======
+>>>>>>> 4faa5fa11b1834920e105a8a3cce17ec7238312e
 
 aps.Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
     [Documentation]    Змінює поле fieldname (сума, неціновий показник тощо) в раніше створеній ставці в тендері tender_uaid
     aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
-    Wait Until Page Contains Element    id=bidAmount    60
-    Full Click    id=editButton
-    Wait Until Page Contains Element    id=submitBid
-    Wait Until Element Is Enabled    id=submitBid
-    Run Keyword And Return If    '${fieldname}'=='value.amount'    Set Field    id=bidAmount    ${fieldvalue}
+    Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
+    Run Keyword And Ignore Error    Full Click    id=editButton
+    Run Keyword And Ignore Error    Full Click    id=openLotForm_0
+    Run Keyword And Return If    '${fieldname}'=='value.amount'    Set Field Amount    id=bidAmount    ${fieldvalue}
+    Run Keyword And Return If    '${fieldname}'=='lotValues[0].value.amount'    Set Field Amount    id=lotAmount_0    ${fieldvalue}
+    Run Keyword And Ignore Error    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
@@ -281,7 +288,7 @@ aps.Отримати інформацію із предмету
     Run Keyword And Return If    '${arguments[2]}'=='deliveryDate.endDate'    Get Field Date    ${item_path}/../../..//div[contains(@id,'procurementSubjectDeliveryEnd')]
     Run Keyword And Return If    '${arguments[2]}'=='classification.scheme'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvSheme')]
     Run Keyword And Return If    '${arguments[2]}'=='classification.id'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvCode')]
-    Run Keyword And Return If    '${arguments[2]}'=='classification.description'    Get Field Text    ${item_path}/../../..//div[contains(@id,'procurementSubjectCpvTitle')]
+    Run Keyword And Return If    '${arguments[2]}'=='classification.description'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectCpvTitle')]
     Run Keyword And Return If    '${arguments[2]}'=='unit.name'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitName')]
     Run Keyword And Return If    '${arguments[2]}'=='unit.code'    Get Field Text    ${item_path}/../../..//span[contains(@id,'procurementSubjectUnitCode')]
     Run Keyword And Return If    '${arguments[2]}'=='quantity'    Get Field Amount    ${item_path}/../../..//span[contains(@id,'procurementSubjectQuantity')]
@@ -322,6 +329,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
+    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
@@ -340,7 +348,7 @@ aps.Змінити лот
     Wait Until Page Contains Element    id=save_changes
     Full Click    id=lots-tab
     Full Click    xpath=//h4[contains(text(),'${lot_id}')]/../../div/a/i[@class='fa fa-pencil']/..
-    Run Keyword If    '${field_name}'=='value.amount'    Set Field    id=lotBudget_1    ${field_value}
+    Run Keyword If    '${field_name}'=='value.amount'    Set Field Amount    id=lotBudget_1    ${field_value}
     Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
     Full Click    id=basicInfo-tab
     Full Click    id=save_changes
@@ -429,7 +437,9 @@ aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
+    Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
+    Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}

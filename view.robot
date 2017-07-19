@@ -62,7 +62,7 @@ Set Field tenderPeriod.endDate
     Fill Date    ${locator_bidDate_end}    ${date_time_ten_end}
     Full Click    id=createOrUpdatePurchase
 
-Set Field
+Set Field Amount
     [Arguments]    ${_id}    ${value}
     Wait Until Element Is Enabled    ${_id}
     ${eee}=    Convert Float To String    ${value}
