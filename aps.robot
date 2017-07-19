@@ -37,7 +37,9 @@ aps.Підготувати дані для оголошення тендера
     Set Suite Variable    ${log_enabled}    ${False}
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
-    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
+    Run Keyword If    '${role}'!='viewer'    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
+    Run Keyword If    '${role}'=='viewer'    Set To Dictionary    ${tender_data.data.procuringEntity}    name=QA #1
+    Comment    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
@@ -157,7 +159,7 @@ aps.Подати цінову пропозицію
     Full Click    id=do-proposition-tab
     ${msg}=    Run Keyword And Ignore Error    Dictionary Should Contain Key    ${bid.data}    lotValues
     Run Keyword If    '${msg[0]}'=='FAIL'    Add Bid Tender    ${bid.data.value.amount}
-    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}     ${to_id}    ${params}
+    Run Keyword If    '${msg[0]}'!='FAIL'    Add Bid Lot    ${bid}    ${to_id}    ${params}
     Full Click    id=submitBid
 
 aps.Змінити цінову пропозицію
@@ -394,7 +396,7 @@ aps.Отримати документ
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
-    ${title}    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+    ${title}=    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
     Full Click    xpath=//a[contains(.,'${arguments[1]}')]/../../../../..//a[contains(@id,'strikeDocFileNameBut')]
     sleep    3
     Return From Keyword    ${title}
@@ -452,3 +454,10 @@ aps.Додати неціновий показник на лот
     Add Feature    ${fi}    1    0
     Full Click    id=movePurchaseView
     Publish tender
+
+aps.Отримати документ до лоту
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=documents-tab
+    ${title}=    Get Field Text    xpath=.//*[@class="btn btn-primary ng-binding ng-scope" ][contains(@id,'strikeDocFileNameBut')]
+    Return From Keyword    ${title}
