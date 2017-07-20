@@ -168,11 +168,14 @@ aps.Змінити цінову пропозицію
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
     Run Keyword And Ignore Error    Full Click    id=editButton
-    Run Keyword And Ignore Error    Full Click    id=openLotForm_0
+    Run Keyword And Ignore Error    Full Click    id=editLotButton_0
     Run Keyword And Return If    '${fieldname}'=='value.amount'    Set Field Amount    id=bidAmount    ${fieldvalue}
     Run Keyword And Return If    '${fieldname}'=='lotValues[0].value.amount'    Set Field Amount    id=lotAmount_0    ${fieldvalue}
+    Capture Page Screenshot
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
+    Capture Page Screenshot
+    Run Keyword And Ignore Error    Full Click    id=publishButton
 
 aps.Отримати дані із тендера
     [Arguments]    ${username}    @{arguments}
@@ -305,7 +308,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
-    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
+    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../../@itemid
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
@@ -415,19 +418,33 @@ aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[1]}
     Full Click    id=do-proposition-tab
-    Full Click    id=editButton
-    Full Click    id=openDocuments_biddingDocuments
-    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
-    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
+    Run Keyword And Ignore Error    Full Click    id=editLotButton_0
+    Run Keyword And Ignore Error    Full Click    id=editButton
+    Run Keyword And Ignore Error    Full Click    id=openLotDocuments_technicalSpecifications_0
+    Run Keyword And Ignore Error    Full Click    id=openDocuments_biddingDocuments
+    Run Keyword And Ignore Error    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
+    Run Keyword And Ignore Error    Choose File    bidLotDocInputBtn_technicalSpecifications_0    ${arguments[0]}
+    Capture Page Screenshot
+    Run Keyword And Ignore Error    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
+    Run Keyword And Ignore Error    Full Click    id=publishButton
 
 aps.Змінити документ в ставці
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[1]}
     Full Click    id=do-proposition-tab
-    Full Click    id=editButton
-    Full Click    id=openDocuments_biddingDocuments
-    Choose File    xpath=//a[contains(@id,'docFileName')][contains(text(),'${arguments[2]}')]/../../../../..//input[contains(@id,replaceDoc)]    ${arguments[1]}
-    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
+    Run Keyword And Ignore Error    Full Click    id=editLotButton_0
+    Run Keyword And Ignore Error    Full Click    id=editButton
+    Run Keyword And Ignore Error    Full Click    id=openLotDocuments_technicalSpecifications_0
+    Run Keyword And Ignore Error    Full Click    id=openDocuments_biddingDocuments
+    Run Keyword And Ignore Error    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
+    Run Keyword And Ignore Error    Choose File    bidLotDocInputBtn_technicalSpecifications_0    ${arguments[0]}
+    Capture Page Screenshot
+    Run Keyword And Ignore Error    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
+    Run Keyword And Ignore Error    Full Click    id=publishButton
 
 aps.Отримати посилання на аукціон для учасника
     [Arguments]    ${username}    @{arguments}
