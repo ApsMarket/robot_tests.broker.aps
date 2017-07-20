@@ -216,6 +216,7 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Стоимость закупки ${text}
     Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
+    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
 
 Login
     [Arguments]    ${user}
