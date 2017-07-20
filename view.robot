@@ -16,6 +16,7 @@ Get Field Amount
     Wait Until Element Is Visible    ${path}
     ${r}=    Get Text    ${path}
     ${r}=    Remove String    ${r}    ${SPACE}
+    ${r}=    Replace String    ${r}    ,    .
     ${r}=    Convert To Number    ${r}
     Return From Keyword    ${r}
 
