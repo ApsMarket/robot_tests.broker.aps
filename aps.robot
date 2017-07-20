@@ -89,7 +89,6 @@ aps.Завантажити документ
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
-    Comment    Full Click    id=purchaseEdit
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
@@ -342,7 +341,6 @@ aps.Змінити лот
     Run Keyword If    '${field_name}'=='value.amount'    Set Field Amount    id=lotBudget_1    ${field_value}
     Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
     Full Click    id=basicInfo-tab
-    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
@@ -356,7 +354,7 @@ aps.Додати неціновий показник на предмет
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
     Full Click    id=basicInfo-tab
-    Full Click    id=save_changes
+    Comment    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
@@ -369,7 +367,7 @@ aps.Видалити неціновий показник
     Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Full Click    id=basicInfo-tab
-    Full Click    id=save_changes
+    Comment    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
