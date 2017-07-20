@@ -477,12 +477,8 @@ aps.Отримати посилання на аукціон для учасни�
 aps.Отримати посилання на аукціон для глядача
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${rrr}=    Get Location
-    Log To Console    ${rrr}
-    Run Keyword And Ignore Error    ${rrr}=    Get Element Attribute    id=purchaseUrl@href    #//a[contains(@href,'auction-sandbox')]@href
-    Run Keyword And Ignore Error    ${rrr}=    Get Element Attribute    auctionUrl@href
-    Log To Console    ${rrr}
-    Return From Keyword    ${rrr}
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=auctionUrl@href
+    Return From Keyword    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
