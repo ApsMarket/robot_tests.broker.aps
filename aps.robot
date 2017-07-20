@@ -151,6 +151,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    .//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
+    Comment    questions[0].answer
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
