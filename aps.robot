@@ -61,7 +61,6 @@ aps.Створити тендер
     [Documentation]    Створює однопредметний тендер
     Log To Console    MODE=${MODE}
     Log To Console    suite = ${SUITE_NAME}
-    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Complaints'    Допороговый однопредметный тендер    ${tender_data}    1
     Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
