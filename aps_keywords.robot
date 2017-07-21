@@ -164,7 +164,7 @@ Info Below
     Comment    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
     Comment    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
     Comment    Press Key    ${locator_min_step}    ${text_ms}
-    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
+    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender_data}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период уточнений нач дата
     ${date_time_enq_st}=    dt    ${tender_data.data.enquiryPeriod.startDate}

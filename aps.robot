@@ -378,10 +378,9 @@ aps.Створити вимогу про виправлення умов зак�
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
-    Comment    ${data}=    Get From Dictionary    ${arguments[0]}    data
-    Log To Console    ${arguments[1]}
+    ${data}=    Set Variable    ${arguments[1]}
     Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
-    Comment    Full Click    $('save-claim').click();
+    Full Click    save_claim
 
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
@@ -497,3 +496,6 @@ aps.Отримати документ до лоту
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=.//*[@class="btn btn-primary ng-binding ng-scope" ][contains(@id,'strikeDocFileNameBut')]
     Return From Keyword    ${title}
+
+aps.Відповісти на вимогу про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
