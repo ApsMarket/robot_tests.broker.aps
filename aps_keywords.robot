@@ -69,11 +69,14 @@ ${dkkp_id}        ${EMPTY}
     Run Keyword And Return    Publish tender
 
 Допороговый однопредметный тендер
-    [Arguments]    ${tender_data}
+    [Arguments]    ${tender_data}    ${lot_count}=0
     Full Click    ${locator_button_create}
     Full Click    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Below    ${tender_data}
+    Run Keyword If    ${lot_count}==${1}    id=next_step
+    Run Keyword If    ${lot_count}==${1}    Add Lot    1    ${tender.data.lots[0]}
+    Run Keyword If    ${lot_count}==${1}    id=next_step
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
     Add Item    ${item}    00    0

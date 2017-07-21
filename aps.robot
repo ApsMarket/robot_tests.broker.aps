@@ -59,12 +59,13 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Run Keyword If    ${log_enabled}    Log To Console    MODE=${MODE}
+    Log To Console    MODE=${MODE}
+    Log To Console    suite = ${SUITE_NAME}
+    Run Keyword And Return If    '${SUITE_NAME}'=='Tests Files.Complaints'    Допороговый однопредметный тендер    ${tender_data}    1
     Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
@@ -319,7 +320,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
-    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../../@itemid
+    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
@@ -476,7 +477,7 @@ aps.Отримати посилання на аукціон для глядач�
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=auctionUrl@href
-    Return From Keyword    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
