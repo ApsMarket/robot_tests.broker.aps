@@ -476,7 +476,7 @@ aps.Отримати посилання на аукціон для учасни�
 aps.Отримати посилання на аукціон для глядача
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=auctionUrl@href
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
     Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
 
 aps.Додати неціновий показник на лот
@@ -499,3 +499,6 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
