@@ -149,8 +149,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
-    Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    .//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
-    Comment    questions[0].answer
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    id=questionDescription_0
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    id=questionAnswer_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -497,3 +498,20 @@ aps.Отримати документ до лоту
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=.//*[@class="btn btn-primary ng-binding ng-scope" ][contains(@id,'strikeDocFileNameBut')]
     Return From Keyword    ${title}
+
+aps.Задати запитання на лот
+    [Arguments]    ${username}    @{arguments}
+    ${tender_uaid}=    Get From List    ${arguments}    0
+    ${hjh}=    Get From List    ${arguments}    1
+    Search tender    ${username}    ${tender_uaid}
+    Full Click    id=questions-tab
+    Full Click    id=add_discussion
+    Wait Until Page Contains Element    id=confirm_creationForm
+    Select From List By Value    name=OfOptions    1
+    Run Keyword And Return If    ${arguments[1]}    Get Field Text    xpath=//option[contains(@label,'l-')]
+    Select From List By Index    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]    1
+    Comment    Select From List By Label    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]
+    Comment    Select From List By Label    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]    [option[contains(@label,'${hjh}')]]
+    Input Text    name=Title    ${question.data.title}
+    Input Text    name=Description    ${question.data.description}
+    Full Click    id=confirm_creationForm
