@@ -22,7 +22,7 @@ Get Field Amount
 
 Get Field Text
     [Arguments]    ${id}
-    Wait Until Element Is Enabled    ${id}
+    Wait Until Element Is Enabled    ${id}    60
     ${r}=    Get Text    ${id}
     [Return]    ${r}
 
@@ -88,6 +88,7 @@ Set Field Text
 
 Get Field Question
     [Arguments]    ${x}    ${field}
+    sleep    5
     Full Click    id=questions-tab
     Wait Until Page Contains    ${x}    60
     ${txt}=    Get Text    ${field}
