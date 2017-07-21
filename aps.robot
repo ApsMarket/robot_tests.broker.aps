@@ -379,7 +379,12 @@ aps.Створити вимогу про виправлення умов зак�
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
-    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.description}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
+    Wait Until Page Contains Element    save_claim    60
+    Select From List By Value    add_claim_select_type    0
+    Input Text    claim_title    ${arguments[1].data.title}
+    Input Text    claim_descriptions    ${arguments[1].data.description}
+    Choose File    label_add_file_complaint    ${arguments[2]}
+    sleep    3
     Full Click    save_claim
 
 aps.Отримати інформацію із запитання
