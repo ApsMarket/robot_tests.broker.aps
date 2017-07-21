@@ -383,7 +383,7 @@ aps.Створити вимогу про виправлення умов зак�
     Select From List By Value    add_claim_select_type    0
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
-    Choose File    label_add_file_complaint    ${arguments[2]}
+    Choose File    add_file_complaint    ${arguments[2]}
     sleep    3
     Full Click    save_claim
 
