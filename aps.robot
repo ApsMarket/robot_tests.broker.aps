@@ -378,8 +378,8 @@ aps.Створити вимогу про виправлення умов зак�
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
-    ${data}=    Set Variable    ${arguments[1]}
-    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
+    ${data}=    Set Variable    ${arguments[1].data}
+    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.description}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
     Full Click    save_claim
 
 aps.Отримати інформацію із запитання
@@ -502,3 +502,8 @@ aps.Відповісти на вимогу про виправлення умо�
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
+    Full Click    //span[contains(.,'${arguments[1]}')]/..//button[@class='btn btn-sm btn-primary ng-scope']
+    Wait Until Page Contains Element    name=ResolutionTypes
+    Select From List By Value    1
+    Input Text    name=Resolution    ${arguments[1].data.description}
+    # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
