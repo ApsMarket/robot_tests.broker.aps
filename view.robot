@@ -114,3 +114,24 @@ Get Field question.answer
     Wait Until Page Contains    ${x}    60
     ${txt}=    Get Text    xpath=//div[contains(text(),'${x}')]
     Return From Keyword    ${txt}
+
+Get Field Amount for latitude
+    [Arguments]    ${id}
+    ${path}=    Set Variable    ${id}
+    Wait Until Element Is Visible    ${path}
+    ${r}=    Get Text    ${path}
+    ${r}=    Remove String    ${r}    ${SPACE}
+    ${r}=    Convert Float To String    ${r}
+    Return From Keyword    ${r}
+
+Get Field Doc
+    [Arguments]    ${idd}
+    Full Click    documents-tab
+    ${rrr}=    Get Text    ${idd}
+    Return From Keyword    ${rrr}
+
+Get Field Doc for paticipant
+    [Arguments]    ${idd}
+    Full Click    participants-tab
+    ${rrr}=    Get Text    ${idd}
+    Return From Keyword    ${rrr}
