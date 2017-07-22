@@ -59,7 +59,8 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Run Keyword If    ${log_enabled}    Log To Console    MODE=${MODE}
+    Log To Console    MODE=${MODE}
+    Log To Console    suite = ${SUITE_NAME}
     Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
@@ -165,6 +166,8 @@ aps.Отримати інформацію із тендера
 aps.Задати запитання на тендер
     [Arguments]    ${username}    ${tender_uaid}    ${question}
     [Documentation]    Задає питання question від імені користувача username в тендері tender_uaid
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${tender_uaid}
     Full Click    id=questions-tab
     Full Click    id=add_discussion
@@ -330,7 +333,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
-    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../../@itemid
+    Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
@@ -366,7 +369,7 @@ aps.Додати неціновий показник на предмет
     ${fi.item_id}=    Set Variable    ${arguments[2]}
     Add Feature    ${fi}    1    0
     Full Click    id=basicInfo-tab
-    Full Click    id=save_changes
+    Comment    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
@@ -379,7 +382,7 @@ aps.Видалити неціновий показник
     Full Click    xpath=//div[contains(text(),'${arguments[1]}')]/../..//a[contains(@id,'updateOrCreateFeatureDeleteButton')]
     Full Click    xpath=//div[@class='jconfirm-buttons']/button[1]
     Full Click    id=basicInfo-tab
-    Full Click    id=save_changes
+    Comment    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
@@ -388,10 +391,9 @@ aps.Створити вимогу про виправлення умов зак�
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
-    Comment    ${data}=    Get From Dictionary    ${arguments[0]}    data
-    Log To Console    ${arguments[1]}
+    ${data}=    Set Variable    ${arguments[1]}
     Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
-    Comment    Full Click    $('save-claim').click();
+    Full Click    save_claim
 
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
@@ -477,15 +479,15 @@ aps.Завантажити документ в ставку
 
 aps.Змінити документ в ставці
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[1]}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
     Run Keyword And Ignore Error    Full Click    id=editLotButton_0
     Run Keyword And Ignore Error    Full Click    id=editButton
     Run Keyword And Ignore Error    Full Click    id=openLotDocuments_technicalSpecifications_0
     Run Keyword And Ignore Error    Full Click    id=openDocuments_biddingDocuments
-    Run Keyword And Ignore Error    Choose File    id=bidDocInput_biddingDocuments    ${arguments[0]}
-    Run Keyword And Ignore Error    Choose File    bidLotDocInputBtn_technicalSpecifications_0    ${arguments[0]}
+    Run Keyword And Ignore Error    Choose File    id=bidDocInput_biddingDocuments    ${arguments[1]}
+    Run Keyword And Ignore Error    Choose File    bidLotDocInputBtn_technicalSpecifications_0    ${arguments[1]}
     Capture Page Screenshot
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
@@ -504,8 +506,8 @@ aps.Отримати посилання на аукціон для учасни�
 aps.Отримати посилання на аукціон для глядача
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=auctionUrl@href
-    Return From Keyword    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
@@ -524,3 +526,9 @@ aps.Отримати документ до лоту
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=.//*[@class="btn btn-primary ng-binding ng-scope" ][contains(@id,'strikeDocFileNameBut')]
     Return From Keyword    ${title}
+
+aps.Відповісти на вимогу про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60

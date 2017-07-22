@@ -74,9 +74,13 @@ ${dkkp_id}        ${EMPTY}
     Full Click    ${locator_create_dop_zak}
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Below    ${tender_data}
+    Run Keyword If    ${NUMBER_OF_LOTS}==1    Full Click    next_step
+    Run Keyword If    ${NUMBER_OF_LOTS}==1    Add Lot    1    ${tender_data.data.lots[0]}
+    Run Keyword If    ${NUMBER_OF_LOTS}==1    Full Click    next_step
     ${ttt}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${ttt}    0
-    Add Item    ${item}    00    0
+    Run Keyword If    ${NUMBER_OF_LOTS}==1    Add Item    ${item}    10    1
+    Run Keyword If    ${NUMBER_OF_LOTS}==0    Add Item    ${item}    00    0
     Full Click    id=movePurchaseView
     ${tender_UID}=    Publish tender
     [Return]    ${tender_UID}
@@ -152,14 +156,16 @@ Info Below
     #Валюта
     Full Click    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
-    #Ввод бюджета
-    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
-    ${text}=    String.Replace String    ${text}    .    ,
-    Press Key    ${locator_budget}    ${text}
-    #Ввод мин шага
-    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
-    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Press Key    ${locator_min_step}    ${text_ms}
+    Comment    #Ввод бюджета
+    Comment    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
+    Comment    ${text}=    String.Replace String    ${text}    .    ,
+    Comment    Press Key    ${locator_budget}    ${text}
+    Comment    #Ввод мин шага
+    Comment    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
+    Comment    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
+    Comment    Press Key    ${locator_min_step}    ${text_ms}
+    Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender_data}
+    Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период уточнений нач дата
     ${date_time_enq_st}=    dt    ${tender_data.data.enquiryPeriod.startDate}
     #Период уточнений кон дата
@@ -246,8 +252,10 @@ Load document
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
     Go To    ${USERS.users['${username}'].homepage}
-    ${url}=    Replace String    ${USERS.users['${username}'].homepage}    :90    :92
-    Load Tender    ${url}/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Comment    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Execute Javascript    var model=angular.element(document.getElementById('findbykeywords')).scope(); model.autotestignoretestmode=true;
     Wait Until Page Contains Element    ${locator_search_type}
     Wait Until Element Is Visible    ${locator_search_type}
