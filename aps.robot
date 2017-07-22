@@ -38,10 +38,10 @@ aps.Підготувати дані для оголошення тендера
     #замена названия компании
     ${tender_data}=    Set Variable    ${arguments[0]}
     Run Keyword If    '${role}'!='viewer'    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
-    Run Keyword If    '${role}'=='viewer'    Set To Dictionary    ${tender_data.data.procuringEntity}    name=QA #1
+    Run Keyword If    '${role}'=='viewer'    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Comment    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
-    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=23455
+    Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=785445
     Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
@@ -90,6 +90,7 @@ aps.Завантажити документ
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
+    Comment    Full Click    id=purchaseEdit
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
@@ -144,11 +145,22 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.scheme'    Get Field Text    id=identifierScheme
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.id'    Get Field Text    id=identifierCode
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.legalName'    Get Field Text    id=identifierName
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
+    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.latitude'    Get Field Amount for latitude    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
+    Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    id=questionDescription_0
     Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
@@ -348,6 +360,7 @@ aps.Змінити лот
     Run Keyword If    '${field_name}'=='value.amount'    Set Field Amount    id=lotBudget_1    ${field_value}
     Full Click    xpath=.//*[@id='divLotControllerEdit']//button[@class='btn btn-success']
     Full Click    id=basicInfo-tab
+    Full Click    id=save_changes
     Full Click    id=movePurchaseView
     Publish tender
 
@@ -383,9 +396,18 @@ aps.Створити вимогу про виправлення умов зак�
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
-    ${data}=    Set Variable    ${arguments[1]}
-    Execute Javascript    var model=angular.element(document.getElementById('save-claim')).scope(); \ model.newElement={ title:${data.title}, description:${data.description}, of:{ \ \ id:0 \ \ name:"Tender", \ \ valueName:"Tender" } } $('#claim_title').val(${data.title}); $('#claim_descriptions').text(${data.descriptions}); $('#add_claim_select_type').click(); \ $("#add_claim_select_type option[value='0']").attr("selected", "selected");
+    ${data}=    Set Variable    ${arguments[1].data}
+    Wait Until Page Contains Element    save_claim    60
+    Select From List By Value    add_claim_select_type    0
+    Input Text    claim_title    ${arguments[1].data.title}
+    Input Text    claim_descriptions    ${arguments[1].data.description}
+    Choose File    add_file_complaint    ${arguments[2]}
+    sleep    3
     Full Click    save_claim
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]
+    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    ${cg}
+    Return From Keyword    ${cg}
 
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
@@ -400,7 +422,24 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Execute Javascript    window.scroll(1000, 1000)
+    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    #add contract
+    Full Click    id=processing-tab
+    Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
+    Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
+    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
+    sleep    10
+    Choose File    xpath=.//input[contains(@id,'uploadFile')]    /home/ova/robot_tests/test.txt
+    Log To Console    1111111111
+    Select From List By Index    xpath=.//*[contains(@id,'fileCategory')]    1
+    Log To Console    2222222222
+    Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
+    Input Text    id=processingContractContractNumber    666
+    Click Element    id=processingContractDateSigned
+    Click Element    id=processingContractStartDate
+    Click Element    id=processingContractEndDate
+    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
@@ -508,6 +547,12 @@ aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
+    Full Click    //span[contains(.,'${arguments[1]}')]/..//button[@class='btn btn-sm btn-primary ng-scope']
+    Wait Until Page Contains Element    name=ResolutionTypes
+    Select From List By Value    1
+    Input Text    name=Resolution    ${arguments[1].data.description}
+    # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
     Comment    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${tender_uaid}=    Get From List    ${arguments}    0
     ${hjh}=    Get From List    ${arguments}    1

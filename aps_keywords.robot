@@ -372,12 +372,12 @@ Add item negotiate
     sleep    3
     Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
-    ${deliveryLocation_latitude}    Convert To String    ${deliveryLocation_latitude}
+    ${deliveryLocation_latitude}    Convert Float To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
     Press Key    ${locator_deliveryLocation_latitude}${q}    ${deliveryLocation_latitude}
     Run Keyword If    ${log_enabled}    Log To Console    Широта ${deliveryLocation_latitude}
     ${deliveryLocation_longitude}=    Get From Dictionary    ${item.deliveryLocation}    longitude
-    ${deliveryLocation_longitude}=    Convert To String    ${deliveryLocation_longitude}
+    ${deliveryLocation_longitude}=    Convert Float To String    ${deliveryLocation_longitude}
     ${deliveryLocation_longitude}=    String.Replace String    ${deliveryLocation_longitude}    decimal    string
     Press Key    ${locator_deliveryLocation_longitude}${q}    ${deliveryLocation_longitude}
     Run Keyword If    ${log_enabled}    Log To Console    Долгота ${deliveryLocation_longitude}
