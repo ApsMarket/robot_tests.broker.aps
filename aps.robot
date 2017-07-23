@@ -515,7 +515,7 @@ aps.Отримати посилання на аукціон для глядач�
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
-    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    id=purchaseUrl@href
+    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
@@ -560,5 +560,23 @@ aps.Підтвердити вирішення вимоги про виправл
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
-    Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    //button[@ng-click='onSatisfyClaim(element)']
-    Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    //button[@ng-click='onRejectClaim(element)']
+    Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
+    Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
+
+aps.Створити вимогу про виправлення умов лоту
+    [Arguments]    ${username}    @{arguments}
+    Full Click    id=claim-tab
+    Wait Until Element Is Enabled    id=add_claim
+    Full Click    id=add_claim
+    ${data}=    Set Variable    ${arguments[1].data}
+    Wait Until Page Contains Element    save_claim    60
+    Select From List By Value    add_claim_select_type    1
+    Input Text    claim_title    ${arguments[1].data.title}
+    Input Text    claim_descriptions    ${arguments[1].data.description}
+    Choose File    add_file_complaint    ${arguments[2]}
+    sleep    3
+    Full Click    save_claim
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]
+    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    ${cg}
+    Return From Keyword    ${cg}
