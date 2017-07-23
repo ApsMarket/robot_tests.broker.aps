@@ -545,3 +545,20 @@ aps.Відповісти на вимогу про виправлення умо�
     Select From List By Value    1
     Input Text    name=Resolution    ${arguments[1].data.description}
     # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
+
+aps.Отримати інформацію із скарги
+    [Arguments]    ${username}    @{arguments}
+    Search tender    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Run Keyword And Return If    '${arguments[2]}'=='status'    Get Claim Status    complaintStatus_${guid}
+
+aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
+    Search tender    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    //button[@ng-click='onSatisfyClaim(element)']
+    Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    //button[@ng-click='onRejectClaim(element)']
