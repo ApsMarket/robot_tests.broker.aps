@@ -543,18 +543,8 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
 
-aps.Пошук тендера по ідентифікатору
-    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    Full Click    //span[contains(.,'${arguments[1]}')]/..//button[@class='btn btn-sm btn-primary ng-scope']
-    Wait Until Page Contains Element    name=ResolutionTypes
-    Select From List By Value    1
-    Input Text    name=Resolution    ${arguments[1].data.description}
-
 aps.Задати запитання на лот
-    [Arguments]    ${question}    ${username}    @{arguments}
-    Comment    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
+    [Arguments]    ${username}    @{arguments}
     ${tender_uaid}=    Get From List    ${arguments}    0
     Search tender    ${username}    ${tender_uaid}
     Full Click    id=questions-tab
@@ -563,10 +553,6 @@ aps.Задати запитання на лот
     Select From List By Value    name=OfOptions    1
     ${g}=    get text    xpath=//option[contains(@label,'${arguments[1]}')]
     Select From List By Label    name=LotsAddOptions    ${g}
-    Comment    Run Keyword And Return If    ${arguments[1]}    Get Field Text    xpath=//option[contains(@label,'l-')]
-    Comment    Select From List By Index    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]    1
-    Comment    Select From List By Label    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]
-    Comment    Select From List By Label    xpath=//*[@class="form-control ng-pristine ng-empty ng-invalid ng-invalid-required ng-touched"]    [option[contains(@label,'${hjh}')]]
-    Input Text    name=Title    ${question.data.title}
-    Input Text    name=Description    ${question.data.description}
+    Input Text    name=Title    ${arguments[2]}.data.title}
+    Input Text    name=Description    ${arguments[2]}.data.description}
     Full Click    id=confirm_creationForm
