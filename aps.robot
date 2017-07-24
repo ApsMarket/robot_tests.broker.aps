@@ -406,6 +406,9 @@ aps.Видалити неціновий показник
 
 aps.Створити вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
@@ -477,6 +480,7 @@ aps.Отримати документ
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+    Log To Console    download ${title}
     Full Click    xpath=//a[contains(.,'${arguments[1]}')]/../../../../..//a[contains(@id,'strikeDocFileNameBut')]
     sleep    3
     Return From Keyword    ${title}
@@ -579,6 +583,8 @@ aps.Отримати інформацію із скарги
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
@@ -616,7 +622,7 @@ aps.Підтвердити вирішення вимоги про виправл
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
 
 aps.Створити чернетку вимоги про виправлення умов закупівлі
-    [Arguments]    ${username}    @{arguments}
+    [Arguments]    ${username}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
@@ -627,17 +633,50 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[2]}
     sleep    3
-    Full Click    save_claim
+    Execute Javascript    $('#save_claim_draft').click()
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
-    Log To Console    ${cg}
+    Log To Console    draft claim
     Return From Keyword    ${cg}
 
 aps.Створити чернетку вимоги про виправлення умов лоту
-    [Teardown]    ${username}    @{arguments}
+    Full Click    id=claim-tab
+    Wait Until Element Is Enabled    id=add_claim
+    Full Click    id=add_claim
+    ${data}=    Set Variable    ${arguments[1].data}
+    Wait Until Page Contains Element    save_claim    60
+    Select From List By Value    add_claim_select_type    1
+    ${label}=    Get Text    //option[contains(@label,'${arguments[2]}')]
+    Select From List By Label    LotsAddOptions    ${label}
+    Input Text    claim_title    ${arguments[1].data.title}
+    Input Text    claim_descriptions    ${arguments[1].data.description}
+    sleep    3
+    Execute Javascript    $('#save_claim_draft').click()
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]
+    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    draft claim lot
+    Return From Keyword    ${cg}
+    [Teardown]    ${username}
 
 aps.Скасувати вимогу про виправлення умов закупівлі
-    [Teardown]    ${username}    @{arguments}
+    [Arguments]    ${username}    @{arguments}
+    Log To Console    cansel claim
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Full Click    cancelComplaint_${guid}
+    Wait Until Page Contains Element    complaintCancellationReason_0
+    Input Text    complaintCancellationReason_0    ${arguments[2].data.cancellationReason}
+    Full Click    cancelComplaint_${guid}
+    Log To Console    cancelComplaint_${guid}
+    [Teardown]
 
 aps.Скасувати вимогу про виправлення умов лоту
+    [Arguments]    ${username}    @{arguments}
+    aps.Скасувати вимогу про виправлення умов закупівлі    ${username}    @{arguments}
+
+aps.Відповісти на вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
