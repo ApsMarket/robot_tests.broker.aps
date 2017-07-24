@@ -611,7 +611,7 @@ aps.Підтвердити вирішення вимоги про виправл
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
 
 aps.Створити чернетку вимоги про виправлення умов закупівлі
-    [Arguments]    ${username}
+    [Arguments]    ${username}    @{arguments}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim
     Full Click    id=add_claim
@@ -644,7 +644,7 @@ aps.Створити чернетку вимоги про виправлення
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    draft claim lot
     Return From Keyword    ${cg}
-    [Teardown]    ${username}
+    [Teardown]    ${username}    @{arguments}
 
 aps.Скасувати вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
