@@ -166,6 +166,7 @@ aps.Отримати інформацію із тендера
     Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    id=questionAnswer_0
     Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    id=questionTitle_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -556,3 +557,4 @@ aps.Задати запитання на лот
     Input Text    name=Title    ${arguments[2]}.data.title}
     Input Text    name=Description    ${arguments[2]}.data.description}
     Full Click    id=confirm_creationForm
+    Log To Console    finish add question to lot
