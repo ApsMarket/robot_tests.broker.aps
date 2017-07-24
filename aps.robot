@@ -42,7 +42,7 @@ aps.Підготувати дані для оголошення тендера
     Comment    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=785445
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=Апс солюшн    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     : FOR    ${en}    IN    @{items}
@@ -162,8 +162,19 @@ aps.Отримати інформацію із тендера
     Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    id=winner
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.countryName'    Get Field Text    id=procuringParticipantsAddressCountryName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.region'    Get Field Text    id=procuringParticipantsAddressRegion_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.locality'    Get Field Text    id=procuringParticipantsAddressLocality_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.telephone'    Get Field Text    id=procuringParticipantsContactPointPhone_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.name'    Get Field Text    id=procuringParticipantsContactPointName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.email'    Get Field Text    id=procuringParticipantsContactPointEmail_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.scheme'    Get Field Text    id=procuringParticipantsIdentifierScheme_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.legalName'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.id'    Get Field Text    id=procuringParticipantsIdentifierCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -420,10 +431,10 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
-    Full Click    id=processing-tab
+    Comment    Full Click    id=processing-tab
     Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
     Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
@@ -437,6 +448,7 @@ aps.Підтвердити підписання контракту
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
+    Mouse Down    xpath=.//*[@id='processingContract0']/div/div
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
 
 aps.Відповісти на запитання
@@ -518,8 +530,9 @@ aps.Отримати посилання на аукціон для учасни�
 aps.Отримати посилання на аукціон для глядача
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
-    Run Keyword And Ignore Error    Return From Keyword    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
+    Comment    ${url}    Run Keyword And Ignore Error    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
+    ${url}=    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
+    [Return]    ${url}
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
@@ -552,6 +565,8 @@ aps.Відповісти на вимогу про виправлення умо�
 
 aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
@@ -575,6 +590,35 @@ aps.Створити вимогу про виправлення умов лот�
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
     Select From List By Value    add_claim_select_type    1
+    ${label}=    Get Text    //option[contains(@label,'${arguments[2]}')]
+    Select From List By Label    LotsAddOptions    ${label}
+    Input Text    claim_title    ${arguments[1].data.title}
+    Input Text    claim_descriptions    ${arguments[1].data.description}
+    Choose File    add_file_complaint    ${arguments[3]}
+    sleep    3
+    Full Click    save_claim
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]
+    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    ${cg}
+    Return From Keyword    ${cg}
+
+aps.Підтвердити вирішення вимоги про виправлення умов лоту
+    [Arguments]    ${username}    @{arguments}
+    Search tender    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
+    Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
+
+aps.Створити чернетку вимоги про виправлення умов закупівлі
+    [Arguments]    ${username}    @{arguments}
+    Full Click    id=claim-tab
+    Wait Until Element Is Enabled    id=add_claim
+    Full Click    id=add_claim
+    ${data}=    Set Variable    ${arguments[1].data}
+    Wait Until Page Contains Element    save_claim    60
+    Select From List By Value    add_claim_select_type    0
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[2]}
@@ -584,3 +628,12 @@ aps.Створити вимогу про виправлення умов лот�
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),'${arguments[1].data.title}')]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    ${cg}
     Return From Keyword    ${cg}
+
+aps.Створити чернетку вимоги про виправлення умов лоту
+    [Teardown]    ${username}    @{arguments}
+
+aps.Скасувати вимогу про виправлення умов закупівлі
+    [Teardown]    ${username}    @{arguments}
+
+aps.Скасувати вимогу про виправлення умов лоту
+    [Arguments]    ${username}    @{arguments}
