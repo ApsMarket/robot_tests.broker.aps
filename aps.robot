@@ -427,10 +427,10 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
-    Full Click    id=processing-tab
+    Comment    Full Click    id=processing-tab
     Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
     Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
@@ -444,6 +444,7 @@ aps.Підтвердити підписання контракту
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
+    Mouse Down    xpath=.//*[@id='processingContract0']/div/div
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
 
 aps.Відповісти на запитання
