@@ -42,7 +42,7 @@ aps.Підготувати дані для оголошення тендера
     Comment    Set To Dictionary    ${tender_data.data.procuringEntity}    name=Апс солюшн
     Set To Dictionary    ${tender_data.data.procuringEntity.identifier}    legalName=Апс солюшн    id=12345636
     Set To Dictionary    ${tender_data.data.procuringEntity.address}    region=мун. Кишинeв    countryName=Молдова, Республіка    locality=Кишинeв    streetAddress=bvhgfhjhgj    postalCode=785445
-    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=QA #1    telephone=0723344432    url=https://dfgsdfadfg.com
+    Set To Dictionary    ${tender_data.data.procuringEntity.contactPoint}    name=Апс солюшн    telephone=0723344432    url=https://dfgsdfadfg.com
     ${items}=    Get From Dictionary    ${tender_data.data}    items
     ${item}=    Get From List    ${items}    0
     : FOR    ${en}    IN    @{items}
@@ -158,8 +158,19 @@ aps.Отримати інформацію із тендера
     Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    id=winner
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.countryName'    Get Field Text    id=procuringParticipantsAddressCountryName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.region'    Get Field Text    id=procuringParticipantsAddressRegion_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.locality'    Get Field Text    id=procuringParticipantsAddressLocality_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.telephone'    Get Field Text    id=procuringParticipantsContactPointPhone_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.name'    Get Field Text    id=procuringParticipantsContactPointName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.email'    Get Field Text    id=procuringParticipantsContactPointEmail_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.scheme'    Get Field Text    id=procuringParticipantsIdentifierScheme_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.legalName'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.id'    Get Field Text    id=procuringParticipantsIdentifierCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -418,10 +429,10 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Execute Javascript    window.scroll(1000, 1000)
+    Comment    Execute Javascript    window.scroll(1000, 1000)
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
-    Full Click    id=processing-tab
+    Comment    Full Click    id=processing-tab
     Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
     Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
@@ -435,6 +446,7 @@ aps.Підтвердити підписання контракту
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
+    Mouse Down    xpath=.//*[@id='processingContract0']/div/div
     Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
 
 aps.Відповісти на запитання
