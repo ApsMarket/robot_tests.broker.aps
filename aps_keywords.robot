@@ -251,12 +251,8 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
-    Log To Console    ${USERS.users['${username}'].homepage}
-    Go To    ${USERS.users['${username}'].homepage}
-    Log To Console    ${USERS.users['${username}'].homepage}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
-    Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Comment    Run Keyword If    '${role}'!='tender_owner'    Sync    ${tender_uaid}    ${url}
     Execute Javascript    var model=angular.element(document.getElementById('findbykeywords')).scope(); model.autotestignoretestmode=true;
     Wait Until Page Contains Element    ${locator_search_type}

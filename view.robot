@@ -135,3 +135,12 @@ Get Field Doc for paticipant
     Full Click    participants-tab
     ${rrr}=    Get Text    ${idd}
     Return From Keyword    ${rrr}
+
+Get Claim Status
+    [Arguments]    ${yyy}
+    ${text}=    Get Text    ${yyy}
+    Return From Keyword If    '${text}'=='Вимога'    active
+    Return From Keyword If    '${text}'=='Дано відповідь'    answered
+    Return From Keyword If    '${text}'=='Вирішено'    resolved
+    Return From Keyword If    '${text}'=='Скасований'    cancelled
+    Return From Keyword If    '${text}'=='Чернетка'    draft

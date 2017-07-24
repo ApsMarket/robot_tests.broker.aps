@@ -98,4 +98,4 @@ ${locator_purchaseCurrency_viewer}    id=purchaseCurrency
 ${locator_purchaseIsVAT_viewer}    id=purchaseIsVAT@isvat
 ${locator_purchaseAddressCountryName_viewer}    id=purchaseAddressCountryName
 ${locator_purchaseAddressLocality_viewer}    id=purchaseAddressLocality
-${locator_awardEligible}    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
+${locator_awardEligible}    xpath=.//*[@id='awardEligible_0_0']/div[1]
