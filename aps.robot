@@ -471,6 +471,7 @@ aps.Отримати документ
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
+    Log To Console    download ${title}
     Full Click    xpath=//a[contains(.,'${arguments[1]}')]/../../../../..//a[contains(@id,'strikeDocFileNameBut')]
     sleep    3
     Return From Keyword    ${title}
