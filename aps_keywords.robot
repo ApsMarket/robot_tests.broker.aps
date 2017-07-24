@@ -251,6 +251,11 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
+    ${idd}=    Get Location
+    ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
+    ${id}=    Fetch From Right    ${idd}    /
+    Go To    ${id}
+    Log To Console    after go to
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
