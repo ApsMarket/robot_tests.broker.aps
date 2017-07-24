@@ -142,3 +142,5 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вимога'    active
     Return From Keyword If    '${text}'=='Дано відповідь'    answered
     Return From Keyword If    '${text}'=='Вирішено'    resolved
+    Return From Keyword If    '${text}'=='Скасований'    cancelled
+    Return From Keyword If    '${text}'=='Чернетка'    draft
