@@ -600,6 +600,7 @@ Publish tender/negotiation
     ${url}=    Fetch From Left    ${url}    :90
     Log To Console    ${url}
     Execute Javascript    $.get('${url}:92/api/sync/purchases/${tender_GUID}')
+    Reload Page
     Log To Console    finish publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     Run Keyword If    ${log_enabled}    Log To Console    end publish tender
