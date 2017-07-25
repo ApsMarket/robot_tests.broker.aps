@@ -102,7 +102,6 @@ aps.Завантажити документ
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Log To Console    before search tender 11
     Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     ${guid}=    Get Text    id=purchaseGuid
@@ -537,6 +536,8 @@ aps.Отримати посилання на аукціон для учасни�
 
 aps.Отримати посилання на аукціон для глядача
     [Arguments]    ${username}    @{arguments}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Comment    ${url}    Run Keyword And Ignore Error    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
     ${url}=    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
