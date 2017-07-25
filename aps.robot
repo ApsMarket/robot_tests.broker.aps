@@ -102,8 +102,7 @@ aps.Завантажити документ
 aps.Пошук тендера по ідентифікатору
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Знаходить тендер по його UAID, відкриває його сторінку
-    Log To Console    before search tender 11
-    Log To Console    ${USERS.users['${username}'].homepage}
+    Go To    ${USERS.users['${username}'].homepage}
     Search tender    ${username}    ${tender_uaid}
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90

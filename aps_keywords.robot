@@ -251,11 +251,6 @@ Load document
 
 Search tender
     [Arguments]    ${username}    ${tender_uaid}
-    ${idd}=    Get Location
-    ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
-    ${id}=    Fetch From Right    ${idd}    /
-    Go To    ${id}
-    Log To Console    after go to
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
@@ -602,7 +597,11 @@ Publish tender/negotiation
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     ${tender_UID}=    Get Text    id=purchaseProzorroId
     ${tender_GUID}=    Get Text    id=purchaseGuid
-    Execute Javascript    $.get('http://apiprozorro.azurewebsites.net/api/sync/purchases/${tender_GUID}')
+    Log To Console    UID=${tender_UID}
+    ${url}=    Get Location
+    ${url}=    Fetch From Left    ${url}    :90
+    Log To Console    ${url}
+    Execute Javascript    $.get('${url}:92/api/sync/purchases/${tender_GUID}')
     Log To Console    finish publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     Run Keyword If    ${log_enabled}    Log To Console    end publish tender
