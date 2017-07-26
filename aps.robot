@@ -664,7 +664,7 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     sleep    3
-    Execute Javascript    $('#save_claim_draAft').click()
+    Execute Javascript    $('#save_claim_draft').click()
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    draft claim
@@ -713,3 +713,19 @@ aps.Скасувати вимогу про виправлення умов ло�
 
 aps.Відповісти на вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
+
+aps.Змінити документацію в ставці
+    [Arguments]    ${username}    @{arguments}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Full Click    id=do-proposition-tab
+    Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
+    Run Keyword And Ignore Error    Full Click    id=editLotButton_0
+    Run Keyword And Ignore Error    Full Click    id=editButton
+    Run Keyword And Ignore Error    Full Click    id=openLotDocuments_technicalSpecifications_0
+    Run Keyword And Ignore Error    Full Click    id=openDocuments_biddingDocuments
+    Run Keyword And Ignore Error    Choose File    id=bidDocInput_biddingDocuments    ${arguments[1]}
+    Run Keyword And Ignore Error    Choose File    bidLotDocInputBtn_technicalSpecifications_0    ${arguments[1]}
+    Capture Page Screenshot
+    Run Keyword And Ignore Error    Full Click    id=submitBid
+    Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
+    Run Keyword And Ignore Error    Full Click    id=publishButton
