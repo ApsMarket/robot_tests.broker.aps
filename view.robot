@@ -144,3 +144,10 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вирішено'    resolved
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
+
+Get Answer Status
+    [Arguments]    ${_id}
+    ${txt}=
+    Return From Keyword If    '${txt}'=='Недійсно'    declined
+    Return From Keyword If    '${txt}'=='Відхилено'    cancelled
+    Return From Keyword If    '${txt}'=='Вирішено'    resolved

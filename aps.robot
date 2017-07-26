@@ -71,7 +71,9 @@ aps.Створити тендер
 aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
-    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${tender_uaid}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
@@ -581,8 +583,8 @@ aps.Відповісти на вимогу про виправлення умо�
     Wait Until Page Contains Element    name=ResolutionTypes
     Run Keyword If    '${arguments[2].data.resolution}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
     Run Keyword If    '${arguments[2].data.resolution}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
-    Input Text    name=Resolution    ${arguments[1].data.description}
-    # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
+    Input Text    complaintResolution_${guid}    ${arguments[1].data.description}
+    Full Click    makeComplaintResolution_${guid}
 
 aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
