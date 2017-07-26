@@ -208,11 +208,11 @@ Info Negotiate
     Click Element    ${locator_pdv}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор НДС ${PDV}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
+    Wait Until Element Is Enabled    id=select_currencies    15
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
-    Press Key    ${locator_currency}    ${currency}
-    Full Click    ${locator_currency}
+    Select From List By Label    id=select_currencies    ${currency}
+    Press Key    id=select_currencies    ${currency}
+    Full Click    id=select_currencies
     Run Keyword If    ${log_enabled}    Log To Console    Валюта ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount

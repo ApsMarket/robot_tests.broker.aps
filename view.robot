@@ -144,3 +144,9 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вирішено'    resolved
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
+
+Get NAward Field
+    [Arguments]    ${fu}    ${is_amount}
+    Full Click    participants-tab
+    Return From Keyword if    ${is_amount}==${True}    Get Field Text    ${fu}
+    Return From Keyword if    ${is_amount}==${False}    Get Field Amount    ${fu}
