@@ -362,6 +362,8 @@ aps.Отримати інформацію із нецінового показн
 
 aps.Завантажити документ в лот
     [Arguments]    ${username}    ${file}    ${ua_id}    ${lot_id}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${ua_id}
     Full Click    id=purchaseEdit
     Load document    ${file}    Lot    ${lot_id}
@@ -417,7 +419,7 @@ aps.Створити вимогу про виправлення умов зак�
     aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
-    Wait Until Element Is Enabled    id=add_claim
+    Wait Until Element Is Enabled    id=add_claim    30
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
@@ -427,7 +429,7 @@ aps.Створити вимогу про виправлення умов зак�
     Choose File    add_file_complaint    ${arguments[2]}
     sleep    3
     Full Click    save_claim
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    ${cg}
     Return From Keyword    ${cg}
@@ -574,9 +576,11 @@ aps.Відповісти на вимогу про виправлення умо�
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    Full Click    //span[contains(.,'${arguments[1]}')]/..//button[@class='btn btn-sm btn-primary ng-scope']
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
-    Select From List By Value    1
+    Run Keyword If    '${arguments[2].data.resolution}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
+    Run Keyword If    '${arguments[2].data.resolution}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
     Input Text    name=Resolution    ${arguments[1].data.description}
     # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
 
@@ -596,8 +600,9 @@ aps.Задати запитання на лот
     Full Click    id=confirm_creationForm
     Log To Console    finish add question to lot
 
-aps.Отримати інформацію із скарги 
-   Close All Browsers
+aps.Отримати інформацію із скарги
+    [Arguments]    ${username}    @{arguments}
+    Close All Browsers
     aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
@@ -631,7 +636,7 @@ aps.Створити вимогу про виправлення умов лот�
     Choose File    add_file_complaint    ${arguments[3]}
     sleep    3
     Full Click    save_claim
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    ${cg}
     Return From Keyword    ${cg}
@@ -640,7 +645,7 @@ aps.Підтвердити вирішення вимоги про виправл
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
@@ -659,8 +664,8 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     sleep    3
-    Execute Javascript    $('#save_claim_draft').click()
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]
+    Execute Javascript    $('#save_claim_draAft').click()
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    draft claim
     Return From Keyword    ${cg}
@@ -680,7 +685,7 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_descriptions    ${arguments[1].data.description}
     sleep    3
     Execute Javascript    $('#save_claim_draft').click()
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]
+    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
     Log To Console    draft claim lot
     Return From Keyword    ${cg}
@@ -696,7 +701,7 @@ aps.Скасувати вимогу про виправлення умов за�
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    cancelComplaint_${guid}
-    Wait Until Page Contains Element    complaintCancellationReason_0
+    Wait Until Page Contains Element    complaintCancellationReason_0    60
     Input Text    complaintCancellationReason_0    ${arguments[2].data.cancellationReason}
     Full Click    cancelComplaint_${guid}
     Log To Console    cancelComplaint_${guid}
