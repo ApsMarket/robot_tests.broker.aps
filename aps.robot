@@ -499,6 +499,7 @@ aps.Отримати інформацію із пропозиції
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
     Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
+    Run Keyword And Return If    '${arguments[1]}'=='status'    id=
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
