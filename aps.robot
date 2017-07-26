@@ -590,9 +590,9 @@ aps.Відповісти на вимогу про виправлення умо�
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
-    Run Keyword If    '${arguments[2].data.resolution}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
-    Run Keyword If    '${arguments[2].data.resolution}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
-    Input Text    complaintResolution_${guid}    ${arguments[1].data.description}
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
+    Input Text    complaintResolution_${guid}    ${arguments[2].data.resolution}
     Full Click    makeComplaintResolution_${guid}
 
 aps.Задати запитання на лот
