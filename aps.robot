@@ -365,8 +365,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    id=Feature_0_0_Title
-    Comment    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
     Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
 
@@ -740,3 +739,19 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
+
+aps.Задати запитання на предмет
+    [Arguments]    ${username}    @{arguments}
+    Go To    ${USERS.users['${username}'].homepage}
+    ${tender_uaid}=    Get From List    ${arguments}    0
+    Search tender    ${username}    ${tender_uaid}
+    Full Click    id=questions-tab
+    Full Click    id=add_discussion
+    Wait Until Page Contains Element    id=confirm_creationForm
+    Select From List By Value    name=OfOptions    1
+    ${g}=    get text    xpath=//option[contains(@label,'${arguments[1]}')]
+    Select From List By Label    name=LotsAddOptions    ${g}
+    Input Text    name=Title    ${arguments[2]}.data.title}
+    Input Text    name=Description    ${arguments[2]}.data.description}
+    Full Click    id=confirm_creationForm
+    Log To Console    finish add question to lot
