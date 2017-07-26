@@ -281,10 +281,10 @@ Info OpenUA
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Валюта
-    Full Click    ${locator_currency}
+    Full Click    select_currencies
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
-    Click Element    ${locator_currency}
+    Select From List By Label    select_currencies    ${currency}
+    Click Element    select_currencies
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)

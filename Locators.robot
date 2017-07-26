@@ -38,7 +38,7 @@ ${locator_locality}    id=locality_
 ${locator_street}    id=street_
 ${locator_search}    id=Search
 ${locator_search-btn}    xpath=.//*[@id='wrapper']/div/div/div/div[2]/div/div/div/div[1]/div[1]/div/div[2]/button
-${locator_currency}    xpath=.//select[@ng-model="purchase.currency"]
+${locator_currency}    id=select_currencies
 ${locator_items}    xpath=.//*[@id='procurementSubjectTab']
 ${locator_deliveryLocation_latitude}    id=latutide_
 ${locator_deliveryLocation_longitude}    id=longitude_

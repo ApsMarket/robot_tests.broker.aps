@@ -71,7 +71,9 @@ aps.Створити тендер
 aps.Внести зміни в тендер
     [Arguments]    ${username}    ${tender_uaid}    ${field_name}    ${field_value}
     [Documentation]    Змінює значення поля field_name на field_value в тендері tender_uaid
-    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${tender_uaid}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
     Run Keyword If    '${field_name}'=='tenderPeriod.endDate'    Set Field tenderPeriod.endDate    ${field_value}
@@ -428,7 +430,7 @@ aps.Створити вимогу про виправлення умов зак�
     aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
-    Wait Until Element Is Enabled    id=add_claim    30
+    Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
@@ -583,16 +585,19 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
-    Run Keyword If    '${arguments[2].data.resolution}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
-    Run Keyword If    '${arguments[2].data.resolution}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
-    Input Text    name=Resolution    ${arguments[1].data.description}
-    # label="Недійсно" value="1 label="Відхилено" value="2" label="Вирішено" value="3"
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='declined'    Select From List By Value    complaintResolutionType_${guid}    1
+    Input Text    complaintResolution_${guid}    ${arguments[2].data.resolution}
+    Full Click    makeComplaintResolution_${guid}
 
 aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
@@ -634,7 +639,7 @@ aps.Підтвердити вирішення вимоги про виправл
 aps.Створити вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
     Full Click    id=claim-tab
-    Wait Until Element Is Enabled    id=add_claim
+    Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
@@ -666,7 +671,7 @@ aps.Створити чернетку вимоги про виправлення
     aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
-    Wait Until Element Is Enabled    id=add_claim
+    Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
@@ -684,7 +689,7 @@ aps.Створити чернетку вимоги про виправлення
     [Arguments]    ${username}    @{arguments}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
-    Wait Until Element Is Enabled    id=add_claim
+    Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
     ${data}=    Set Variable    ${arguments[1].data}
     Wait Until Page Contains Element    save_claim    60
@@ -708,7 +713,7 @@ aps.Скасувати вимогу про виправлення умов за�
     aps.Підготувати клієнт для користувача    ${username}
     Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    cancelComplaint_${guid}
     Wait Until Page Contains Element    complaintCancellationReason_0    60
@@ -723,6 +728,7 @@ aps.Скасувати вимогу про виправлення умов ло�
 
 aps.Відповісти на вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
+    aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
 
 aps.Змінити документацію в ставці
     [Arguments]    ${username}    @{arguments}
