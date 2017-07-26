@@ -584,7 +584,9 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    Search tender    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
