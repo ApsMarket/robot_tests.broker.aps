@@ -144,3 +144,7 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вирішено'    resolved
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
+
+Set Click For Award
+    [Arguments]    ${idd}
+    Full Click    participants-tab
