@@ -142,3 +142,7 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вимога'    active
     Return From Keyword If    '${text}'=='Дано відповідь'    answered
     Return From Keyword If    '${text}'=='Вирішено'    resolved
+
+Set Click For Award
+    [Arguments]    ${idd}
+    Full Click    participants-tab
