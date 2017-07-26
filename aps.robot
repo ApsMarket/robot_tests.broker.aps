@@ -356,7 +356,8 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
-    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    id=Feature_0_0_Title
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
     Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
 
@@ -499,7 +500,7 @@ aps.Отримати інформацію із пропозиції
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
     Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
-    Run Keyword And Return If    '${arguments[1]}'=='status'    id=
+    Run Keyword And Return If    '${arguments[1]}'=='status'    id=bidStatusName_0
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
