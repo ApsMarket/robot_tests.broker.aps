@@ -109,7 +109,6 @@ aps.Пошук тендера по ідентифікатору
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
-    sleep    5
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -594,8 +593,8 @@ aps.Відповісти на вимогу про виправлення умо�
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
     Run Keyword If    '${arguments[2].data.resolutionType}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
-    Run Keyword If    '${arguments[2].data.resolutionType}'=='cancelled'    Select From List By Value    complaintResolutionType_${guid}    2
-    Run Keyword If    '${arguments[2].data.resolutionType}'=='declined'    Select From List By Value    complaintResolutionType_${guid}    1
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='declined'    Select From List By Value    complaintResolutionType_${guid}    2
+    Run Keyword If    '${arguments[2].data.resolutionType}'=='invalid'    Select From List By Value    complaintResolutionType_${guid}    1
     Input Text    complaintResolution_${guid}    ${arguments[2].data.resolution}
     Full Click    makeComplaintResolution_${guid}
 
@@ -617,9 +616,9 @@ aps.Задати запитання на лот
 
 aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
