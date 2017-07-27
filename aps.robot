@@ -166,10 +166,10 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.latitude'    Get Field Amount for latitude    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Log To Console    '${arguments[1]}'
-    ${res}=    Get Line    ${arguments[1]}    8
+    ${res}=    Get Substring    ${arguments[1]}    0    8
     Log To Console    substr \ ${res}
     Run Keyword If    '${res}'=='awards[0]'    Full Click    participants-tab
-    Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
+    Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    xpath=.//*[contains(@id,'docFileName')]
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
     Full Click    id=participants-tab
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text    xpath=.//*[@class="ng-binding"][contains(@id,'awardsdoc')]
@@ -254,7 +254,7 @@ aps.Створити постачальника, додати документа
     Click Element    ${locator_participant}
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
-    Click Element    ${locator_add_participant}
+    Full Click    ${locator_add_participant}
     #Цена предложения
     ${amount}=    Get From Dictionary    ${s.data.value}    amount
     Wait Until Page Contains Element    ${locator_amount}
@@ -314,7 +314,7 @@ aps.Створити постачальника, додати документа
     Full Click    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
-    Click Button    ${locator_finish_edit}
+    Full Click    ${locator_finish_edit}
     #publish
     Publish tender/negotiation
 
