@@ -146,7 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
-    Comment    Execute Javascript     angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
+    Comment    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
@@ -221,7 +221,7 @@ Login
     [Arguments]    ${user}
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Wait Until Page Contains    Email    40
+    Comment    Wait Until Page Contains    Email    40
     Input Text    Email    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
