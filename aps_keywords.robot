@@ -146,6 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
+    Comment    Execute Javascript     angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
@@ -156,14 +157,6 @@ Info Below
     #Валюта
     Full Click    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
-    Comment    #Ввод бюджета
-    Comment    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
-    Comment    ${text}=    String.Replace String    ${text}    .    ,
-    Comment    Press Key    ${locator_budget}    ${text}
-    Comment    #Ввод мин шага
-    Comment    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
-    Comment    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Comment    Press Key    ${locator_min_step}    ${text_ms}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender_data}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период уточнений нач дата
@@ -226,10 +219,8 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Wait Until Element Is Visible    ${locator_cabinetEnter}    30
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Wait Until Element Is Visible    ${locator_emailField}    10
     Input Text    ${locator_emailField}    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
@@ -281,10 +272,10 @@ Info OpenUA
     ${PDV}=    Get From Dictionary    ${tender.data.value}    valueAddedTaxIncluded
     Run Keyword If    '${PDV}'=='True'    Click Element    ${locator_pdv}
     #Валюта
-    Full Click    ${locator_currency}
+    Full Click    select_currencies
     ${currency}=    Get From Dictionary    ${tender.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
-    Click Element    ${locator_currency}
+    Select From List By Label    select_currencies    ${currency}
+    Click Element    select_currencies
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период приема предложений (кон дата)
@@ -319,7 +310,8 @@ Add item negotiate
     #Выбор ДК
     ${status}=    Run Keyword And Ignore Error    Click Button    ${locator_button_add_cpv}
     Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
-    Wait Until Element Is Enabled    ${locator_cpv_search}
+    Sleep    5
+    Wait Until Element Is Enabled    ${locator_cpv_search}    30
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
@@ -644,12 +636,10 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    20
-    Wait Until Element Is Visible    ${lc}    20
-    Wait Until Element Is Enabled    ${lc}    20
+    Wait Until Page Contains Element    ${lc}    40
+    Wait Until Element Is Enabled    ${lc}    40
     aniwait
     Click Element    ${lc}
-    aniwait
 
 Add Bid Tender
     [Arguments]    ${amount}

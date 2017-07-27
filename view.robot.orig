@@ -142,22 +142,12 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Вимога'    active
     Return From Keyword If    '${text}'=='Дано відповідь'    answered
     Return From Keyword If    '${text}'=='Вирішено'    resolved
-    Return From Keyword If    '${text}'=='Скасований'    cancelled
-    Return From Keyword If    '${text}'=='Чернетка'    draft
-    Return From Keyword If    '${text}'=='Відхилено'    declined
-    Return From Keyword If    '${text}'=='Недійсно'    invalid
-
-Get Answer Status
-    [Arguments]    ${_id}
-    ${txt}=
-    Return From Keyword If    '${txt}'=='Недійсно'    declined
-    Return From Keyword If    '${txt}'=='Відхилено'    cancelled
-    Return From Keyword If    '${txt}'=='Вирішено'    resolved
+<<<<<<< HEAD
 
 Set Click For Award
     [Arguments]    ${idd}
-Get NAward Field
-    [Arguments]    ${fu}    ${is_amount}
     Full Click    participants-tab
-    Return From Keyword if    ${is_amount}==${True}    Get Field Text    ${fu}
-    Return From Keyword if    ${is_amount}==${False}    Get Field Amount    ${fu}
+=======
+    Return From Keyword If    '${text}'=='Скасований'    cancelled
+    Return From Keyword If    '${text}'=='Чернетка'    draft
+>>>>>>> 43b91ddbb168332a08a4bd7fab0f77fd06df1da7
