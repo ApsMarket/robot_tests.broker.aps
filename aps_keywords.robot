@@ -631,12 +631,10 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    20
-    Wait Until Element Is Visible    ${lc}    20
-    Wait Until Element Is Enabled    ${lc}    20
+    Wait Until Page Contains Element    ${lc}    40
+    Wait Until Element Is Enabled    ${lc}    40
     aniwait
     Click Element    ${lc}
-    aniwait
 
 Add Bid Tender
     [Arguments]    ${amount}

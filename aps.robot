@@ -109,7 +109,6 @@ aps.Пошук тендера по ідентифікатору
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
-    sleep    5
 
 Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -616,9 +615,9 @@ aps.Задати запитання на лот
 
 aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
