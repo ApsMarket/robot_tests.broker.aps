@@ -754,8 +754,8 @@ aps.Задати запитання на предмет
     Full Click    id=questions-tab
     Full Click    id=add_discussion
     Wait Until Page Contains Element    id=confirm_creationForm
-    Select From List By Value    name=OfOptions    1
-    ${g}=    get text    xpath=//option[contains(@label,'${arguments[1]}')]
+    Select From List By Value    name=OfOptions    2
+    ${g}=    get text    xpath=//option[contains(@label,'${arguments[2]}')]
     Select From List By Label    name=LotsAddOptions    ${g}
     Input Text    name=Title    ${arguments[2]}.data.title}
     Input Text    name=Description    ${arguments[2]}.data.description}
