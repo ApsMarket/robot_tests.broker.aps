@@ -146,7 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
-    Execute Javascript \ \    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
+    Comment    Execute Javascript     angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
