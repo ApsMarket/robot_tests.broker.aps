@@ -221,7 +221,8 @@ Login
     [Arguments]    ${user}
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Input Text    ${locator_emailField}    ${user.login}
+    Wait Until Page Contains    Email    40
+    Input Text    Email    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
 
