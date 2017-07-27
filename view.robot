@@ -156,4 +156,8 @@ Get Answer Status
 
 Set Click For Award
     [Arguments]    ${idd}
+Get NAward Field
+    [Arguments]    ${fu}    ${is_amount}
     Full Click    participants-tab
+    Return From Keyword if    ${is_amount}==${True}    Get Field Text    ${fu}
+    Return From Keyword if    ${is_amount}==${False}    Get Field Amount    ${fu}
