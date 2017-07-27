@@ -311,7 +311,8 @@ Add item negotiate
     #Выбор ДК
     ${status}=    Run Keyword And Ignore Error    Click Button    ${locator_button_add_cpv}
     Comment    Run Keyword If    '${status[0]}'=='FAIL'    sleep    5000
-    Wait Until Element Is Enabled    ${locator_cpv_search}
+    Sleep    5
+    Wait Until Element Is Enabled    ${locator_cpv_search}    30
     ${cpv}=    Get From Dictionary    ${item.classification}    id
     Press Key    ${locator_cpv_search}    ${cpv}
     Wait Until Element Is Enabled    //*[@id='tree']//li[@aria-selected="true"]    30
