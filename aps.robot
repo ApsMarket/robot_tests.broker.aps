@@ -15,6 +15,7 @@ ${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
 ${log_enabled}    ${EMPTY}
 ${start_date}     ${EMPTY}
+${n_c}            ${EMPTY}
 
 *** Keywords ***
 aps.Підготувати клієнт для користувача
@@ -27,6 +28,7 @@ aps.Підготувати клієнт для користувача
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
+    Set Suite Variable    ${n_c}    1
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -114,6 +116,12 @@ aps.Пошук тендера по ідентифікатору
 aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
+    Log To Console    n_c ${n_c}
+    Run Keyword If    ${n_c}>5    Close All Browsers
+    Run Keyword If    ${n_c}>5    aps.Підготувати клієнт для користувача    ${username}
+    Run Keyword If    ${n_c}>5    Search tender    ${username}    ${tender_uaid}
+    Run Keyword If    ${n_c}>5    Log To Console    Search tender	${username}	${tender_uaid}
+    Run Keyword If    ${n_c}>5    Set Suite Variable    ${n_c}    1
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Switch Browser    1
@@ -625,6 +633,8 @@ aps.Отримати інформацію із скарги
     Comment    Close All Browsers
     Comment    aps.Підготувати клієнт для користувача    ${username}
     Comment    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
