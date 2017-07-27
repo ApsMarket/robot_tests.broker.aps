@@ -17,7 +17,7 @@ ${log_enabled}    ${EMPTY}
 ${start_date}     ${EMPTY}
 
 *** Keywords ***
-Підготувати клієнт для користувача
+aps.Підготувати клієнт для користувача
     [Arguments]    ${username}
     [Documentation]    Відкриває переглядач на потрібній сторінці, готує api wrapper тощо
     ${user}=    Get From Dictionary    ${USERS.users}    ${username}
@@ -110,9 +110,12 @@ aps.Пошук тендера по ідентифікатору
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
 
-Оновити сторінку з тендером
+aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
+    ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Switch Browser    1
     Reload Page
 
 aps.Отримати інформацію із тендера
@@ -425,9 +428,9 @@ aps.Видалити неціновий показник
 
 aps.Створити вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    Search tender    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
@@ -583,9 +586,10 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    Search tender    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
@@ -617,7 +621,8 @@ aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
     Comment    Close All Browsers
     Comment    aps.Підготувати клієнт для користувача    ${username}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Comment    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
@@ -625,9 +630,10 @@ aps.Отримати інформацію із скарги
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    Search tender    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
@@ -656,9 +662,10 @@ aps.Створити вимогу про виправлення умов лот�
 
 aps.Підтвердити вирішення вимоги про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    Search tender    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
@@ -667,9 +674,10 @@ aps.Підтвердити вирішення вимоги про виправл
 
 aps.Створити чернетку вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
@@ -687,7 +695,8 @@ aps.Створити чернетку вимоги про виправлення
 
 aps.Створити чернетку вимоги про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Comment    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
@@ -708,10 +717,11 @@ aps.Створити чернетку вимоги про виправлення
 
 aps.Скасувати вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Log To Console    cansel claim
-    Close All Browsers
-    aps.Підготувати клієнт для користувача    ${username}
-    Search tender    ${username}    ${arguments[0]}
+    Comment    Log To Console    cansel claim
+    Comment    Close All Browsers
+    Comment    aps.Підготувати клієнт для користувача    ${username}
+    Comment    Search tender    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
@@ -732,7 +742,8 @@ aps.Відповісти на вимогу про виправлення умо�
 
 aps.Змінити документацію в ставці
     [Arguments]    ${username}    @{arguments}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    Comment    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
     Run Keyword And Ignore Error    Full Click    id=editLotButton_0
