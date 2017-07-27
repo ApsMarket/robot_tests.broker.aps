@@ -146,6 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
+     Execute Javascript \ \     angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
@@ -156,14 +157,6 @@ Info Below
     #Валюта
     Full Click    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
-    Comment    #Ввод бюджета
-    Comment    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
-    Comment    ${text}=    String.Replace String    ${text}    .    ,
-    Comment    Press Key    ${locator_budget}    ${text}
-    Comment    #Ввод мин шага
-    Comment    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
-    Comment    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Comment    Press Key    ${locator_min_step}    ${text_ms}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender_data}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период уточнений нач дата
@@ -226,13 +219,12 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Wait Until Element Is Visible    ${locator_cabinetEnter}    30
-    Click Element    ${locator_cabinetEnter}
-    Click Element    ${locator_enter}
-    Wait Until Element Is Visible    ${locator_emailField}    10
+    Full Click    ${locator_cabinetEnter}
+    Full Click    ${locator_enter}
+    Wait Until Element Is Visible    ${locator_emailField}    60
     Input Text    ${locator_emailField}    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
-    Click Element    ${locator_loginButton}
+    Full Click    ${locator_loginButton}
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
