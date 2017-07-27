@@ -224,7 +224,7 @@ Login
     Wait Until Page Contains Element    ${locator_emailField}    60
     Input Text    ${locator_emailField}    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
-    Full Click    ${locator_loginButton}
+    Click Element    ${locator_loginButton}
 
 Load document
     [Arguments]    ${filepath}    ${to}    ${to_name}
