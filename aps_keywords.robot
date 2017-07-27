@@ -219,9 +219,8 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Full Click    ${locator_cabinetEnter}
-    Full Click    ${locator_enter}
-    Wait Until Page Contains Element    ${locator_emailField}    60
+    Click Element    ${locator_cabinetEnter}
+    Click Element    ${locator_enter}
     Input Text    ${locator_emailField}    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
