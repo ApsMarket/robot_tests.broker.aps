@@ -145,6 +145,7 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
     Return From Keyword If    '${text}'=='Відхилено'    declined
+    Return From Keyword If    '${text}'=='Недійсно'    invalid
 
 Get Answer Status
     [Arguments]    ${_id}
