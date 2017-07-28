@@ -121,7 +121,7 @@ Add Item
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Click Element    ${locator_date_delivery_end}${d}
     Click Element    ${locator_Quantity}${d}
-    Full Click    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
+    Full Click    is_delivary_${d}
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
@@ -146,7 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
-    Comment    Execute Javascript     angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
+    Comment    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
