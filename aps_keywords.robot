@@ -187,9 +187,8 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Full Click    ${locator_directory_cause}
-    ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
-    Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Full Click    id=select_directory_causes
+    Full Click    xpath=.//li[@value="${tender_data.data.cause}"]
     Comment    Click Element    xpath=html/body
     Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
@@ -216,6 +215,7 @@ Info Negotiate
     Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
+    #xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
 
 Login
     [Arguments]    ${user}
@@ -346,8 +346,6 @@ Add item negotiate
     sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Set Region    ${region}    ${q}
-    Comment    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions00')).scope(); autotestmodel.procurementSubject.procurementSubject.region=autotestmodel.procurementSubject.procurementSubject.region; autotestmodel.procurementSubject.procurementSubject.region={id:0,name:'${region}',initName:'${region}'};
-    Comment    Comment    Select From List By Label    ${locator_SelectRegion}${q}    ${region}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор региона ${region}
     #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
@@ -360,7 +358,7 @@ Add item negotiate
     Press Key    ${locator_street}${q}    ${street}
     Run Keyword If    ${log_enabled}    Log To Console    Адрес ${street}
     sleep    3
-    Click Element    ${locator_check_gps}${q}
+    Comment    Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert Float To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
@@ -618,7 +616,7 @@ Select Doc For Lot
 
 Set Region
     [Arguments]    ${region}    ${item_no}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope();autotestmodel.procurementSubject.region={}; \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
 
 Select Item Param Label
     [Arguments]    ${relatedItem}

@@ -460,24 +460,25 @@ aps.Підтвердити підписання контракту
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
     Comment    Execute Javascript    window.scroll(1000, 1000)
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Comment    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
     Comment    Full Click    id=processing-tab
     Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
     Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
-    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
-    sleep    10
+    Comment    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
+    sleep    3
     Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Log To Console    1111111111
     Select From List By Index    xpath=.//*[contains(@id,'fileCategory')]    1
     Log To Console    2222222222
-    Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
+    Click Element    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
+    Execute Javascript    window.scroll(1000, 1000)
     Input Text    id=processingContractContractNumber    666
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[3]/div/button
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
