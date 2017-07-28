@@ -200,6 +200,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
     #Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    id=questionTitle_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -501,7 +502,7 @@ aps.Отримати інформацію із пропозиції
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
     Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
-    Run Keyword And Return If    '${arguments[1]}'=='status'    id=bidStatusName_0
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Field Text    id=bidStatusName_0
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
@@ -592,8 +593,8 @@ aps.Задати запитання на лот
     Select From List By Value    name=OfOptions    1
     ${g}=    get text    xpath=//option[contains(@label,'${arguments[1]}')]
     Select From List By Label    name=LotsAddOptions    ${g}
-    Input Text    name=Title    ${arguments[2]}.data.title}
-    Input Text    name=Description    ${arguments[2]}.data.description}
+    Input Text    name=Title    ${arguments[2].data.title}
+    Input Text    name=Description    ${arguments[2].data.description}
     Full Click    id=confirm_creationForm
 
 aps.Отримати інформацію із скарги
