@@ -121,7 +121,7 @@ Add Item
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Click Element    ${locator_date_delivery_end}${d}
     Click Element    ${locator_Quantity}${d}
-    Full Click    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
+    Run Keyword And Ignore Error    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[2]/span
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
@@ -146,6 +146,7 @@ Add Item
 
 Info Below
     [Arguments]    ${tender_data}
+    Comment    Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
     #Ввод названия тендера
     Input Text    ${locator_tenderTitle}    ${tender_data.data.title}
     #Ввод описания
@@ -156,14 +157,6 @@ Info Below
     #Валюта
     Full Click    ${locator_currency}
     Select From List By Label    ${locator_currency}    ${tender_data.data.value.currency}
-    Comment    #Ввод бюджета
-    Comment    ${text}=    Convert Float To String    ${tender_data.data.value.amount}
-    Comment    ${text}=    String.Replace String    ${text}    .    ,
-    Comment    Press Key    ${locator_budget}    ${text}
-    Comment    #Ввод мин шага
-    Comment    ${text_ms}=    Convert Float To String    ${tender_data.data.minimalStep.amount}
-    Comment    ${text_ms}=    String.Replace String    ${text_ms}    .    ,
-    Comment    Press Key    ${locator_min_step}    ${text_ms}
     Run Keyword If    ${NUMBER_OF_LOTS}<1    Set Tender Budget    ${tender_data}
     Run Keyword If    ${NUMBER_OF_LOTS}>0    Full Click    xpath=.//*[@id='is_multilot']/div[1]/div[2]
     #Период уточнений нач дата
@@ -194,9 +187,8 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Full Click    ${locator_directory_cause}
-    ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
-    Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Full Click    id=select_directory_causes
+    Full Click    xpath=.//li[@value="${tender_data.data.cause}"]
     Comment    Click Element    xpath=html/body
     Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
@@ -208,11 +200,11 @@ Info Negotiate
     Click Element    ${locator_pdv}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор НДС ${PDV}
     #Валюта
-    Wait Until Element Is Enabled    ${locator_currency}    15
+    Wait Until Element Is Enabled    id=select_currencies    15
     ${currency}=    Get From Dictionary    ${tender_data.data.value}    currency
-    Select From List By Label    ${locator_currency}    ${currency}
-    Press Key    ${locator_currency}    ${currency}
-    Full Click    ${locator_currency}
+    Select From List By Label    id=select_currencies    ${currency}
+    Press Key    id=select_currencies    ${currency}
+    Full Click    id=select_currencies
     Run Keyword If    ${log_enabled}    Log To Console    Валюта ${currency}
     #Стоимость закупки
     ${budget}=    Get From Dictionary    ${tender_data.data.value}    amount
@@ -226,11 +218,10 @@ Info Negotiate
 
 Login
     [Arguments]    ${user}
-    Wait Until Element Is Visible    ${locator_cabinetEnter}    30
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Wait Until Element Is Visible    ${locator_emailField}    10
-    Input Text    ${locator_emailField}    ${user.login}
+    Wait Until Element Is Enabled    Email    40
+    Input Text    Email    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
 
@@ -368,7 +359,7 @@ Add item negotiate
     Press Key    ${locator_street}${q}    ${street}
     Run Keyword If    ${log_enabled}    Log To Console    Адрес ${street}
     sleep    3
-    Click Element    ${locator_check_gps}${q}
+    Comment    Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert Float To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
@@ -596,7 +587,12 @@ Publish tender/negotiation
     Wait Until Element Is Visible    id=purchaseProzorroId    90
     ${tender_UID}=    Get Text    id=purchaseProzorroId
     ${tender_GUID}=    Get Text    id=purchaseGuid
-    Execute Javascript    $.get('http://apiprozorro.azurewebsites.net/api/sync/purchases/${tender_GUID}')
+    Log To Console    UID=${tender_UID}
+    ${url}=    Get Location
+    ${url}=    Fetch From Left    ${url}    :90
+    Log To Console    ${url}
+    Execute Javascript    $.get('${url}:92/api/sync/purchases/${tender_GUID}')
+    Reload Page
     Log To Console    finish publish tender ${tender_UID}
     Return From Keyword    ${tender_UID}
     Run Keyword If    ${log_enabled}    Log To Console    end publish tender
@@ -621,7 +617,7 @@ Select Doc For Lot
 
 Set Region
     [Arguments]    ${region}    ${item_no}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); autotestmodel.procurementSubject.region={}; \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
 
 Select Item Param Label
     [Arguments]    ${relatedItem}
@@ -640,12 +636,11 @@ aniwait
 
 Full Click
     [Arguments]    ${lc}
-    Wait Until Page Contains Element    ${lc}    20
-    Wait Until Element Is Visible    ${lc}    20
-    Wait Until Element Is Enabled    ${lc}    20
+    Wait Until Page Contains Element    ${lc}    40
+    Wait Until Element Is Enabled    ${lc}    40
+    Wait Until Element Is Visible    ${lc}    10
     aniwait
     Click Element    ${lc}
-    aniwait
 
 Add Bid Tender
     [Arguments]    ${amount}
