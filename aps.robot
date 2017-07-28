@@ -11,11 +11,10 @@ Resource          aps_keywords.robot
 Resource          view.robot
 
 *** Variables ***
-${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
 ${log_enabled}    ${EMPTY}
 ${start_date}     ${EMPTY}
-${n_c}            ${EMPTY}
+${n_c}            ${0}
 
 *** Keywords ***
 aps.Підготувати клієнт для користувача
@@ -28,7 +27,6 @@ aps.Підготувати клієнт для користувача
     Call Method    ${chrome options}    add_experimental_option    prefs    ${prefs}
     Create Webdriver    Chrome    chrome_options=${chrome options}
     Goto    ${user.homepage}
-    Set Suite Variable    ${n_c}    1
     Set Window Position    @{user.position}
     Set Window Size    @{user.size}
     Run Keyword If    '${role}'!='viewer'    Login    ${user}
@@ -67,7 +65,6 @@ aps.Створити тендер
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
@@ -117,11 +114,12 @@ aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     Log To Console    n_c ${n_c}
-    Run Keyword If    ${n_c}>5    Close All Browsers
-    Run Keyword If    ${n_c}>5    aps.Підготувати клієнт для користувача    ${username}
-    Run Keyword If    ${n_c}>5    Search tender    ${username}    ${tender_uaid}
-    Run Keyword If    ${n_c}>5    Log To Console    Search tender	${username}	${tender_uaid}
-    Run Keyword If    ${n_c}>5    Set Suite Variable    ${n_c}    1
+    ${fai}=    Evaluate    ${n_c}>5
+    Run Keyword If    ${fai}    Close All Browsers
+    Run Keyword If    ${fai}    aps.Підготувати клієнт для користувача    ${username}
+    Run Keyword If    ${fai}    Log To Console    Search tender    ${username}    ${tender_uaid}
+    Run Keyword If    ${fai}    Search tender    ${username}    ${tender_uaid}
+    Run Keyword If    ${fai}    Set Suite Variable    ${n_c}    ${1}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Switch Browser    1
