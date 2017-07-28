@@ -187,9 +187,8 @@ Info Negotiate
     Run Keyword If    ${log_enabled}    Log To Console    Примечания ${description}
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
-    Full Click    ${locator_directory_cause}
-    ${p}=    Set Variable    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
-    Click Element    xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
+    Full Click    id=select_directory_causes
+    Full Click    xpath=.//li[@value="${tender_data.data.cause}"]
     Comment    Click Element    xpath=html/body
     Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
@@ -360,7 +359,7 @@ Add item negotiate
     Press Key    ${locator_street}${q}    ${street}
     Run Keyword If    ${log_enabled}    Log To Console    Адрес ${street}
     sleep    3
-    Click Element    ${locator_check_gps}${q}
+    Comment    Click Element    ${locator_check_gps}${q}
     ${deliveryLocation_latitude}=    Get From Dictionary    ${item.deliveryLocation}    latitude
     ${deliveryLocation_latitude}    Convert Float To String    ${deliveryLocation_latitude}
     ${deliveryLocation_latitude}    String.Replace String    ${deliveryLocation_latitude}    decimal    string
