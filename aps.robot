@@ -679,7 +679,7 @@ aps.Створити вимогу про виправлення умов лот�
     [Arguments]    ${username}    @{arguments}
     Close All Browsers
     aps.Підготувати клієнт для користувача    ${username}
-    aps.Пошук тендера по ідентифікатору    ${username}    ${tender_uaid}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
