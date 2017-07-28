@@ -121,7 +121,7 @@ Add Item
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Click Element    ${locator_date_delivery_end}${d}
     Click Element    ${locator_Quantity}${d}
-    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[1]/div[2]/div
+    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[2]/span
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
