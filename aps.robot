@@ -169,6 +169,7 @@ aps.Отримати інформацію із тендера
     ${res}=    Get Line    ${arguments[1]}    8
     Log To Console    substr \ ${res}
     Run Keyword If    '${res}'=='awards[0]'    Full Click    participants-tab
+    Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
     Full Click    id=participants-tab
