@@ -130,6 +130,7 @@ aps.Отримати інформацію із тендера
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     Comment    Prepare View    ${username}    ${arguments[0]}
     ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
@@ -333,6 +334,7 @@ aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
     Comment    Prepare View    ${username}    ${arguments[0]}
     ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
@@ -361,6 +363,7 @@ aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
     Comment    Prepare View    ${username}    ${arguments[0]}
     ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Wait Until Element Is Enabled    id=view-lots-tab
     Click Element    id=view-lots-tab
@@ -379,6 +382,7 @@ aps.Отримати інформацію із лоту
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
     ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=features-tab
     Wait Until Element Is Enabled    id=features
