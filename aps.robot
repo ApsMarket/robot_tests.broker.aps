@@ -268,7 +268,7 @@ aps.Створити постачальника, додати документа
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
     Click Element    ${locator_check_participant}
-    Click Element    ${locator_awardEligible}
+    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[1]
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id

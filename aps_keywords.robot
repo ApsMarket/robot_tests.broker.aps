@@ -188,7 +188,8 @@ Info Negotiate
     #Условие применения переговорной процедуры
     ${select_directory_causes}=    Get From Dictionary    ${tender_data.data}    cause
     Full Click    id=select_directory_causes
-    Full Click    xpath=.//li[@value="${tender_data.data.cause}"]
+    Log To Console    $("li[value='${tender_data.data.cause}']").trigger("click")
+    Execute Javascript    $("li[value=\'${tender_data.data.cause}\']").trigger("click")
     Comment    Click Element    xpath=html/body
     Run Keyword If    ${log_enabled}    Log To Console    Условие применения переговорной процедуры ${select_directory_causes}
     #Обоснование
@@ -215,6 +216,7 @@ Info Negotiate
     Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
+    #xpath=.//li[@value="${tender_data.data.cause}"]
 
 Login
     [Arguments]    ${user}
