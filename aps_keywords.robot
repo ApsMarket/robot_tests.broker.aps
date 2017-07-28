@@ -121,7 +121,7 @@ Add Item
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Click Element    ${locator_date_delivery_end}${d}
     Click Element    ${locator_Quantity}${d}
-    Full Click    xpath=.//*[@id='is_delivary_${d}']/div[1]/div[2]/div
+    Run Keyword And Ignore Error    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[2]/span
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
@@ -215,13 +215,12 @@ Info Negotiate
     Full Click    ${locator_next_step}
     Run Keyword If    ${log_enabled}    Log To Console    end info negotiation
     Execute Javascript    angular.element(document.getElementById('purchaseAccelerator')).scope().purchase.accelerator = 10000
-    #xpath=.//*[@ng-bind="directoryCause.cause"][text()='${select_directory_causes}']/../span[2]
 
 Login
     [Arguments]    ${user}
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Comment    Wait Until Page Contains    Email    40
+    Wait Until Element Is Enabled    Email    40
     Input Text    Email    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
@@ -346,6 +345,8 @@ Add item negotiate
     sleep    5
     ${region}=    Get From Dictionary    ${item.deliveryAddress}    region
     Set Region    ${region}    ${q}
+    Comment    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions00')).scope(); autotestmodel.procurementSubject.procurementSubject.region=autotestmodel.procurementSubject.procurementSubject.region; autotestmodel.procurementSubject.procurementSubject.region={id:0,name:'${region}',initName:'${region}'};
+    Comment    Comment    Select From List By Label    ${locator_SelectRegion}${q}    ${region}
     Run Keyword If    ${log_enabled}    Log To Console    Выбор региона ${region}
     #Индекс
     ${post_code}=    Get From Dictionary    ${item.deliveryAddress}    postalCode
@@ -616,7 +617,7 @@ Select Doc For Lot
 
 Set Region
     [Arguments]    ${region}    ${item_no}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope();autotestmodel.procurementSubject.region={}; \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); autotestmodel.procurementSubject.region={}; \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
 
 Select Item Param Label
     [Arguments]    ${relatedItem}
@@ -637,6 +638,7 @@ Full Click
     [Arguments]    ${lc}
     Wait Until Page Contains Element    ${lc}    40
     Wait Until Element Is Enabled    ${lc}    40
+    Wait Until Element Is Visible    ${lc}    10
     aniwait
     Click Element    ${lc}
 
