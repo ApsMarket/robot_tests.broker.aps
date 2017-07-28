@@ -121,7 +121,7 @@ Add Item
     Fill Date    ${locator_date_delivery_end}${d}    ${date_time}
     Click Element    ${locator_date_delivery_end}${d}
     Click Element    ${locator_Quantity}${d}
-    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[2]/span
+    Run Keyword And Ignore Error    Full Click    xpath=//md-switch[@id='is_delivary_${d}']/div[2]/span
     #Выбор страны
     Select From List By Label    xpath=.//*[@id='select_countries${d}']['Україна']    ${item.deliveryAddress.countryName}
     Press Key    ${locator_postal_code}${d}    ${item.deliveryAddress.postalCode}
@@ -618,7 +618,7 @@ Select Doc For Lot
 
 Set Region
     [Arguments]    ${region}    ${item_no}
-    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
+    Execute Javascript    var autotestmodel=angular.element(document.getElementById('select_regions${item_no}')).scope(); autotestmodel.regions.push({id:0,name:'${region}'}); autotestmodel.$apply(); autotestmodel; \ $("#select_regions${item_no} option[value='0']").attr("selected", "selected"); var autotestmodel=angular.element(document.getElementById('procurementSubject_description${item_no}')).scope(); autotestmodel.procurementSubject.region={}; \ autotestmodel.procurementSubject.region.id=0; autotestmodel.procurementSubject.region.name='${region}';
 
 Select Item Param Label
     [Arguments]    ${relatedItem}
@@ -639,6 +639,7 @@ Full Click
     [Arguments]    ${lc}
     Wait Until Page Contains Element    ${lc}    40
     Wait Until Element Is Enabled    ${lc}    40
+    Wait Until Element Is Visible    ${lc}    10
     aniwait
     Click Element    ${lc}
 
