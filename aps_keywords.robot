@@ -220,7 +220,7 @@ Login
     [Arguments]    ${user}
     Click Element    ${locator_cabinetEnter}
     Click Element    ${locator_enter}
-    Comment    Wait Until Page Contains    Email    40
+    Wait Until Page Contains Element    Email    40
     Input Text    Email    ${user.login}
     Input Text    ${locator_passwordField}    ${user.password}
     Click Element    ${locator_loginButton}
