@@ -115,6 +115,18 @@ aps.Пошук тендера по ідентифікатору
 aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
+    ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
+    Log To Console    n_c ${n_c}
+    ${fai}=    Evaluate    ${n_c}>4
+    Run Keyword If    ${fai}    Close All Browsers
+    Run Keyword If    ${fai}    aps.Підготувати клієнт для користувача    ${username}
+    Run Keyword If    ${fai}    Log To Console    Search tender    ${username}    ${tender_uaid}
+    Run Keyword If    ${fai}    Search tender    ${username}    ${tender_uaid}
+    Run Keyword If    ${fai}    Set Suite Variable    ${n_c}    ${1}
+    ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
+    Switch Browser    1
     Reload Page
 
 aps.Отримати інформацію із тендера
@@ -217,6 +229,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
     #Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    id=questionTitle_0
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -266,7 +279,7 @@ aps.Отримати дані із тендера
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    Comment    Search tender    ${username}    ${ua_id}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
@@ -494,26 +507,21 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Comment    Execute Javascript    window.scroll(1000, 1000)
-    Comment    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
-    Comment    Full Click    id=processing-tab
-    Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
-    Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
-    Comment    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
-    sleep    3
+    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
+    sleep    10
     Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Log To Console    1111111111
     Select From List By Index    xpath=.//*[contains(@id,'fileCategory')]    1
     Log To Console    2222222222
-    Click Element    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
-    Execute Javascript    window.scroll(1000, 1000)
+    Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
     Input Text    id=processingContractContractNumber    666
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[3]/div/button
+    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
@@ -557,7 +565,7 @@ aps.Отримати інформацію із пропозиції
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
     Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
-    Run Keyword And Return If    '${arguments[1]}'=='status'    id=bidStatusName_0
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Field Text    id=bidStatusName_0
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
@@ -665,8 +673,8 @@ aps.Задати запитання на лот
     Select From List By Value    name=OfOptions    1
     ${g}=    get text    xpath=//option[contains(@label,'${arguments[1]}')]
     Select From List By Label    name=LotsAddOptions    ${g}
-    Input Text    name=Title    ${arguments[2]}.data.title}
-    Input Text    name=Description    ${arguments[2]}.data.description}
+    Input Text    name=Title    ${arguments[2].data.title}
+    Input Text    name=Description    ${arguments[2].data.description}
     Full Click    id=confirm_creationForm
     Log To Console    finish add question to lot
 
@@ -693,6 +701,9 @@ aps.Підтвердити вирішення вимоги про виправл
 
 aps.Створити вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
+    Close All Browsers
+    aps.Підготувати клієнт для користувача    ${username}
+    aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
     Full Click    id=add_claim
