@@ -228,7 +228,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer')]
     Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
-    Run Keyword And Return If    '${arguments[1]}'=='contracts[0].status'
+    Run Keyword And Return If    '${arguments[1]}'=='contracts[0].status'    Get Contract Status    id=contractStatusName_
     ${contract_status}=    Execute Javascript    return $('#contractStatusName_').text();
     [Return]    ${field_value}
 
@@ -278,8 +278,10 @@ aps.Отримати дані із тендера
     Log To Console    отримати дані із тендера в
 
 aps.Створити постачальника, додати документацію і підтвердити його
-    [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}    @{arguments}
+    Comment    ${q}=    Evaluate    ${n_c}+${1}
+    Comment    Set Suite Variable    ${n_c}    ${q}
+    Comment    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
@@ -509,7 +511,6 @@ aps.Підтвердити підписання контракту
     Full Click    id=processing-tab
     #add contract
     Comment    ${contract_status}=    Execute Javascript    return $('#contractStatusName_').text();
-    Run Keyword And Return    Execute Javascript    $('#contractStatusName_').text();
     sleep    3
     Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Log To Console    1111111111
@@ -523,6 +524,7 @@ aps.Підтвердити підписання контракту
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
     Click Button    xpath=.//*[contains(@id,'saveContract_')]
     Publish tender/negotiation
+    Run Keyword And Return    Execute Javascript    $('#contractStatusName_').text();
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
