@@ -100,6 +100,10 @@ aps.Пошук тендера по ідентифікатору
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
+<<<<<<< HEAD
+    sleep    5
+=======
+>>>>>>> 83b041f8b4547f390aece05145db025c9e7990e3
 
 aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -136,7 +140,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Conv to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
     Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=CauseDescription
-    Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    id=Cause
+    Run Keyword And Return If    '${arguments[1]}'=='cause'    Execute Javascript    return $('#Cause').text();
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='cause'    Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
     Run Keyword And Return If    '${arguments[1]}'=='value.currency'    Get Field Text    ${locator_purchaseCurrency_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.countryName'    Get Field Text    ${locator_purchaseAddressCountryName_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.locality'    Get Field Text    ${locator_purchaseAddressLocality_viewer}
@@ -157,6 +162,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.id'    Get Field Text    id=identifierCode
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.legalName'    Get Field Text    id=identifierName
     Comment    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityCompanyName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
@@ -168,11 +174,15 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.latitude'    Get Field Amount for latitude    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Log To Console    '${arguments[1]}'
-    ${res}=    Get Substring    ${arguments[1]}    0    8
+    ${res}=    Get Line    ${arguments[1]}    8
     Log To Console    substr \ ${res}
     Run Keyword If    '${res}'=='awards[0]'    Full Click    participants-tab
+<<<<<<< HEAD
     Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    xpath=.//*[contains(@id,'docFileName0')]
+=======
+    Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    id=docFileName1
+>>>>>>> 83b041f8b4547f390aece05145db025c9e7990e3
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
     Full Click    id=participants-tab
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text    xpath=.//*[@class="ng-binding"][contains(@id,'awardsdoc')]
@@ -266,7 +276,7 @@ aps.Створити постачальника, додати документа
     Click Element    ${locator_participant}
     Wait Until Page Contains Element    ${locator_add_participant}
     Wait Until Element Is Enabled    ${locator_add_participant}
-    Full Click    ${locator_add_participant}
+    Click Element    ${locator_add_participant}
     #Цена предложения
     ${amount}=    Get From Dictionary    ${s.data.value}    amount
     Wait Until Page Contains Element    ${locator_amount}
@@ -326,7 +336,7 @@ aps.Створити постачальника, додати документа
     Full Click    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
     #save
     Wait Until Page Contains Element    ${locator_finish_edit}
-    Full Click    ${locator_finish_edit}
+    Click Button    ${locator_finish_edit}
     #publish
     Publish tender/negotiation
 
@@ -561,7 +571,7 @@ aps.Отримати посилання на аукціон для глядач�
     Close All Browsers
     aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${url}=    Get Element Attribute    //a[@id='auctionUrl')]@href
+    ${url}=    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
     [Return]    ${url}
 
 aps.Додати неціновий показник на лот
