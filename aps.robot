@@ -156,11 +156,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.id'    Get Field Text    id=identifierCode
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.legalName'    Get Field Text    id=identifierName
     Comment    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
     Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityCompanyName
-    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
@@ -548,7 +545,7 @@ aps.Отримати посилання на аукціон для глядач�
     Close All Browsers
     aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    ${url}=    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
+    ${url}=    Get Element Attribute    //a[@id='auctionUrl')]@href
     [Return]    ${url}
 
 aps.Додати неціновий показник на лот
