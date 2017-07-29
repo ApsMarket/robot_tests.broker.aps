@@ -108,6 +108,12 @@ Get Tender Status
     Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
     Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
 
+Get Contract Status
+    Reload Page
+    ${contr_status}=    Execute Javascript    return $('#contractStatusName_').text()
+    Run Keyword If    '${status}'=='1'    Return From Keyword    pending
+    Run Keyword If    '${status}'=='2'    Return From Keyword    active
+
 Get Field question.answer
     [Arguments]    ${www}
     Full Click    id=questions-tab
@@ -156,6 +162,7 @@ Get Answer Status
 
 Set Click For Award
     [Arguments]    ${idd}
+
 Get NAward Field
     [Arguments]    ${fu}    ${is_amount}
     Full Click    participants-tab

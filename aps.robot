@@ -163,7 +163,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityCompanyName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
     Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
-    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status    id=purchaseStatus
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
     Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
@@ -201,7 +201,8 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer')]
     Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
-    #Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
+    Run Keyword And Return If    '${arguments[1]}'=='contracts[0].status'
+    ${contract_status}=    Execute Javascript    return $('#contractStatusName_').text();
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер
@@ -267,8 +268,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    ${locator_amount}
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
-    Click Element    ${locator_check_participant}
-    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[1]
+    Click Element    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -284,7 +285,7 @@ aps.Створити постачальника, додати документа
     Press Key    ${locator_legalName}    ${legalName}
     #Выбор страны
     ${country}=    Get From Dictionary    ${sup.address}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
+    Select From List By Label    xpath=.//*[contains(@id,'select_countries')]    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'${region}',initName:'${region}'};
@@ -313,7 +314,7 @@ aps.Створити постачальника, додати документа
     #Add doc
     Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
     Comment    Wait Until Page Contains Element    id=uploadFile247
-    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
+    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]    40
     sleep    10
     Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
     Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-untouched ng-valid ng-empty'][contains(@id,'fileCategory')]    1
@@ -479,26 +480,22 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Comment    Execute Javascript    window.scroll(1000, 1000)
-    Comment    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
     #add contract
-    Comment    Full Click    id=processing-tab
-    Comment    Full Click    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/div[1]/label
-    Comment    Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
-    Comment    Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
+    Comment    ${contract_status}=    Execute Javascript    return $('#contractStatusName_').text();
+    Run Keyword And Return    Execute Javascript    $('#contractStatusName_').text();
     sleep    3
     Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
     Log To Console    1111111111
     Select From List By Index    xpath=.//*[contains(@id,'fileCategory')]    1
     Log To Console    2222222222
     Click Element    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
-    Execute Javascript    window.scroll(1000, 1000)
     Input Text    id=processingContractContractNumber    666
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[3]/div/button
+    Click Button    xpath=.//*[contains(@id,'saveContract_')]
+    Publish tender/negotiation
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
