@@ -477,7 +477,6 @@ aps.Відповісти на запитання
     Full Click    xpath=//textarea[@ng-model='element.answer']
     Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
-    Publish tender
 
 aps.Отримати інформацію із документа
     [Arguments]    ${username}    @{arguments}
