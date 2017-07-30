@@ -606,6 +606,9 @@ aps.Отримати інформацію із скарги
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword And Return If    '${arguments[2]}'=='status'    Get Claim Status    complaintStatus_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    complaintTitle_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    complaintDescription_${guid}
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='status'
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
@@ -735,3 +738,11 @@ aps.Задати запитання на предмет
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
     aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
+
+aps.Отримати інформацію із документа до скарги
+    [Arguments]    ${username}    @{arguments}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Run Keyword And Return If    '${arguments[3]}'=='title'    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]

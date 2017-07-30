@@ -139,7 +139,7 @@ Get Field Doc for paticipant
 Get Claim Status
     [Arguments]    ${yyy}
     ${text}=    Get Text    ${yyy}
-    Return From Keyword If    '${text}'=='Вимога'    active
+    Return From Keyword If    '${text}'=='Вимога'    claim
     Return From Keyword If    '${text}'=='Дано відповідь'    answered
     Return From Keyword If    '${text}'=='Вирішено'    resolved
     Return From Keyword If    '${text}'=='Скасований'    cancelled
