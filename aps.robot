@@ -369,6 +369,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
+    sleep    15
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
     Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
@@ -730,3 +731,7 @@ aps.Задати запитання на предмет
     Input Text    name=Title    ${arguments[2]}.data.title}
     Input Text    name=Description    ${arguments[2]}.data.description}
     Full Click    id=confirm_creationForm
+
+aps.Відповісти на вимогу про виправлення визначення переможця
+    [Arguments]    ${username}    @{arguments}
+    aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
