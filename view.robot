@@ -145,7 +145,7 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
     Return From Keyword If    '${text}'=='Відхилено'    declined
-    Return From Keyword If    '${text}'=='Недійсно'    invalid
+    Return From Keyword If    '${text}'=='Недійсно' \ or \ '${text}'=='Не подана'    invalid
 
 Get Answer Status
     [Arguments]    ${_id}
@@ -156,6 +156,7 @@ Get Answer Status
 
 Set Click For Award
     [Arguments]    ${idd}
+
 Get NAward Field
     [Arguments]    ${fu}    ${is_amount}
     Full Click    participants-tab
