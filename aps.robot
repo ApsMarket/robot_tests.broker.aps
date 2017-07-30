@@ -135,100 +135,110 @@ aps.Отримати інформацію із тендера
     Comment    Prepare View    ${username}    ${arguments[0]}
     ${q}=    Evaluate    ${n_c}+${1}
     Set Suite Variable    ${n_c}    ${q}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
-    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
+    #aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    #***Purchase***
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text    id=purchaseProzorroId
-    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    xpath=.//*[@id='purchse-controller']/div/div[1]/div[1]/div/p[1]
-    Run Keyword And Return If    '${arguments[1]}'=='description_en'    Get Field Text    id=purchaseDescription_En
-    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
-    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
+    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
+    #***Purchase Title ***
+    Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
     Run Keyword And Return If    '${arguments[1]}'=='title_en'    Get Field Text    id=purchaseTitle_En
     Run Keyword And Return If    '${arguments[1]}'=='title_ru'    Get Field Text    id=purchaseTitle_Ru
-    Run Keyword And Return If    '${arguments[1]}'=='title'    Get Field Text    id=purchaseTitle
-    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Conv to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
-    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
+    #***Purchase Description ***
+    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    xpath=.//*[@id='purchse-controller']/div/div[1]/div[1]/div/p[1]
+    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
+    Run Keyword And Return If    '${arguments[1]}'=='description_en'    Get Field Text    id=purchaseDescription_En
+    #***Purchse Cause***
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=CauseDescription
     Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    id=Cause
+    #***Purchase Periods ***
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
+    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.startDate'    Get Field Date    id=purchasePeriodTenderStart
+    Run Keyword And Return If    '${arguments[1]}'=='tenderPeriod.endDate'    Get Field Date    id=purchasePeriodTenderEnd
+    #***Purchase Budget ***
+    Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    xpath=.//*[@id='purchaseBudget']
     Run Keyword And Return If    '${arguments[1]}'=='value.currency'    Get Field Text    ${locator_purchaseCurrency_viewer}
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    View.Conv to Boolean    xpath=.//*[@ng-if='purchase.purchase.isVAT']
+    Run Keyword And Return If    '${arguments[1]}'=='value.valueAddedTaxIncluded'    Get Element Attribute    ${locator_purchaseIsVAT_viewer}
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
+    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
+    #***Purchase ProcuringEntity(identifier/contactPoint/address)***
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityCompanyName
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.id'    Get Field Text    id=identifierCode
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.scheme'    Get Field Text    id=identifierScheme
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.legalName'    Get Field Text    id=identifierName
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.telephone'    Get Field Text    id=purchaseProcuringEntityContactPointPhone
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.url'    Get Field Text    id=purchaseProcuringEntityContactPointUrl
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.postalCode'    Get Field Text    id=purchaseAddressZipCode
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.region'    Get Field Text    id=purchaseAddressRegion
+    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.streetAddress'    Get Field Text    id=purchaseAddressStreet
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.countryName'    Get Field Text    ${locator_purchaseAddressCountryName_viewer}
     Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.locality'    Get Field Text    ${locator_purchaseAddressLocality_viewer}
+    #***Purchase Items ***
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[1].additionalClassifications[0].description'    Get Field Text    id=procurementSubjectOtherClassTitle_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.latitude'    Get Field Amount for latitude    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
+    Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
+    #***Purchase Features ***
     Run Keyword And Return If    '${arguments[1]}'=='features[0].title'    Get Field feature.title    0_0
     Run Keyword And Return If    '${arguments[1]}'=='features[1].title'    Get Field feature.title    1_0
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
-    Run Keyword And Return If    '${arguments[1]}'=='items[1].classification.scheme'    Get Field Text    id=procurementSubjectCpvTitle_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='items[1].description'    Get Field Text    id=procurementSubjectDescription_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='items[1].additionalClassifications[0].description'    Get Field Text    id=procurementSubjectOtherClassTitle_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.postalCode'    Get Field Text    id=purchaseAddressZipCode
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.region'    Get Field Text    id=purchaseAddressRegion
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.address.streetAddress'    Get Field Text    id=purchaseAddressStreet
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.telephone'    Get Field Text    id=purchaseProcuringEntityContactPointPhone
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.contactPoint.url'    Get Field Text    id=purchaseProcuringEntityContactPointUrl
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.scheme'    Get Field Text    id=identifierScheme
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.id'    Get Field Text    id=identifierCode
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.identifier.legalName'    Get Field Text    id=identifierName
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityContactPointName
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
-    Run Keyword And Return If    '${arguments[1]}'=='description'    Get Field Text    id=purchaseDescription
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=purchaseProcuringEntityCompanyName
-    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=Lot-1-MinStep
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
-    Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
-    Run Keyword And Return If    '${arguments[1]}'=='procuringEntity.name'    Get Field Text    id=identifierName
-    Run Keyword And Return If    '${arguments[1]}'=='minimalStep.amount'    Get Field Amount    id=minStepValue
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
-    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.latitude'    Get Field Amount for latitude    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
-    Log To Console    '${arguments[1]}'
-    ${res}=    Get Substring    ${arguments[1]}    0    8
-    Log To Console    substr \ ${res}
-    Run Keyword If    '${res}'=='awards[0]'    Full Click    participants-tab
+    #***Documents***
     Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    xpath=.//*[contains(@id,'docFileName0')]
-    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
+    #***Questions***
+    Reload Page
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionDescription')]
+    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer')]
+    #***Awards***
+    Comment    Get Info Award    '${arguments[1]}'
+    #***Award***
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].status'    Get Field Text    id=winner_status
+    #***Award Budget***
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].value.amount'    Get Field Amount    id=procuringParticipantsAmount_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.currency'    Get Field Text    id=procuringParticipantsCurrency_0_0
+    ${awardIsVAT}=    Execute Javascript    return $('#procuringParticipantsIsVAT_0_0').text();
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.valueAddedTaxIncluded'    Convert To Boolean    ${awardIsVAT}
+    #***Award Suppliers(identifier/contactPoint/address)***
     Full Click    id=participants-tab
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text    xpath=.//*[@class="ng-binding"][contains(@id,'awardsdoc')]
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    id=winner_status
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.countryName'    Get Field Text    id=procuringParticipantsAddressCountryName_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.region'    Get Field Text    id=procuringParticipantsAddressRegion_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.locality'    Get Field Text    id=procuringParticipantsAddressLocality_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].name'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.id'    Get Field Text    id=procuringParticipantsIdentifierCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.scheme'    Get Field Text    id=procuringParticipantsIdentifierScheme_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.legalName'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.telephone'    Get Field Text    id=procuringParticipantsContactPointPhone_0_0
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.name'    Get Field Text    id=procuringParticipantsContactPointName_0_0
     Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.email'    Get Field Text    id=procuringParticipantsContactPointEmail_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.scheme'    Get Field Text    id=procuringParticipantsIdentifierScheme_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.legalName'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.id'    Get Field Text    id=procuringParticipantsIdentifierCode_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].name'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.name'    Get Field Text    id=procuringParticipantsName_0_0
-    ${awardIsVAT}=    Execute Javascript    return $('#procuringParticipantsIsVAT_0_0').text();
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.valueAddedTaxIncluded'    Convert To Boolean    ${awardIsVAT}
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.currency'    Get Field Text    id=procuringParticipantsCurrency_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.amount'    Get Field Amount    id=procuringParticipantsAmount_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.countryName'    Get Field Text    id=procuringParticipantsAddressCountryName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.region'    Get Field Text    id=procuringParticipantsAddressRegion_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.locality'    Get Field Text    id=procuringParticipantsAddressLocality_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
+    #***Award Period***
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    #***Documents***
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@class="ng-binding"][contains(@id,'awardsdoc')]
+    #***Contracts***
     Sleep    60
     Reload Page
     Full Click    id=results-tab
     Wait Until Element Is Visible    id=tab-content-3
     Sleep    10
     Run Keyword And Return If    '${arguments[1]}'=='contracts[0].status'    Execute Javascript    return $('#resultPurchseContractStatus_0').text();
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[3]/div/div/div/a
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
-    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
-    Sleep    60
-    Reload Page
-    Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionDescription')]
+    #***Comment***
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
     Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer_')]
-    Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer')]
-    Run Keyword And Return If    '${arguments[1]}'=='items[0].additionalClassifications[0].id'    Get Field Text    id=procurementSubjectOtherClassCode_1_0
-    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionTitle')]
-    #Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Text
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='lots[0].value.valueAddedTaxIncluded'    Get Field Text    id=purchaseIsVAT
     Comment    Run Keyword And Return If    '${arguments[1]}'=='questions[0].title'    Get Field Text    id=questionTitle_0
+    #Execute Javascript    return $('#purchaseDirectoryCauseCause').text();
     [Return]    ${field_value}
 
 aps.Задати запитання на тендер

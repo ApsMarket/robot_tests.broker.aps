@@ -15,6 +15,43 @@ ${locator_necTitle}    id=featureTitle_
 ${dkkp_id}        ${EMPTY}
 
 *** Keywords ***
+Get Info Award
+    [Arguments]    ${award}
+    #***Award***
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].status'    Get Field Text    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div/div[1]/div[1]/h4
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].status'    Get Field Text    id=winner_status
+    #***Award Budget***
+    Run Keyword And Return If    '${arguments[0]}'=='awards[0].value.amount'    Get Field Amount    id=procuringParticipantsAmount_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.currency'    Get Field Text    id=procuringParticipantsCurrency_0_0
+    ${awardIsVAT}=    Execute Javascript    return $('#procuringParticipantsIsVAT_0_0').text();
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].value.valueAddedTaxIncluded'    Convert To Boolean    ${awardIsVAT}
+    #***Award Suppliers(identifier/contactPoint/address)***
+    Full Click    id=participants-tab
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].name'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.id'    Get Field Text    id=procuringParticipantsIdentifierCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.scheme'    Get Field Text    id=procuringParticipantsIdentifierScheme_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].identifier.legalName'    Get Field Text    id=procuringParticipantsIdentifierLegalName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.telephone'    Get Field Text    id=procuringParticipantsContactPointPhone_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.name'    Get Field Text    id=procuringParticipantsContactPointName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].contactPoint.email'    Get Field Text    id=procuringParticipantsContactPointEmail_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.countryName'    Get Field Text    id=procuringParticipantsAddressCountryName_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.region'    Get Field Text    id=procuringParticipantsAddressRegion_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.locality'    Get Field Text    id=procuringParticipantsAddressLocality_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.postalCode'    Get Field Text    id=procuringParticipantsAddressZipCode_0_0
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].suppliers[0].address.streetAddress'    Get Field Text    id=procuringParticipantsAddressStreet_0_0
+    #***Award Period***
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    #***Documents***
+    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'    Get Field Doc for paticipant    xpath=.//*[@class="ng-binding"][contains(@id,'awardsdoc')]
+    #***Contracts***
+    Sleep    60
+    Reload Page
+    Full Click    id=results-tab
+    Wait Until Element Is Visible    id=tab-content-3
+    Sleep    10
+    Run Keyword And Return If    '${arguments[1]}'=='contracts[0].status'    Execute Javascript    return $('#resultPurchseContractStatus_0').text();
+
 Переговорная мультилотовая процедура
     [Arguments]    ${tender_data}
     Run Keyword If    ${log_enabled}    Log To Console    Start negotiation
