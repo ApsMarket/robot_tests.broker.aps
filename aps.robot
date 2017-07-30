@@ -11,7 +11,6 @@ Resource          aps_keywords.robot
 Resource          view.robot
 
 *** Variables ***
-${id}             UA-2017-03-14-000099
 ${js}             ${EMPTY}
 ${log_enabled}    ${EMPTY}
 ${start_date}     ${EMPTY}
@@ -60,13 +59,10 @@ aps.Підготувати дані для оголошення тендера
 aps.Створити тендер
     [Arguments]    ${role}    ${tender_data}
     [Documentation]    Створює однопредметний тендер
-    Log To Console    MODE=${MODE}
-    Log To Console    suite = ${SUITE_NAME}
     Run Keyword And Return If    '${MODE}'=='belowThreshold'    Допороговый однопредметный тендер    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openeu'    Открытые торги с публикацией на англ    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='openua'    Открытые торги с публикацией на укр    ${tender_data}
     Run Keyword And Return If    '${MODE}'=='negotiation'    Переговорная мультилотовая процедура    ${tender_data}
-    Run Keyword And Return If    '${MODE}'=='Tests Files.singleItemTenderComplaints'    Работа с жалобами    ${tender_data}
     [Return]    ${UAID}
 
 aps.Внести зміни в тендер
@@ -87,16 +83,10 @@ aps.Внести зміни в тендер
 aps.Завантажити документ
     [Arguments]    ${username}    ${filepath}    ${tender_uaid}
     [Documentation]    Завантажує супроводжуючий тендерний документ в тендер tender_uaid. Тут аргумент filepath – це шлях до файлу на диску
-    Comment    Go To    ${USERS.users['${username}'].homepage}
-    Log To Console    before search (upload doc)
-    Comment    Search tender    ${username}    ${tender_uaid}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
-    Log To Console    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
     Go To    ${USERS.users['${username}'].homepage}/Purchase/Edit/${id}#/info-purchase
-    Comment    Full Click    id=purchaseEdit
-    Log To Console    before load
     Load document    ${filepath}    Tender    ${EMPTY}
     Full Click    ${locator_finish_edit}
     Run Keyword If    '${MODE}'=='negotiation'    Publish tender/negotiation
@@ -110,7 +100,6 @@ aps.Пошук тендера по ідентифікатору
     ${guid}=    Get Text    id=purchaseGuid
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Load Tender    ${api}:92/api/sync/purchases/${guid}
-    sleep    5
 
 aps.Оновити сторінку з тендером
     [Arguments]    ${username}    ${tender_uaid}
@@ -132,11 +121,8 @@ aps.Оновити сторінку з тендером
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-    Comment    Prepare View    ${username}    ${arguments[0]}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
-    #aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    #***Purchase***
+aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+  #***Purchase***
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text    id=purchaseProzorroId
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     #***Purchase Title ***
@@ -269,8 +255,6 @@ aps.Подати цінову пропозицію
 aps.Змінити цінову пропозицію
     [Arguments]    ${username}    ${tender_uaid}    ${fieldname}    ${fieldvalue}
     [Documentation]    Змінює поле fieldname (сума, неціновий показник тощо) в раніше створеній ставці в тендері tender_uaid
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${tender_uaid}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
@@ -281,10 +265,6 @@ aps.Змінити цінову пропозицію
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
-
-aps.Отримати дані із тендера
-    [Arguments]    ${username}    @{arguments}
-    Log To Console    отримати дані із тендера в
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
@@ -363,9 +343,6 @@ aps.Створити постачальника, додати документа
 
 aps.Отримати інформацію із предмету
     [Arguments]    ${username}    @{arguments}
-    Comment    Prepare View    ${username}    ${arguments[0]}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=procurement-subject-tab
     Wait Until Element Is Enabled    id=procurement-subject
@@ -392,9 +369,6 @@ aps.Отримати інформацію із предмету
 
 aps.Отримати інформацію із лоту
     [Arguments]    ${username}    @{arguments}
-    Comment    Prepare View    ${username}    ${arguments[0]}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Wait Until Element Is Enabled    id=view-lots-tab
     Click Element    id=view-lots-tab
@@ -412,13 +386,12 @@ aps.Отримати інформацію із лоту
 
 aps.Отримати інформацію із нецінового показника
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=features-tab
     Wait Until Element Is Enabled    id=features
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
+    sleep    15
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
     Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
@@ -435,8 +408,6 @@ aps.Завантажити документ в лот
 
 aps.Змінити лот
     [Arguments]    ${username}    ${ua_id}    ${lot_id}    ${field_name}    ${field_value}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${ua_id}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
@@ -451,8 +422,6 @@ aps.Змінити лот
 
 aps.Додати неціновий показник на предмет
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
@@ -467,8 +436,6 @@ aps.Додати неціновий показник на предмет
 
 aps.Видалити неціновий показник
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=purchaseEdit
     Wait Until Page Contains Element    id=save_changes
@@ -482,8 +449,6 @@ aps.Видалити неціновий показник
 
 aps.Створити вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
@@ -494,17 +459,13 @@ aps.Створити вимогу про виправлення умов зак�
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[2]}
-    sleep    3
     Full Click    save_claim
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
-    Log To Console    ${cg}
     Return From Keyword    ${cg}
 
 aps.Отримати інформацію із запитання
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Question    ${arguments[1]}    xpath=//div[@id='questionTitle_0'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Question    ${arguments[1]}    xpath=//div[contains(.,'${arguments[1]}')]/div/div[contains(@id,'questionDescription')]
@@ -534,8 +495,6 @@ aps.Підтвердити підписання контракту
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=questions-tab
     Wait Until Page Contains    ${arguments[2]}
@@ -543,20 +502,15 @@ aps.Відповісти на запитання
     Full Click    xpath=//textarea[@ng-model='element.answer']
     Input Text    xpath=//textarea[@ng-model='element.answer']    ${arguments[1].data.answer}
     Full Click    xpath=//div[contains(text(),'${arguments[2]}')]/../../../..//button[@id='save_answer']
-    Publish tender
 
 aps.Отримати інформацію із документа
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
 
 aps.Отримати документ
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=//a[contains(@id,'docFileName')][contains(.,'${arguments[1]}')]
@@ -567,8 +521,6 @@ aps.Отримати документ
 
 aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
@@ -578,8 +530,6 @@ aps.Отримати інформацію із пропозиції
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
@@ -596,8 +546,6 @@ aps.Завантажити документ в ставку
 
 aps.Змінити документ в ставці
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
@@ -614,13 +562,9 @@ aps.Змінити документ в ставці
 
 aps.Отримати посилання на аукціон для учасника
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     ${rrr}=    Get Location
-    Log To Console    ${rrr}
     ${rrr}=    Get Element Attribute    id=purchaseUrlOwner@href    #//a[contains(@href,'auction-sandbox')]@href
-    Log To Console    ${rrr}
     Return From Keyword    ${rrr}
     [Return]    ${rrr}
 
@@ -629,14 +573,11 @@ aps.Отримати посилання на аукціон для глядач�
     Close All Browsers
     aps.Підготувати клієнт для користувача    ${username}
     aps.Пошук тендера по ідентифікатору    ${username}    ${arguments[0]}
-    Comment    ${url}    Run Keyword And Ignore Error    Get Element Attribute    xpath=//a[@id='auctionUrl']@href
-    ${url}=    Get Element Attribute    //a[contains(@id,'purchaseUrlOwner')]@href
+    ${url}=    Get Element Attribute    //a[@id='auctionUrl']@href
     [Return]    ${url}
 
 aps.Додати неціновий показник на лот
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=purchaseEdit
     Full Click    id=features-tab
@@ -648,8 +589,6 @@ aps.Додати неціновий показник на лот
 
 aps.Отримати документ до лоту
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=documents-tab
     ${title}=    Get Field Text    xpath=.//*[@class="btn btn-primary ng-binding ng-scope" ][contains(@id,'strikeDocFileNameBut')]
@@ -657,8 +596,6 @@ aps.Отримати документ до лоту
 
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
@@ -673,8 +610,6 @@ aps.Відповісти на вимогу про виправлення умо�
 
 aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=questions-tab
     Full Click    id=add_discussion
@@ -685,22 +620,20 @@ aps.Задати запитання на лот
     Input Text    name=Title    ${arguments[2].data.title}
     Input Text    name=Description    ${arguments[2].data.description}
     Full Click    id=confirm_creationForm
-    Log To Console    finish add question to lot
 
 aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword And Return If    '${arguments[2]}'=='status'    Get Claim Status    complaintStatus_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    complaintTitle_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    complaintDescription_${guid}
+    Comment    Run Keyword And Return If    '${arguments[2]}'=='status'
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
@@ -724,17 +657,13 @@ aps.Створити вимогу про виправлення умов лот�
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[3]}
-    sleep    3
     Full Click    save_claim
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
-    Log To Console    ${cg}
     Return From Keyword    ${cg}
 
 aps.Підтвердити вирішення вимоги про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
@@ -744,8 +673,6 @@ aps.Підтвердити вирішення вимоги про виправл
 
 aps.Створити чернетку вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
@@ -755,17 +682,13 @@ aps.Створити чернетку вимоги про виправлення
     Select From List By Value    add_claim_select_type    0
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
-    sleep    3
     Execute Javascript    $('#save_claim_draft').click()
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
-    Log To Console    draft claim
     Return From Keyword    ${cg}
 
 aps.Створити чернетку вимоги про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=claim-tab
     Wait Until Element Is Enabled    id=add_claim    60
@@ -777,20 +700,14 @@ aps.Створити чернетку вимоги про виправлення
     Select From List By Label    LotsAddOptions    ${label}
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
-    sleep    3
     Execute Javascript    $('#save_claim_draft').click()
     Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
     ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
-    Log To Console    draft claim lot
     Return From Keyword    ${cg}
     [Teardown]
 
 aps.Скасувати вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
-    Comment    Log To Console    cansel claim
-    Comment    Close All Browsers
-    Comment    aps.Підготувати клієнт для користувача    ${username}
-    Comment    Search tender    ${username}    ${arguments[0]}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
@@ -799,7 +716,6 @@ aps.Скасувати вимогу про виправлення умов за�
     Wait Until Page Contains Element    complaintCancellationReason_0    60
     Input Text    complaintCancellationReason_0    ${arguments[2].data.cancellationReason}
     Full Click    cancelComplaint_${guid}
-    Log To Console    cancelComplaint_${guid}
     [Teardown]
 
 aps.Скасувати вимогу про виправлення умов лоту
@@ -830,8 +746,6 @@ aps.Змінити документацію в ставці
 
 aps.Задати запитання на предмет
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=questions-tab
     Full Click    id=add_discussion
@@ -842,4 +756,15 @@ aps.Задати запитання на предмет
     Input Text    name=Title    ${arguments[2]}.data.title}
     Input Text    name=Description    ${arguments[2]}.data.description}
     Full Click    id=confirm_creationForm
-    Log To Console    finish add question to lot
+
+aps.Відповісти на вимогу про виправлення визначення переможця
+    [Arguments]    ${username}    @{arguments}
+    aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
+
+aps.Отримати інформацію із документа до скарги
+    [Arguments]    ${username}    @{arguments}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    Run Keyword And Return If    '${arguments[3]}'=='title'    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
