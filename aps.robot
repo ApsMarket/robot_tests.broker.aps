@@ -113,7 +113,6 @@ aps.Оновити сторінку з тендером
     Run Keyword If    ${fai}    Search tender    ${username}    ${tender_uaid}
     Run Keyword If    ${fai}    Set Suite Variable    ${n_c}    ${1}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
-    Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Switch Browser    1
     Reload Page
@@ -500,7 +499,7 @@ aps.Отримати інформацію із пропозиції
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[1]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
     Run Keyword And Ignore Error    Full Click    id=editLotButton_0
@@ -711,8 +710,6 @@ aps.Відповісти на вимогу про виправлення умо�
 
 aps.Змінити документацію в ставці
     [Arguments]    ${username}    @{arguments}
-    ${q}=    Evaluate    ${n_c}+${1}
-    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
