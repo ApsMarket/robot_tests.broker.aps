@@ -71,7 +71,7 @@ ${dkkp_id}        ${EMPTY}
 Допороговый однопредметный тендер
     [Arguments]    ${tender_data}
     Full Click    ${locator_button_create}
-    Full Click    ${locator_create_dop_zak}
+    Full Click    url_create_purchase_1
     Wait Until Page Contains Element    ${locator_tenderTitle}
     Info Below    ${tender_data}
     Run Keyword If    ${NUMBER_OF_LOTS}==1    Full Click    next_step
