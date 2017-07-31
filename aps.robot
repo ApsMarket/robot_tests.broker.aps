@@ -568,6 +568,7 @@ aps.Відповісти на вимогу про виправлення умо�
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
+    sleep    3
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
@@ -732,7 +733,7 @@ aps.Отримати інформацію із документа до скар�
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
-    sleep     3
+    sleep    3
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword And Return If    '${arguments[3]}'=='title'    Get Text    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
