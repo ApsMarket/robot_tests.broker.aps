@@ -106,6 +106,7 @@ aps.Оновити сторінку з тендером
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     ${q}=    Evaluate    ${n_c}+${1}
     Set Suite Variable    ${n_c}    ${q}
+    Log To Console    n_c ${n_c}
     ${fai}=    Evaluate    ${n_c}>4
     Run Keyword If    ${fai}    Close All Browsers
     Run Keyword If    ${fai}    aps.Підготувати клієнт для користувача    ${username}
@@ -120,7 +121,7 @@ aps.Оновити сторінку з тендером
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    #aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     #***Purchase***
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text    id=purchaseProzorroId
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
@@ -134,7 +135,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='description_en'    Get Field Text    id=purchaseDescription_En
     #***Purchse Cause***
     Run Keyword And Return If    '${arguments[1]}'=='causeDescription'    Get Field Text    id=CauseDescription
-    Run Keyword And Return If    '${arguments[1]}'=='cause'    Get Field Text    id=Cause
+    Run Keyword And Return If    '${arguments[1]}'=='cause'    Execute Javascript    return $('#Cause').text()
     #***Purchase Periods ***
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
     Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
@@ -173,7 +174,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     #***Documents***
-    Full Click    id=documents-tab
+    Comment    Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    xpath=.//*[contains(@id,'docFileName0')]
     #***Questions***
     Reload Page
@@ -251,8 +252,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    ${locator_amount}
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
-    Click Element    ${locator_check_participant}
-    Click Element    ${locator_awardEligible}
+    Click Element    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -268,7 +269,7 @@ aps.Створити постачальника, додати документа
     Press Key    ${locator_legalName}    ${legalName}
     #Выбор страны
     ${country}=    Get From Dictionary    ${sup.address}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
+    Select From List By Label    xpath=.//*[contains(@id,'select_countries')]    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'${region}',initName:'${region}'};
@@ -455,7 +456,9 @@ aps.Підтвердити підписання контракту
     Log To Console    2222222222
     Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
     Input Text    id=processingContractContractNumber    666
-    Click Element    id=processingContractDateSigned
+    Comment    ${signed}=    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    ${signed}=    Get Time    NOW + 1h
+    Input Text    id=processingContractDateSigned    ${signed}
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
@@ -499,7 +502,7 @@ aps.Отримати інформацію із пропозиції
 
 aps.Завантажити документ в ставку
     [Arguments]    ${username}    @{arguments}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[1]}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
     Run Keyword And Ignore Error    Full Click    id=editLotButton_0
@@ -568,7 +571,6 @@ aps.Відповісти на вимогу про виправлення умо�
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    sleep    3
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
@@ -716,6 +718,8 @@ aps.Відповісти на вимогу про виправлення умо�
 
 aps.Змінити документацію в ставці
     [Arguments]    ${username}    @{arguments}
+    ${q}=    Evaluate    ${n_c}+${1}
+    Set Suite Variable    ${n_c}    ${q}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
     Run Keyword And Ignore Error    Full Click    //a[contains(@id,'openLotForm')]
@@ -730,6 +734,7 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
 
+
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
     aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
@@ -738,7 +743,6 @@ aps.Отримати інформацію із документа до скар�
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
-    sleep    3
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword And Return If    '${arguments[3]}'=='title'    Get Text    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]

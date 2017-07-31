@@ -50,7 +50,7 @@ ${locator_finish_edit}    id=movePurchaseView    # завешити редагу
 ${locator_publish_tender}    id=publishPurchase    # публікація тендеру
 ${locator_toast_container}    id=toast-container
 ${locator_toast_close}    xpath=.//*[@class='toast-close-button']
-${locator_create_negotiation}    xpath=.//a[@id="url_create_purchase_4"]
+${locator_create_negotiation}    xpath=.//*[@id='url_create_purchase_5']
 ${locator_description}    id=description
 ${locator_select_directory_causes}    xpath=.//*[@ng-bind='directoryCause.cause']
 ${locator_cause_description}    id=cause_description
