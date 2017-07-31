@@ -174,7 +174,7 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='features[2].title'    Get Field feature.title    1_1
     Run Keyword And Return If    '${arguments[1]}'=='features[3].title'    Get Field feature.title    1_2
     #***Documents***
-    Full Click    id=documents-tab
+    Comment    Full Click    id=documents-tab
     Run Keyword And Return If    '${arguments[1]}'=='documents[0].title'    Get Field Doc    xpath=.//*[contains(@id,'docFileName0')]
     #***Questions***
     Reload Page
@@ -182,11 +182,9 @@ aps.Отримати інформацію із тендера
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].description'    Get Field Text    xpath=.//*[@class="col-md-9 ng-binding"][contains(@id,'questionDescription')]
     Run Keyword And Return If    '${arguments[1]}'=='questions[0].answer'    Get Field Text    xpath=.//*[@class="col-sm-10 ng-binding"][contains(@id,'questionAnswer')]
     #***Awards***
-    ${awardSubstring}=    Get Substring    ${arguments[1]}    0    9
-    Run Keyword And Return If    '${awardSubstring}'=='awards[0]'    Get Info Award    ${arguments}
+    Get Info Award    ${arguments}
     #***Contracts***
-    ${contractSubstring}=    Get Substring    ${arguments[1]}    0    12
-    Run Keyword And Return If    '${contractSubstring}'=='contracts[0]'    Get Info Contract    ${arguments}
+    Get Info Contract    ${arguments}
     #***Comment***
     Comment    Run Keyword And Return If    '${arguments[1]}'=='items[0].deliveryLocation.'    Get Field Amount    xpath=.//*[@class="col-md-8 ng-binding"][contains (@id,'procurementSubjectLatitude')]
     Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].documents[0].title'
@@ -254,8 +252,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    ${locator_amount}
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
-    Click Element    ${locator_check_participant}
-    Click Element    ${locator_awardEligible}
+    Click Element    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -271,7 +269,7 @@ aps.Створити постачальника, додати документа
     Press Key    ${locator_legalName}    ${legalName}
     #Выбор страны
     ${country}=    Get From Dictionary    ${sup.address}    countryName
-    Select From List By Label    ${locator_country_id}    ${country}
+    Select From List By Label    xpath=.//*[contains(@id,'select_countries')]    ${country}
     #Выбор региона
     ${region}=    Get From Dictionary    ${sup.address}    region
     Execute Javascript    var autotestmodel=angular.element(document.getElementById('procuringParticipantLegalName_0_0')).scope(); autotestmodel.procuringParticipant.procuringParticipants.region=autotestmodel.procuringParticipant.procuringParticipants.country; autotestmodel.procuringParticipant.procuringParticipants.region={id:0,name:'${region}',initName:'${region}'};
@@ -458,7 +456,9 @@ aps.Підтвердити підписання контракту
     Log To Console    2222222222
     Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
     Input Text    id=processingContractContractNumber    666
-    Click Element    id=processingContractDateSigned
+    Comment    ${signed}=    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    ${signed}=    Get Time    NOW + 1h
+    Input Text    id=processingContractDateSigned    ${signed}
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
@@ -615,7 +615,9 @@ aps.Отримати інформацію із скарги
     Run Keyword And Return If    '${arguments[2]}'=='status'    Get Claim Status    complaintStatus_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    complaintTitle_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    complaintDescription_${guid}
-    Comment    Run Keyword And Return If    '${arguments[2]}'=='status'
+    Run Keyword And Return If    '${arguments[2]}'=='resolutionType'    Get Claim Status    complaintResolutionTypeName_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='resolution'    Get Field Text    complaintResolution_${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='satisfied'    Get Satisfied
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
@@ -729,6 +731,7 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
 
+
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
     aps.Відповісти на вимогу про виправлення умов закупівлі    ${username}    @{arguments}
@@ -739,4 +742,4 @@ aps.Отримати інформацію із документа до скар�
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
-    Run Keyword And Return If    '${arguments[3]}'=='title'    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
+    Run Keyword And Return If    '${arguments[3]}'=='title'    Get Text    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]

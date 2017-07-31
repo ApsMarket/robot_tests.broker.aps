@@ -108,6 +108,12 @@ Get Tender Status
     Run Keyword If    '${status}'=='3'    Return From Keyword    active.tendering
     Run Keyword If    '${status}'=='4'    Return From Keyword    active.auction
 
+Get Contract Status
+    Reload Page
+    ${contr_status}=    Execute Javascript    return $('#contractStatusName_').text()
+    Run Keyword If    '${status}'=='1'    Return From Keyword    pending
+    Run Keyword If    '${status}'=='2'    Return From Keyword    active
+
 Get Field question.answer
     [Arguments]    ${www}
     Full Click    id=questions-tab
@@ -145,7 +151,7 @@ Get Claim Status
     Return From Keyword If    '${text}'=='Скасований'    cancelled
     Return From Keyword If    '${text}'=='Чернетка'    draft
     Return From Keyword If    '${text}'=='Відхилено'    declined
-    Return From Keyword If    '${text}'=='Недійсно' \ or \ '${text}'=='Не подана'    invalid
+    Return From Keyword If    '${text}'=='Недійсно'    invalid
 
 Get Answer Status
     [Arguments]    ${_id}
@@ -162,3 +168,11 @@ Get NAward Field
     Full Click    participants-tab
     Return From Keyword if    ${is_amount}==${True}    Get Field Text    ${fu}
     Return From Keyword if    ${is_amount}==${False}    Get Field Amount    ${fu}
+
+Get Satisfied
+    [Arguments]    ${g}
+    ${msg}=    Set Variable    0
+    Run Keyword And Ignore Error    ${msg}=    Element Should Be Visible    complaintSatifiedTrue_${g}
+    Run Keyword And Return If    '${msg}'==PASS''    ${True}
+    Run Keyword And Ignore Error    ${msg}=    Element Should Be Visible    complaintSatifiedFalse_${g}
+    Run Keyword And Return If    '${msg}'==PASS''    ${False}
