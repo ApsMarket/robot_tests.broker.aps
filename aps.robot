@@ -341,6 +341,7 @@ aps.Отримати інформацію із лоту
     Wait Until Element Is Enabled    id=view-lots-tab
     Click Element    id=view-lots-tab
     Wait Until Element Is Enabled    id=view-lots
+    sleep    5
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//h4[@id='Lot-1-Title'][contains(.,'${arguments[1]}')]
     Run Keyword And Return If    '${arguments[2]}'=='value.amount'    Get Field Amount    id=Lot-1-Budget
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    id=Lot-1-Description
@@ -359,7 +360,7 @@ aps.Отримати інформацію із нецінового показн
     Wait Until Element Is Enabled    id=features
     ${d}=    Set Variable    ${arguments[1]}
     Wait Until Element Is Enabled    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]    30
-    sleep    15
+    sleep    5
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../div/div/div[contains(@id,'featureDescription')]
     Run Keyword And Return If    '${arguments[2]}'=='featureOf'    Get Element Attribute    xpath=//div[contains(@id,'_Title')][contains(.,'${d}')]/../../../../../../../..@itemid
@@ -491,6 +492,7 @@ aps.Отримати інформацію із пропозиції
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    id=do-proposition-tab
+    sleep    5
     Run Keyword And Ignore Error    Full Click    id=openLotForm_0
     Run Keyword And Return If    '${arguments[1]}'=='value.amount'    Get Field Amount    id=bidAmount
     Run Keyword And Return If    '${arguments[1]}'=='lotValues[0].value.amount'    Get Field Amount    id=lotAmount_0
@@ -579,8 +581,6 @@ aps.Відповісти на вимогу про виправлення умо�
 aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.startDate'    Get Field Date    id=purchasePeriodEnquiryStart
-    Run Keyword And Return If    '${arguments[1]}'=='enquiryPeriod.endDate'    Get Field Date    id=purchasePeriodEnquiryEnd
     Full Click    id=questions-tab
     Full Click    id=add_discussion
     Wait Until Page Contains Element    id=confirm_creationForm
@@ -726,6 +726,7 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
+
 
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
