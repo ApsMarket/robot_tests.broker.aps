@@ -622,6 +622,7 @@ aps.Підтвердити вирішення вимоги про виправл
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
+    sleep    3
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
@@ -652,6 +653,7 @@ aps.Підтвердити вирішення вимоги про виправл
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     Full Click    claim-tab
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
+    sleep    3
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
     Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
