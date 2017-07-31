@@ -162,3 +162,11 @@ Get NAward Field
     Full Click    participants-tab
     Return From Keyword if    ${is_amount}==${True}    Get Field Text    ${fu}
     Return From Keyword if    ${is_amount}==${False}    Get Field Amount    ${fu}
+
+Get Satisfied
+    [Arguments]    ${g}
+    ${msg}=    Set Variable    0
+    Run Keyword And Ignore Error    ${msg}=    Element Should Be Visible    complaintSatifiedTrue_${g}
+    Run Keyword And Return If    '${msg}'==PASS''    ${True}
+    Run Keyword And Ignore Error    ${msg}=    Element Should Be Visible    complaintSatifiedFalse_${g}
+    Run Keyword And Return If    '${msg}'==PASS''    ${False}
