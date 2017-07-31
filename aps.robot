@@ -615,7 +615,7 @@ aps.Отримати інформацію із скарги
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    complaintDescription_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='resolutionType'    Get Claim Status    complaintResolutionTypeName_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='resolution'    Get Field Text    complaintResolution_${guid}
-    Run Keyword And Return If    '${arguments[2]}'=='satisfied'    Get Satisfied
+    Run Keyword And Return If    '${arguments[2]}'=='satisfied'    Get Satisfied    ${guid}
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
