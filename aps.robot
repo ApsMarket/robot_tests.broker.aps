@@ -130,7 +130,7 @@ aps.Оновити сторінку з тендером
     Reload Page
 
 aps.Отримати інформацію із тендера
-   [Arguments]    ${username}    @{arguments}
+    [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     #***Purchase***
@@ -253,7 +253,7 @@ aps.Отримати дані із тендера
 
 aps.Створити постачальника, додати документацію і підтвердити його
     [Arguments]    ${username}    ${ua_id}    ${s}    ${filepath}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    Comment    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
     ${idd}=    Get Location
     ${idd}=    Fetch From Left    ${idd}    \#/info-purchase
     ${id}=    Fetch From Right    ${idd}    /
@@ -269,8 +269,8 @@ aps.Створити постачальника, додати документа
     Wait Until Element Is Enabled    ${locator_amount}
     Input Text    ${locator_amount}    ${amount}
     #Выбрать участника
-    Click Element    ${locator_check_participant}
-    Click Element    ${locator_awardEligible}
+    Click Element    xpath=.//*[@id='createOrUpdateProcuringParticipantNegotiation_0_0']/div/div[3]/div[2]/label
+    Click Element    xpath=.//*[@id='awardEligible_0_0']/div[1]/div[2]/div
     #Код
     ${sup}=    Get From List    ${s.data.suppliers}    0
     ${code_edrpou}=    Get From Dictionary    ${sup.identifier}    id
@@ -493,6 +493,8 @@ aps.Підтвердити підписання контракту
     Log To Console    2222222222
     Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
     Input Text    id=processingContractContractNumber    666
+    ${signed}=    Get Time    xpath=.//*[contains(@id,'ContractComplaintPeriodEnd_')]
+    Log To Console    get time signed ${signed}
     Click Element    id=processingContractDateSigned
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
@@ -814,7 +816,6 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
-
 
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
