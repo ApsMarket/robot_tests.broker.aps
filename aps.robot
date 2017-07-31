@@ -121,8 +121,7 @@ aps.Оновити сторінку з тендером
 aps.Отримати інформацію із тендера
     [Arguments]    ${username}    @{arguments}
     [Documentation]    Return значення поля field_name, яке бачить користувач username
-aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-  #***Purchase***
+    #***Purchase***
     Run Keyword And Return If    '${arguments[1]}'=='tenderID'    Get Field Text    id=purchaseProzorroId
     Run Keyword And Return If    '${arguments[1]}'=='status'    Get Tender Status
     #***Purchase Title ***

@@ -696,8 +696,8 @@ Add Bid Lot
     Wait Until Page Contains Element    id=lotAmount${end}
     ${amount}=    Convert Float To String    ${params[0].data.lotValues[0].value.amount}
     Input Text    id=lotAmount${end}    ${amount}
-    Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
-    Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
+    Run Keyword And Ignore Error    Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
+    Run Keyword And Ignore Error    Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
     ${fiis}=    Set Variable    ${params[2]}
     : FOR    ${fi}    IN    @{fiis}
     \    ${code}=    Get Text    xpath=//h6[contains(text(),'${fi}')]/../h6[2]
