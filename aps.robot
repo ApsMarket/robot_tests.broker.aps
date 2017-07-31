@@ -735,4 +735,4 @@ aps.Отримати інформацію із документа до скар�
     sleep     3
     Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
     ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
-    Run Keyword And Return If    '${arguments[3]}'=='title'    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
+    Run Keyword And Return If    '${arguments[3]}'=='title'    Get Text    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
