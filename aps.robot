@@ -106,7 +106,6 @@ aps.Оновити сторінку з тендером
     [Documentation]    Оновлює інформацію на сторінці, якщо відкрита сторінка з тендером, інакше переходить на сторінку з тендером tender_uaid
     ${q}=    Evaluate    ${n_c}+${1}
     Set Suite Variable    ${n_c}    ${q}
-    Log To Console    n_c ${n_c}
     ${fai}=    Evaluate    ${n_c}>4
     Run Keyword If    ${fai}    Close All Browsers
     Run Keyword If    ${fai}    aps.Підготувати клієнт для користувача    ${username}
@@ -114,6 +113,7 @@ aps.Оновити сторінку з тендером
     Run Keyword If    ${fai}    Search tender    ${username}    ${tender_uaid}
     Run Keyword If    ${fai}    Set Suite Variable    ${n_c}    ${1}
     ${url}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
+    Log To Console    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Load Tender    ${url}:92/api/sync/purchase/tenderID/tenderID=${tender_uaid}
     Switch Browser    1
     Reload Page
@@ -726,7 +726,6 @@ aps.Змінити документацію в ставці
     Run Keyword And Ignore Error    Full Click    id=submitBid
     Run Keyword And Ignore Error    Full Click    id=lotSubmit_0
     Run Keyword And Ignore Error    Full Click    id=publishButton
-
 
 aps.Відповісти на вимогу про виправлення визначення переможця
     [Arguments]    ${username}    @{arguments}
