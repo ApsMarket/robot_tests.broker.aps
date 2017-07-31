@@ -167,6 +167,6 @@ Get Satisfied
     [Arguments]    ${g}
     ${msg}=    Set Variable    0
     ${msg}=    Run Keyword And Ignore Error    Element Should Be Visible    complaintSatifiedTrue_${g}
-    Run Keyword And Return If    '${msg[0]}'=='PASS'    ${True}
+    Return From Keyword If    '${msg[0]}'=='PASS'    ${True}
     ${msg}=    Run Keyword And Ignore Error    Element Should Be Visible    complaintSatifiedFalse_${g}
-    Run Keyword And Return If    '${msg[0]}'=='PASS'    ${False}
+    Return From Keyword If    '${msg[0]}'=='PASS'    ${False}
