@@ -577,6 +577,7 @@ aps.Відповісти на вимогу про виправлення умо�
     Input Text    complaintResolution_${guid}    ${arguments[2].data.resolution}
     Full Click    makeComplaintResolution_${guid}
     Log To Console    ${guid} \ ${arguments[2].data.resolutionType}
+    Return From Keyword    '${arguments[2].data.resolutionType}'=='declined'
 
 aps.Задати запитання на лот
     [Arguments]    ${username}    @{arguments}
