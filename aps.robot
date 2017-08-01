@@ -301,7 +301,7 @@ aps.Створити постачальника, додати документа
     Run Keyword And Ignore Error    Wait Until Page Does Not Contain    Учасник Збережена успішно
     Comment    Wait Until Page Contains Element    id=uploadFile247
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
-    sleep    10
+    sleep    40
     Choose File    xpath=.//input[contains(@id,'uploadFile')]    ${filepath}
     Select From List By Index    xpath=.//*[@class='form-control b-l-none ng-pristine ng-untouched ng-valid ng-empty'][contains(@id,'fileCategory')]    1
     Full Click    xpath=.//*[@class='btn btn-success'][contains(@id,'submitUpload')]
@@ -431,8 +431,10 @@ aps.Створити вимогу про виправлення умов зак�
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[2]}
     Full Click    save_claim
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
-    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Wait Until Page Contains Element    //a[contains(@id,'openComplaintForm')][contains(text(),"${arguments[1].data.title}")]    60
+    ${cg}=    Get Text    //a[contains(@id,'openComplaintForm')][contains(.,'${arguments[1].data.title}')]/../../..//span[contains(@id,'complaintProzorroId')]
+    Comment    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    new tender claim ${cg}
     Return From Keyword    ${cg}
 
 aps.Отримати інформацію із запитання
@@ -448,23 +450,26 @@ aps.Підтвердити підписання контракту
     ${api}=    Fetch From Left    ${USERS.users['${username}'].homepage}    :90
     Execute Javascript    $.get('${api}:92/api/sync/purchases/${guid}');
     Full Click    id=processing-tab
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Comment    Click Button    xpath=.//*[contains(@id,'saveContract_')]
     #add contract
     Wait Until Element Is Enabled    xpath=.//input[contains(@id,'uploadFile')]
-    sleep    10
+    sleep    40
     Choose File    xpath=.//*[@id='processingContract0']/div/div/div[2]/div/div/div/file-category-upload/div/div/input    /home/ova/robot_tests/test.txt
-    Log To Console    1111111111
+    Run Keyword If    ${log_enabled}    Log To Console    choose_files
     Select From List By Index    xpath=.//*[contains(@id,'fileCategory')]    1
-    Log To Console    2222222222
-    Full Click    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
+    Run Keyword If    ${log_enabled}    Log To Console    select category
+    Click Element    xpath=.//*[@class="btn btn-success"][contains(@id,'submitUpload')]
     Input Text    id=processingContractContractNumber    666
-    Comment    ${signed}=    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
-    ${signed}=    Get Time    NOW + 1h
+    Comment    Run Keyword And Return If    '${arguments[1]}'=='awards[0].complaintPeriod.endDate'    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    ${signed}=    Get Field Date    xpath=.//*[@class="ng-binding"][contains(@id,'ContractComplaintPeriodEnd_')]
+    Дочекатись дати закінчення періоду подання скарг    tender_owner
+    Comment    ${signed}=    Get Time    YYYY-MM-DD hh:mm:ss    UTC + 4h
+    Log To Console    signed time ${signed}
     Input Text    id=processingContractDateSigned    ${signed}
     Click Element    id=processingContractStartDate
     Click Element    id=processingContractEndDate
     Mouse Down    xpath=.//*[@id='processingContract0']/div/div
-    Click Button    xpath=.//*[@id='processingContract0']/div/div/div[3]/div/div[4]/div/button
+    Click Button    xpath=.//*[contains(@id,'saveContract_')]
 
 aps.Відповісти на запитання
     [Arguments]    ${username}    @{arguments}
@@ -571,9 +576,7 @@ aps.Отримати документ до лоту
 aps.Відповісти на вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    ${guid}=    Open Claim Form    ${arguments[1]}
     Full Click    makeDecisionComplaint_${guid}
     Wait Until Page Contains Element    name=ResolutionTypes
     Run Keyword If    '${arguments[2].data.resolutionType}'=='resolved'    Select From List By Value    complaintResolutionType_${guid}    3
@@ -611,24 +614,22 @@ aps.Задати запитання на предмет
 aps.Отримати інформацію із скарги
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    ${guid}=    Open Claim Form    ${arguments[1]}
     Run Keyword And Return If    '${arguments[2]}'=='status'    Get Claim Status    complaintStatus_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='title'    Get Field Text    complaintTitle_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='description'    Get Field Text    complaintDescription_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='resolutionType'    Get Claim Status    complaintResolutionTypeName_${guid}
     Run Keyword And Return If    '${arguments[2]}'=='resolution'    Get Field Text    complaintResolution_${guid}
-    Run Keyword And Return If    '${arguments[2]}'=='satisfied'    Get Satisfied
+    Run Keyword And Return If    '${arguments[2]}'=='satisfied'    Get Satisfied    ${guid}
+    Run Keyword And Return If    '${arguments[2]}'=='cancellationReason'    Get Field Text    complaintCancellationReason_${guid}
 
 aps.Підтвердити вирішення вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    ${guid}=    Open Claim Form    ${arguments[1]}
     Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
     Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
+    Log To Console    ${guid} satisfied ${arguments[2].data.satisfied}
 
 aps.Створити вимогу про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
@@ -647,18 +648,15 @@ aps.Створити вимогу про виправлення умов лот�
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Choose File    add_file_complaint    ${arguments[3]}
     Full Click    save_claim
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
-    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Wait Until Page Contains Element    //a[contains(@id,'openComplaintForm')][contains(text(),"${arguments[1].data.title}")]    60
+    ${cg}=    Get Text    //a[contains(@id,'openComplaintForm')][contains(.,'${arguments[1].data.title}')]/../../..//span[contains(@id,'complaintProzorroId')]
+    Comment    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    new lot claim ${cg}
     Return From Keyword    ${cg}
 
 aps.Підтвердити вирішення вимоги про виправлення умов лоту
     [Arguments]    ${username}    @{arguments}
-    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
-    Run Keyword If    ${arguments[2].data.satisfied}==${True}    Full Click    complaintYes_${guid}
-    Run Keyword If    ${arguments[2].data.satisfied}==${False}    Full Click    complaintNo_${guid}
+    aps.Підтвердити вирішення вимоги про виправлення умов закупівлі    ${username}    @{arguments}
 
 aps.Створити чернетку вимоги про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
@@ -672,8 +670,10 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Execute Javascript    $('#save_claim_draft').click()
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
-    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Wait Until Page Contains Element    //a[contains(@id,'openComplaintForm')][contains(text(),"${arguments[1].data.title}")]    60
+    ${cg}=    Get Text    //a[contains(@id,'openComplaintForm')][contains(.,'${arguments[1].data.title}')]/../../..//span[contains(@id,'complaintProzorroId')]
+    Comment    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    new draft claim ${cg}
     Return From Keyword    ${cg}
 
 aps.Створити чернетку вимоги про виправлення умов лоту
@@ -690,21 +690,22 @@ aps.Створити чернетку вимоги про виправлення
     Input Text    claim_title    ${arguments[1].data.title}
     Input Text    claim_descriptions    ${arguments[1].data.description}
     Execute Javascript    $('#save_claim_draft').click()
-    Wait Until Page Contains Element    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]    60
-    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Wait Until Page Contains Element    //a[contains(@id,'openComplaintForm')][contains(text(),"${arguments[1].data.title}")]    60
+    ${cg}=    Get Text    //a[contains(@id,'openComplaintForm')][contains(.,'${arguments[1].data.title}')]/../../..//span[contains(@id,'complaintProzorroId')]
+    Comment    ${cg}=    Get Text    //div[contains(@id,'complaintTitle')][contains(text(),"${arguments[1].data.title}")]/../../../../..//span[contains(@id,'complaintProzorroId')]
+    Log To Console    new draft lot claim ${cg}
     Return From Keyword    ${cg}
     [Teardown]
 
 aps.Скасувати вимогу про виправлення умов закупівлі
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]    60
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    ${guid}=    Open Claim Form    ${arguments[1]}
     Full Click    cancelComplaint_${guid}
-    Wait Until Page Contains Element    complaintCancellationReason_0    60
-    Input Text    complaintCancellationReason_0    ${arguments[2].data.cancellationReason}
+    Wait Until Page Contains Element    complaintCancellationReason_${guid}    60
+    Input Text    complaintCancellationReason_${guid}    ${arguments[2].data.cancellationReason}
     Full Click    cancelComplaint_${guid}
+    Log To Console    cansel claim ${guid}
     [Teardown]
 
 aps.Скасувати вимогу про виправлення умов лоту
@@ -740,7 +741,18 @@ aps.Відповісти на вимогу про виправлення виз�
 aps.Отримати інформацію із документа до скарги
     [Arguments]    ${username}    @{arguments}
     aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
-    Full Click    claim-tab
-    Wait Until Page Contains Element    //span[contains(.,'${arguments[1]}')]
-    ${guid}=    Get Text    //span[text()='${arguments[1]}']/..//span[contains(@id,'complaintGuid')]
+    ${guid}=    Open Claim Form    ${arguments[1]}
     Run Keyword And Return If    '${arguments[3]}'=='title'    Get Text    //a[contains(@id,'docFileName')][contains(.,'${arguments[2]}')]
+
+aps.Створити вимогу про виправлення визначення переможця
+    [Arguments]    ${username}    @{arguments}
+    aps.Створити вимогу про виправлення умов закупівлі    ${username}    @{arguments}
+
+aps.Завантажити документ рішення кваліфікаційної комісії
+    [Arguments]    ${username}    @{arguments}
+    aps.Оновити сторінку з тендером    ${username}    ${arguments[0]}
+    Full Click    processing-tab
+    Wait Until Page Contains Element    //button[contains(@id,'awardAcceptDecision')]
+    Choose File    //file-category-upload[contains(@id,'awardUploadFile')]//input[contains(@id,'uploadFile')]    ${arguments[1]}
+    Select From List By Index    //file-category-upload[contains(@id,'awardUploadFile')]//select[contains(@id,'fileCategory')]    3
+    Full Click    //file-category-upload[contains(@id,'awardUploadFile')]//a[contains(@id,'submitUpload')]
