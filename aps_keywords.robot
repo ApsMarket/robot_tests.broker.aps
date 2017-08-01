@@ -664,7 +664,6 @@ Add Bid Lot
     Run Keyword And Ignore Error    Run Keyword If    ${params[0].data.selfEligible}==${True}    Click Element    xpath=//label[@for='isSelfEligible${end}']
     Run Keyword And Ignore Error    Run Keyword If    ${params[0].data.selfQualified}==${True}    Click Element    xpath=//label[@for='isSelfQualified${end}']
     @{fiis}=    Set Variable    ${params[2]}
-    Log To Console    @{fiis}
     : FOR    ${fi}    IN    @{fiis}
     \    ${code}=    Get Text    xpath=//h6[contains(text(),'${fi}')]/../h6[2]
     \    ${value}=    Get Param By Id    ${code}    ${params[0].data.parameters}
