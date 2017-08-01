@@ -176,3 +176,13 @@ Get Satisfied
     Return From Keyword If    '${msg[0]}'=='PASS'    ${True}
     ${msg}=    Run Keyword And Ignore Error    Element Should Be Visible    complaintSatifiedFalse_${g}
     Return From Keyword If    '${msg[0]}'=='PASS'    ${False}
+
+Open Claim Form
+    [Arguments]    ${uaid}
+    Full Click    claim-tab
+    Wait Until Page Contains Element    //span[contains(.,'${uaid}')]
+    sleep    3
+    ${guid}=    Get Text    //span[text()='${uaid}']/..//span[contains(@id,'complaintGuid')]
+    Full Click    openComplaintForm_${guid}
+    Wait Until Element Is Enabled    complaintStatus_${guid}
+    [Return]    ${guid}
